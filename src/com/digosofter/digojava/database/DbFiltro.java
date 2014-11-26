@@ -21,10 +21,10 @@ public class DbFiltro extends Objeto {
   private boolean _booSubSelect;
   private DbColuna _clnFiltro;
   private EnmOperador _enmOperador = EnmOperador.IGUAL;
+  private String _sqlFiltro;
   private String _strCondicao;
   private String _strFiltro;
   private String _strOperador;
-  private String _sqlFiltro;
 
   public DbFiltro(DbColuna clnFiltro, EnmOperador enmOperador, int intFiltro) {
 
@@ -113,30 +113,6 @@ public class DbFiltro extends Objeto {
     return _enmOperador;
   }
 
-  private String getStrCondicao() {
-
-    try {
-
-      if (!Utils.getBooStrVazia(_strCondicao)) {
-
-        return _strCondicao;
-      }
-
-      _strCondicao = "and";
-    }
-    catch (Exception ex) {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-    return _strCondicao;
-  }
-
-  private String getStrFiltro() {
-
-    return _strFiltro;
-  }
-
   /**
    * Retorna string com o filtro formatado para uso em sql's.
    */
@@ -172,6 +148,30 @@ public class DbFiltro extends Objeto {
     }
 
     return _sqlFiltro;
+  }
+
+  private String getStrCondicao() {
+
+    try {
+
+      if (!Utils.getBooStrVazia(_strCondicao)) {
+
+        return _strCondicao;
+      }
+
+      _strCondicao = "and";
+    }
+    catch (Exception ex) {
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+    return _strCondicao;
+  }
+
+  private String getStrFiltro() {
+
+    return _strFiltro;
   }
 
   private String getStrOperador() {

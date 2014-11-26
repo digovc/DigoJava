@@ -20,12 +20,18 @@ public abstract class App extends Objeto {
   }
 
   private boolean _booDebug;
+  private long _intMilisegLigado;
+  private long _intSegundosLigado;
+  private long _intStartTime;
   private int _intVersao;
   private List<MsgUsuario> _lstMsgUsuarioPadrao;
   private List<DbTabela> _lstTbl;
   private DataBase _objDbPrincipal;
+
   private Gson _objGson;
+
   private String _strVersao;
+
   private DbTabela _tblSelec;
 
   protected App() {
@@ -33,6 +39,7 @@ public abstract class App extends Objeto {
     try {
 
       this.setI(this);
+      this.setIntStartTime(System.currentTimeMillis());
     }
     catch (Exception ex) {
 
@@ -45,6 +52,41 @@ public abstract class App extends Objeto {
   public boolean getBooDebug() {
 
     return _booDebug;
+  }
+
+  public long getIntMilisegLigado() {
+
+    try {
+
+      _intMilisegLigado = System.currentTimeMillis() - this.getIntStartTime();
+    }
+    catch (Exception ex) {
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _intMilisegLigado;
+  }
+
+  public long getIntSegundosLigado() {
+
+    try {
+
+      _intSegundosLigado = this.getIntMilisegLigado() / 1000;
+    }
+    catch (Exception ex) {
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _intSegundosLigado;
+  }
+
+  private long getIntStartTime() {
+
+    return _intStartTime;
   }
 
   public int getIntVersao() {
@@ -197,7 +239,12 @@ public abstract class App extends Objeto {
     return _tblSelec;
   }
 
-  private void setI(App _i) {
+  public void setBooDebug(boolean booDebug) {
+
+    _booDebug = booDebug;
+  }
+
+  private void setI(App app) {
 
     try {
 
@@ -206,13 +253,18 @@ public abstract class App extends Objeto {
         return;
       }
 
-      i = _i;
+      i = app;
     }
     catch (Exception ex) {
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
     }
+  }
+
+  private void setIntStartTime(long intStartTime) {
+
+    _intStartTime = intStartTime;
   }
 
   public void setIntVersao(int intVersao) {

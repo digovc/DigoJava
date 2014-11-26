@@ -6,91 +6,99 @@ import com.digosofter.digojava.Utils;
 
 public class Erro extends Exception implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	private String _strMsg;
-	private String _strMsgDetalhe;
-	private String _strNome;
+  private static final long serialVersionUID = 1L;
+  private String _strMsg;
+  private String _strMsgDetalhe;
+  private String _strNome;
 
-	public Erro(String strMsg, Exception ex) {
+  public Erro(String strMsg, Exception ex) {
 
-		try {
+    try {
 
-			if (!Utils.getBooStrVazia(strMsg)) {
-				this.setStrMsg(strMsg);
-			}
+      if (!Utils.getBooStrVazia(strMsg)) {
+        this.setStrMsg(strMsg);
+      }
 
-			if (ex != null && !Utils.getBooStrVazia(ex.getMessage())) {
-				this.setStrMsgDetalhe(ex.getMessage());
-			}
+      if (ex != null && !Utils.getBooStrVazia(ex.getMessage())) {
+        this.setStrMsgDetalhe(ex.getMessage());
+      }
 
-			this.imprimirConsole();
+      this.imprimirConsole();
 
-		} catch (Exception e) {
-		} finally {
-		}
-	}
+    }
+    catch (Exception e) {
+    }
+    finally {
+    }
+  }
 
-	public String getStrMsg() {
+  public String getStrMsg() {
 
-		try {
+    try {
 
-			if (!Utils.getBooStrVazia(_strMsg)) {
-				return _strMsg;
-			}
+      if (!Utils.getBooStrVazia(_strMsg)) {
+        return _strMsg;
+      }
 
-			_strMsg = "Erro do sistema.";
+      _strMsg = "Erro do sistema.";
 
-		} catch (Exception ex) {
-			new Erro("Erro inesperado.\n", ex);
-		} finally {
-		}
+    }
+    catch (Exception ex) {
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
 
-		return _strMsg;
-	}
+    return _strMsg;
+  }
 
-	public String getStrMsgDetalhe() {
+  public String getStrMsgDetalhe() {
 
-		try {
+    try {
 
-			if (!Utils.getBooStrVazia(_strMsgDetalhe)) {
-				return _strMsgDetalhe;
-			}
+      if (!Utils.getBooStrVazia(_strMsgDetalhe)) {
+        return _strMsgDetalhe;
+      }
 
-			_strMsgDetalhe = "Sem mais detalhes do erro.";
+      _strMsgDetalhe = "Sem mais detalhes do erro.";
 
-		} catch (Exception ex) {
-			new Erro("Erro inesperado.\n", ex);
-		} finally {
-		}
+    }
+    catch (Exception ex) {
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
 
-		return _strMsgDetalhe;
-	}
+    return _strMsgDetalhe;
+  }
 
-	public String getStrNome() {
+  public String getStrNome() {
 
-		return _strNome;
-	}
+    return _strNome;
+  }
 
-	private void imprimirConsole() {
+  private void imprimirConsole() {
 
-		try {
+    try {
 
-			System.out.println(this.getStrMsg());
-			System.out.println(this.getStrMsgDetalhe());
+      System.out.println(this.getStrMsg());
+      System.out.println(this.getStrMsgDetalhe());
 
-		} catch (Exception ex) {
-			new Erro("Erro inesperado.\n", ex);
-		} finally {
-		}
-	}
+    }
+    catch (Exception ex) {
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
 
-	private void setStrMsg(String strMsg) {
+  private void setStrMsg(String strMsg) {
 
-		_strMsg = strMsg;
-	}
+    _strMsg = strMsg;
+  }
 
-	private void setStrMsgDetalhe(String strMsgDetalhe) {
+  private void setStrMsgDetalhe(String strMsgDetalhe) {
 
-		_strMsgDetalhe = strMsgDetalhe;
-	}
+    _strMsgDetalhe = strMsgDetalhe;
+  }
 }
