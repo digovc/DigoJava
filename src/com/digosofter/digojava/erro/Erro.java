@@ -16,15 +16,21 @@ public class Erro extends Exception implements Serializable {
     try {
 
       if (!Utils.getBooStrVazia(strMsg)) {
+
         this.setStrMsg(strMsg);
       }
 
       if (ex != null && !Utils.getBooStrVazia(ex.getMessage())) {
+
         this.setStrMsgDetalhe(ex.getMessage());
       }
 
       this.imprimirConsole();
 
+      if (ex != null) {
+
+        ex.printStackTrace();
+      }
     }
     catch (Exception e) {
     }
@@ -83,7 +89,6 @@ public class Erro extends Exception implements Serializable {
 
       System.out.println(this.getStrMsg());
       System.out.println(this.getStrMsgDetalhe());
-
     }
     catch (Exception ex) {
       new Erro("Erro inesperado.\n", ex);

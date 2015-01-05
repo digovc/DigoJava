@@ -5,7 +5,7 @@ import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
 import com.digosofter.digojava.erro.Erro;
 
-public class DataBase extends Objeto {
+public abstract class DataBase extends Objeto {
 
   public double execSqlGetDbl(String sql) {
 
@@ -33,21 +33,5 @@ public class DataBase extends Objeto {
     return (int) this.execSqlGetDbl(sql);
   }
 
-  public String execSqlGetStr(String sql) {
-
-    String strResultado = Utils.STR_VAZIA;
-
-    try {
-
-      // TODO: Not implemented.
-
-    }
-    catch (Exception ex) {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
-
-    return strResultado;
-  }
+  public abstract String execSqlGetStr(String sql);
 }

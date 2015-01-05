@@ -17,7 +17,9 @@ public abstract class DbTabela extends Objeto {
   private int _intQtdLinha;
   private List<DbColuna> _lstCln;
   private List<DbColuna> _lstClnCadastro;
-  private ArrayList<DbFiltro> _lstDbFiltroTelaCadastro;
+  private List<DbColuna> _lstClnConsulta;
+  private ArrayList<DbFiltro> _lstObjDbFiltroCadastro;
+  private List<DbFiltro> _lstObjDbFiltroConsulta;
   private DataBase _objDb;
   private String _strPesquisaActConsulta;
 
@@ -171,24 +173,57 @@ public abstract class DbTabela extends Objeto {
     return _lstClnCadastro;
   }
 
-  public ArrayList<DbFiltro> getLstDbFiltroTelaCadastro() {
+  public List<DbColuna> getLstClnConsulta() {
 
     try {
 
-      if (_lstDbFiltroTelaCadastro != null) {
+      if (_lstClnConsulta != null) {
 
-        return _lstDbFiltroTelaCadastro;
+        return _lstClnConsulta;
       }
 
-      _lstDbFiltroTelaCadastro = new ArrayList<DbFiltro>();
+      _lstClnConsulta = new ArrayList<DbColuna>();
+
+      for (DbColuna cln : this.getLstCln()) {
+
+        if (!cln.getBooVisivelConsulta()) {
+
+          continue;
+        }
+
+        _lstClnConsulta.add(cln);
+      }
     }
     catch (Exception ex) {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
+
+      new Erro("Erro inesperado.\n", ex);
+
     }
     finally {
     }
 
-    return _lstDbFiltroTelaCadastro;
+    return _lstClnConsulta;
+  }
+
+  protected List<DbFiltro> getLstObjDbFiltroConsulta() {
+
+    try {
+
+      if (_lstObjDbFiltroConsulta == null) {
+
+        _lstObjDbFiltroConsulta = new ArrayList<>();
+      }
+
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+
+    return _lstObjDbFiltroConsulta;
   }
 
   public DataBase getObjDb() {
@@ -209,6 +244,26 @@ public abstract class DbTabela extends Objeto {
     }
 
     return _objDb;
+  }
+
+  public ArrayList<DbFiltro> getObjLstDbFiltroCadastro() {
+
+    try {
+
+      if (_lstObjDbFiltroCadastro != null) {
+
+        return _lstObjDbFiltroCadastro;
+      }
+
+      _lstObjDbFiltroCadastro = new ArrayList<DbFiltro>();
+    }
+    catch (Exception ex) {
+      new Erro(App.getI().getStrTextoPadrao(0), ex);
+    }
+    finally {
+    }
+
+    return _lstObjDbFiltroCadastro;
   }
 
   public String getStrClnNome(String strNomeSimplificado) {

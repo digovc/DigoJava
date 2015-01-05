@@ -27,11 +27,8 @@ public abstract class App extends Objeto {
   private List<MsgUsuario> _lstMsgUsuarioPadrao;
   private List<DbTabela> _lstTbl;
   private DataBase _objDbPrincipal;
-
   private Gson _objGson;
-
   private String _strVersao;
-
   private DbTabela _tblSelec;
 
   protected App() {
@@ -138,22 +135,6 @@ public abstract class App extends Objeto {
   }
 
   public DataBase getObjDbPrincipal() {
-
-    try {
-
-      if (_objDbPrincipal != null) {
-
-        return _objDbPrincipal;
-      }
-
-      _objDbPrincipal = new DataBase();
-    }
-    catch (Exception ex) {
-
-      new Erro(App.getI().getStrTextoPadrao(102), ex);
-    }
-    finally {
-    }
 
     return _objDbPrincipal;
   }

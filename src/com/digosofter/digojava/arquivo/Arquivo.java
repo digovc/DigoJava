@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 
+import org.apache.commons.io.IOUtils;
+
 import com.digosofter.digojava.App;
 import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
@@ -12,6 +14,7 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class Arquivo extends Objeto {
 
+  private boolean _booExiste;
   private String _dir;
   private String _dirCompleto;
   private String _strConteudo;
@@ -63,6 +66,29 @@ public abstract class Arquivo extends Objeto {
     }
   }
 
+  protected boolean getBooExiste() {
+
+    File fil;
+    try {
+
+      if (Utils.getBooStrVazia(this.getDirCompleto())) {
+        return false;
+      }
+
+      fil = new File(this.getDirCompleto());
+      _booExiste = fil.exists();
+
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+    return _booExiste;
+  }
+
   public String getDir() {
 
     return _dir;
@@ -92,6 +118,30 @@ public abstract class Arquivo extends Objeto {
   }
 
   public String getStrConteudo() {
+
+    FileInputStream fis;
+
+    try {
+
+      if (Utils.getBooStrVazia(this.getDirCompleto())) {
+        return Utils.STR_VAZIA;
+      }
+
+      if (!this.getBooExiste()) {
+        return Utils.STR_VAZIA;
+      }
+
+      fis = new FileInputStream(this.getDirCompleto());
+      _strConteudo = IOUtils.toString(fis, "UTF-8");
+
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
 
     return _strConteudo;
   }
@@ -131,9 +181,19 @@ public abstract class Arquivo extends Objeto {
     try {
 
       _dirCompleto = dirCompleto;
+
+      if (Utils.getBooStrVazia(_dirCompleto)) {
+        return;
+      }
+
+      if (!this.getBooExiste()) {
+        return;
+      }
+
       fil = new File(_dirCompleto);
+
+      this.setDir(fil.getPath().replace(this.getStrNome(), Utils.STR_VAZIA));
       this.setStrNome(fil.getName());
-      _dir = fil.getPath().replace(this.getStrNome(), Utils.STR_VAZIA);
     }
     catch (Exception ex) {
       new Erro(App.getI().getStrTextoPadrao(0), ex);

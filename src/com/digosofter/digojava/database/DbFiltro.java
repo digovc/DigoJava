@@ -18,7 +18,7 @@ public class DbFiltro extends Objeto {
     MENOR_IGUAL
   }
 
-  private boolean _booSubSelect;
+  private boolean _booSelect;
   private DbColuna _clnFiltro;
   private EnmOperador _enmOperador = EnmOperador.IGUAL;
   private String _sqlFiltro;
@@ -88,7 +88,7 @@ public class DbFiltro extends Objeto {
 
     try {
 
-      this.setBooSubSelect(true);
+      this.setBooSelect(true);
       this.setStrFiltro(strSubSelect);
     }
     catch (Exception ex) {
@@ -98,9 +98,9 @@ public class DbFiltro extends Objeto {
     }
   }
 
-  private boolean getBooSubSelect() {
+  private boolean getBooSelect() {
 
-    return _booSubSelect;
+    return _booSelect;
   }
 
   private DbColuna getClnFiltro() {
@@ -125,7 +125,7 @@ public class DbFiltro extends Objeto {
         return _sqlFiltro;
       }
 
-      if (this.getBooSubSelect()) {
+      if (this.getBooSelect()) {
 
         _sqlFiltro = "_condicao (_sub_select)";
         _sqlFiltro = _sqlFiltro.replace("_condicao", !booPrimeiroTermo ? this.getStrCondicao() : Utils.STR_VAZIA);
@@ -222,9 +222,9 @@ public class DbFiltro extends Objeto {
     return _strOperador;
   }
 
-  private void setBooSubSelect(boolean booSubSelect) {
+  private void setBooSelect(boolean booSelect) {
 
-    _booSubSelect = booSubSelect;
+    _booSelect = booSelect;
   }
 
   private void setClnFiltro(DbColuna clnFiltro) {

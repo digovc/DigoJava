@@ -6,11 +6,13 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import com.digosofter.digojava.erro.Erro;
 
@@ -140,12 +142,34 @@ public abstract class Utils {
     return booResultado;
   }
 
+  public static int getIntNumeroAleatorio(int intMaximo) {
+
+    int intResultado = 0;
+
+    try {
+
+      intResultado = new Random().nextInt(intMaximo);
+
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro ao gerar cor aleatória.\n", ex);
+
+    }
+    finally {
+    }
+
+    return intResultado;
+  }
+
   public static Date getDttAgora() {
 
     Date dttResultado = null;
 
     try {
+
       dttResultado = new Date();
+
     }
     catch (Exception ex) {
       new Erro(App.getI().getStrTextoPadrao(110), ex);
@@ -156,6 +180,83 @@ public abstract class Utils {
     return dttResultado;
   }
 
+  public static String getStrConcatenarLst(String[] arrStr, String strDelimitador, boolean booEliminarDuplicata) {
+
+    List<String> lstStr = null;
+
+    try {
+
+      lstStr = new ArrayList<String>();
+
+      for (String str : arrStr) {
+
+        lstStr.add(str);
+      }
+
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+
+    return Utils.getStrConcatenarLst(lstStr, strDelimitador, booEliminarDuplicata);
+  }
+
+  public static String getStrConcatenarLst(List<String> lstStr, String strDelimitador, boolean booEliminarDuplicata) {
+
+    boolean booStrIncluida;
+    List<String> lstStrIncluida;
+    String strDelimitador2;
+    String strResultado = Utils.STR_VAZIA;
+    StringBuilder stb;
+
+    try {
+
+      booStrIncluida = false;
+      lstStrIncluida = new ArrayList<String>();
+      stb = new StringBuilder();
+      strDelimitador2 = Utils.STR_VAZIA;
+      strResultado = Utils.STR_VAZIA;
+
+      for (String str : lstStr) {
+
+        if (booEliminarDuplicata) {
+
+          for (String strInserida : lstStrIncluida) {
+
+            if (strInserida == str) {
+              booStrIncluida = true;
+            }
+          }
+        }
+
+        if (!booStrIncluida) {
+
+          stb.append(strDelimitador2);
+          stb.append(str);
+
+          strDelimitador2 = strDelimitador;
+
+          lstStrIncluida.add(str);
+        }
+      }
+
+      strResultado = stb.toString();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+
+    return strResultado;
+  }
+
   public static String getMd5(String str) {
 
     BigInteger objBigInteger;
@@ -163,6 +264,7 @@ public abstract class Utils {
     String md5Resultado = null;
 
     try {
+
       objMessageDigest = MessageDigest.getInstance("MD5");
       objBigInteger = new BigInteger(1, objMessageDigest.digest(str.getBytes()));
       md5Resultado = String.format("%0" + (objMessageDigest.digest(str.getBytes()).length << 1) + "X", objBigInteger);
@@ -215,6 +317,7 @@ public abstract class Utils {
     SimpleDateFormat objSimpleDateFormat = null;
 
     try {
+
       strDataFormato = Utils.enmDataFormatoToString(enmDataFormato);
       objSimpleDateFormat = new SimpleDateFormat(strDataFormato, LOCAL_BRASIL);
     }
@@ -230,6 +333,7 @@ public abstract class Utils {
   public static String getStrPrimeiraMaiuscula(String str) {
 
     try {
+
       str = str.substring(0, 1).toUpperCase(LOCAL_BRASIL) + str.substring(1);
     }
     catch (Exception ex) {
@@ -248,7 +352,7 @@ public abstract class Utils {
     String[] arrChrSemAcento;
 
     try {
-      strComplexa = strComplexa.toLowerCase(Locale.ENGLISH);
+      strComplexa = strComplexa.toLowerCase(Utils.LOCAL_BRASIL);
       arrChrAcentos = new String[] { "ç", "á", "é", "í", "ó", "ú", "ý", "à", "è", "ì", "ò", "ù", "ã", "õ", "ñ", "ä", "ë", "ï", "ö", "ü", "ÿ", "â", "ê", "î", "ô", "û" };
       arrChrSemAcento = new String[] { "c", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u", "a", "o", "n", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u" };
       for (int intTemp = 0; intTemp < arrChrAcentos.length; intTemp++) {
@@ -283,7 +387,13 @@ public abstract class Utils {
     String strResultado = Utils.STR_VAZIA;
 
     try {
+
       for (String strTermo : lstStrTermo) {
+
+        if (Utils.getBooStrVazia(strTermo)) {
+          continue;
+        }
+
         strTermoMd5 = Utils.getMd5(strTermo);
         strResultado = Utils.getMd5(strResultado + strTermoMd5);
       }
@@ -361,6 +471,7 @@ public abstract class Utils {
   public static String removerUltimaLetra(String str) {
 
     try {
+
       str = str.substring(0, str.length() - 1);
     }
     catch (Exception ex) {

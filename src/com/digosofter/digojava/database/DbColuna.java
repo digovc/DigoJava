@@ -13,23 +13,56 @@ import com.digosofter.digojava.erro.Erro;
 
 public class DbColuna extends Objeto {
 
-  public enum EnmTipo {
+  public static enum EnmTipo {
+
+    BIGINT,
+    BIGSERIAL,
     BOOLEAN,
+    CHAR,
+    DATE,
     DATE_TIME,
+    DECIMAL,
+    DOUBLE,
     INTEGER,
+    INTERVAL,
+    MONEY,
     NUMERIC,
     REAL,
-    TEXT
+    SERIAL,
+    SMALLINT,
+    TEXT,
+    TIME_WITH_TIME_ZONE,
+    TIME_WITHOUT_TIME_ZONE,
+    TIMESTAMP_WITH_TIME_ZONE,
+    TIMESTAMP_WITHOUT_TIME_ZONE,
+    VARCHAR,
+    XML
+
+  }
+
+  public static enum EnmTipoGrupo {
+
+    ALPHANUMERICO,
+    NUMERICO,
+    TEMPORAL
   }
 
   private boolean _booChavePrimaria;
   private boolean _booClnNome;
+  private boolean _booNotNull;
   private boolean _booOrdemCadastro;
   private boolean _booOrdemDecrecente;
-  private boolean _booVisivelCadastro;
+  private boolean _booSenha;
+  private boolean _booVisivelCadastro = true;
+  private boolean _booVisivelConsulta = true;
   private DbColuna _clnRef;
   private EnmTipo _enmTipo;
+  private EnmTipoGrupo _enmTipoGrupo;
+  private int _intFrmLinha = 1;
+  private int _intFrmLinhaPeso = 1;
   private int _intOrdem;
+  private int _intTamanhoCampo = 100;
+  private List<Integer> _lstIntOpcaoValor;
   private List<String> _lstStrOpcao;
   private String _sqlTipo;
   private String _strValor;
@@ -37,6 +70,25 @@ public class DbColuna extends Objeto {
   private String _strValorExibicao;
   private String _strValorSql;
   private DbTabela _tbl;
+
+  /**
+   * Adiciona uma opção para lista, tornando o campo selecionável por combobox.
+   */
+  public void adicionarOpcao(int intValor, String strNome) {
+
+    try {
+
+      this.getLstIntOpcaoValor().add(intValor);
+      this.getLstStrOpcao().add(strNome);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+  }
 
   public DbColuna(String strNome, DbTabela tbl, EnmTipo enmTipo) {
 
@@ -63,6 +115,11 @@ public class DbColuna extends Objeto {
     return _booClnNome;
   }
 
+  public boolean getBooNotNull() {
+
+    return _booNotNull;
+  }
+
   public boolean getBooOrdemCadastro() {
 
     return _booOrdemCadastro;
@@ -71,6 +128,11 @@ public class DbColuna extends Objeto {
   public boolean getBooOrdemDecrecente() {
 
     return _booOrdemDecrecente;
+  }
+
+  public boolean getBooSenha() {
+
+    return _booSenha;
   }
 
   public boolean getBooValor() {
@@ -93,6 +155,11 @@ public class DbColuna extends Objeto {
   public boolean getBooVisivelCadastro() {
 
     return _booVisivelCadastro;
+  }
+
+  public boolean getBooVisivelConsulta() {
+
+    return _booVisivelConsulta;
   }
 
   public char getChrValor() {
@@ -189,6 +256,7 @@ public class DbColuna extends Objeto {
     try {
 
       if (_enmTipo != null) {
+
         return _enmTipo;
       }
 
@@ -203,9 +271,49 @@ public class DbColuna extends Objeto {
     return _enmTipo;
   }
 
+  protected EnmTipoGrupo getEnmTipoGrupo() {
+
+    try {
+
+      // TODO: Completar com o restante dos tipos.
+      switch (this.getEnmTipo()) {
+        case BIGINT:
+          _enmTipoGrupo = EnmTipoGrupo.NUMERICO;
+          break;
+        default:
+          _enmTipoGrupo = EnmTipoGrupo.ALPHANUMERICO;
+          break;
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+
+    return _enmTipoGrupo;
+  }
+
+  public int getIntFrmLinha() {
+
+    return _intFrmLinha;
+  }
+
+  public int getIntFrmLinhaPeso() {
+
+    return _intFrmLinhaPeso;
+  }
+
   public int getIntOrdem() {
 
     return _intOrdem;
+  }
+
+  public int getIntTamanhoCampo() {
+
+    return _intTamanhoCampo;
   }
 
   public int getIntValor() {
@@ -225,11 +333,34 @@ public class DbColuna extends Objeto {
     return intResultado;
   }
 
+  protected List<Integer> getLstIntOpcaoValor() {
+
+    try {
+
+      if (_lstIntOpcaoValor != null) {
+
+        return _lstIntOpcaoValor;
+      }
+
+      _lstIntOpcaoValor = new ArrayList<Integer>();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+
+    return _lstIntOpcaoValor;
+  }
+
   public List<String> getLstStrOpcao() {
 
     try {
 
       if (_lstStrOpcao != null) {
+
         return _lstStrOpcao;
       }
 
@@ -289,6 +420,7 @@ public class DbColuna extends Objeto {
     try {
 
       if (Utils.getBooStrVazia(_strValor)) {
+
         _strValor = Utils.STR_VAZIA;
       }
     }
@@ -361,7 +493,7 @@ public class DbColuna extends Objeto {
 
     try {
 
-      strResultado = Utils.getStrValorMonetario(Double.parseDouble(_strValor));
+      strResultado = Utils.getStrValorMonetario(Double.parseDouble(this.getStrValor()));
     }
     catch (Exception ex) {
       return "R$ 0,00";
@@ -376,6 +508,7 @@ public class DbColuna extends Objeto {
 
     try {
 
+      // TODO: Fazer validações para impedir "sql injection".
       switch (this.getEnmTipo()) {
         case BOOLEAN:
           _strValorSql = this.getStrValorSqlBoolean();
@@ -399,7 +532,6 @@ public class DbColuna extends Objeto {
           _strValorSql = this.getStrValor();
           break;
       }
-
     }
     catch (Exception ex) {
 
@@ -451,16 +583,17 @@ public class DbColuna extends Objeto {
 
     try {
 
-      if (booChavePrimaria) {
+      _booChavePrimaria = booChavePrimaria;
+
+      if (_booChavePrimaria) {
 
         for (DbColuna cln : this.getTbl().getLstCln()) {
+
           cln._booChavePrimaria = false;
         }
 
         this.getTbl().setClnChavePrimaria(this);
       }
-
-      _booChavePrimaria = booChavePrimaria;
     }
     catch (Exception ex) {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
@@ -473,22 +606,28 @@ public class DbColuna extends Objeto {
 
     try {
 
-      if (booClnNome) {
+      _booClnNome = booClnNome;
+
+      if (_booClnNome) {
 
         for (DbColuna cln : this.getTbl().getLstCln()) {
+
           cln._booClnNome = false;
         }
 
         this.getTbl().setClnNome(this);
       }
-
-      _booClnNome = booClnNome;
     }
     catch (Exception ex) {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
     }
+  }
+
+  public void setBooNotNull(boolean booNotNull) {
+
+    _booNotNull = booNotNull;
   }
 
   public void setBooOrdemCadastro(boolean booOrdemCadastro) {
@@ -517,6 +656,11 @@ public class DbColuna extends Objeto {
     _booOrdemDecrecente = booOrdemDecrecente;
   }
 
+  public void setBooSenha(boolean booSenha) {
+
+    _booSenha = booSenha;
+  }
+
   public void setBooValor(Boolean booValor) {
 
     try {
@@ -533,6 +677,11 @@ public class DbColuna extends Objeto {
   public void setBooVisivelCadastro(boolean booVisivelCadastro) {
 
     _booVisivelCadastro = booVisivelCadastro;
+  }
+
+  public void setBooVisivelConsulta(boolean booVisivelConsulta) {
+
+    _booVisivelConsulta = booVisivelConsulta;
   }
 
   public void setChrValor(char chrValor) {
@@ -589,9 +738,24 @@ public class DbColuna extends Objeto {
     _enmTipo = enmTipo;
   }
 
+  public void setIntFrmLinha(int intFrmLinha) {
+
+    _intFrmLinha = intFrmLinha;
+  }
+
+  public void setIntFrmLinhaPeso(int intFrmLinhaPeso) {
+
+    _intFrmLinhaPeso = intFrmLinhaPeso;
+  }
+
   public void setIntOrdem(int intOrdem) {
 
     _intOrdem = intOrdem;
+  }
+
+  public void setIntTamanhoCampo(int intTamanhoCampo) {
+
+    _intTamanhoCampo = intTamanhoCampo;
   }
 
   public void setIntValor(int intValor) {
@@ -605,11 +769,6 @@ public class DbColuna extends Objeto {
     }
     finally {
     }
-  }
-
-  public void setLstStrOpcao(List<String> lstStrOpcao) {
-
-    _lstStrOpcao = lstStrOpcao;
   }
 
   public void setStrValor(String strValor) {
@@ -629,6 +788,7 @@ public class DbColuna extends Objeto {
       _tbl = tbl;
 
       if (_tbl == null) {
+
         return;
       }
 
@@ -640,6 +800,44 @@ public class DbColuna extends Objeto {
     finally {
     }
   }
+
+  public String getStrValorFormatado(String strValor) {
+
+    String strResultado = "";
+
+    try {
+
+      switch (this.getEnmTipoGrupo()) {
+
+        case ALPHANUMERICO:
+          strResultado = strValor;
+          break;
+
+        case NUMERICO:
+          strResultado = strValor;
+          break;
+
+        case TEMPORAL:
+          strResultado = strValor;
+          break;
+
+        default:
+          strResultado = strValor;
+          break;
+      }
+
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+
+    return strResultado;
+  }
+
 
   @Override
   public String toString() {
