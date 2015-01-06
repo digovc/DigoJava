@@ -16,12 +16,10 @@ public abstract class Objeto {
     try {
 
       Objeto.INT_INDEX++;
-
     }
     catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-
     }
     finally {
     }
@@ -47,6 +45,7 @@ public abstract class Objeto {
     try {
 
       if (!Utils.getBooStrVazia(_strNomeExibicao)) {
+
         return _strNomeExibicao;
       }
 
@@ -55,7 +54,6 @@ public abstract class Objeto {
     catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-
     }
     finally {
     }
@@ -68,6 +66,7 @@ public abstract class Objeto {
     try {
 
       if (!Utils.getBooStrVazia(_strNomeSimplificado)) {
+
         return _strNomeSimplificado;
       }
 
@@ -76,7 +75,6 @@ public abstract class Objeto {
     catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-
     }
     finally {
     }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.digosofter.digojava.MsgUsuario.EnmLingua;
+import com.digosofter.digojava.arquivo.ArquivoXml;
 import com.digosofter.digojava.database.DataBase;
 import com.digosofter.digojava.database.DbTabela;
 import com.digosofter.digojava.erro.Erro;
@@ -30,6 +31,31 @@ public abstract class App extends Objeto {
   private Gson _objGson;
   private String _strVersao;
   private DbTabela _tblSelec;
+
+  private ArquivoXml _arqXmlConfig;
+
+  protected ArquivoXml getArqXmlConfig() {
+
+    try {
+
+      if (_arqXmlConfig != null) {
+
+        return _arqXmlConfig;
+      }
+
+      _arqXmlConfig = new ArquivoXml();
+      _arqXmlConfig.setStrNome("AppConfig.xml");
+      _arqXmlConfig.criarArquivo();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _arqXmlConfig;
+  }
 
   protected App() {
 
@@ -58,6 +84,7 @@ public abstract class App extends Objeto {
       _intMilisegLigado = System.currentTimeMillis() - this.getIntStartTime();
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
@@ -73,6 +100,7 @@ public abstract class App extends Objeto {
       _intSegundosLigado = this.getIntMilisegLigado() / 1000;
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
@@ -106,6 +134,7 @@ public abstract class App extends Objeto {
       _lstMsgUsuarioPadrao.add(new MsgUsuario("Erro inesperado..", 0));
     }
     catch (Exception ex) {
+
       new Erro(this.getStrMsgUsuarioPadrao(0), ex);
     }
     finally {
@@ -126,6 +155,7 @@ public abstract class App extends Objeto {
       _lstTbl = new ArrayList<DbTabela>();
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
@@ -151,6 +181,7 @@ public abstract class App extends Objeto {
       _objGson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
@@ -172,21 +203,25 @@ public abstract class App extends Objeto {
     try {
 
       if (booMsgPadrao) {
+
         lstMsgUsuarioTemp = this.getLstMsgUsuarioPadrao();
       }
       else {
+
         lstMsgUsuarioTemp = this.getLstMsgUsuario();
       }
 
       for (MsgUsuario msgUsuario : lstMsgUsuarioTemp) {
 
         if (msgUsuario.getIntId() == intId && msgUsuario.getEnmLingua() == enmLingua) {
+
           strResultado = msgUsuario.getStrTexto();
           break;
         }
       }
     }
     catch (Exception ex) {
+
       new Erro(this.getStrTextoPadrao(103), ex);
     }
     finally {
@@ -237,6 +272,7 @@ public abstract class App extends Objeto {
       i = app;
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {

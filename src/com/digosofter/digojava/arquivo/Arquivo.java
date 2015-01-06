@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.PrintWriter;
 
 import org.apache.commons.io.IOUtils;
 
@@ -36,6 +37,7 @@ public abstract class Arquivo extends Objeto {
       arrBytBuffer = new byte[1024];
 
       while ((intLength = filOriginal.read(arrBytBuffer)) > 0) {
+
         filCopia.write(arrBytBuffer, 0, intLength);
       }
 
@@ -50,16 +52,46 @@ public abstract class Arquivo extends Objeto {
     }
   }
 
+  public void criarArquivo() {
+
+    PrintWriter objPrintWriter;
+
+    try {
+
+      if (this.getBooExiste()) {
+
+        return;
+      }
+
+      objPrintWriter = new PrintWriter(this.getDirCompleto(), "UTF-8");
+
+      objPrintWriter.print(this.getStrConteudo());
+      objPrintWriter.close();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
   private void criarDiretorio() {
 
     File fil;
 
     try {
 
+      if (Utils.getBooStrVazia(this.getDir())) {
+
+        return;
+      }
+
       fil = new File(this.getDir());
       fil.mkdirs();
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -69,23 +101,24 @@ public abstract class Arquivo extends Objeto {
   protected boolean getBooExiste() {
 
     File fil;
+
     try {
 
       if (Utils.getBooStrVazia(this.getDirCompleto())) {
+
         return false;
       }
 
       fil = new File(this.getDirCompleto());
       _booExiste = fil.exists();
-
     }
     catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-
     }
     finally {
     }
+
     return _booExiste;
   }
 
@@ -103,12 +136,20 @@ public abstract class Arquivo extends Objeto {
         return _dirCompleto;
       }
 
-      _dirCompleto = "_dir\\_str_nome";
-      _dirCompleto = _dirCompleto.replace("_dir", this.getDir());
+      if (!Utils.getBooStrVazia(this.getDir())) {
+
+        _dirCompleto = "_dir/_str_nome";
+      }
+      else {
+
+        _dirCompleto = "../_str_nome";
+      }
+
+      _dirCompleto = _dirCompleto.replace("_dir", this.getDir() != null ? this.getDir() : Utils.STR_VAZIA);
       _dirCompleto = _dirCompleto.replace("_str_nome", this.getStrNome());
-      _dirCompleto = _dirCompleto.replace("\\\\", "\\");
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -124,21 +165,21 @@ public abstract class Arquivo extends Objeto {
     try {
 
       if (Utils.getBooStrVazia(this.getDirCompleto())) {
+
         return Utils.STR_VAZIA;
       }
 
       if (!this.getBooExiste()) {
+
         return Utils.STR_VAZIA;
       }
 
       fis = new FileInputStream(this.getDirCompleto());
       _strConteudo = IOUtils.toString(fis, "UTF-8");
-
     }
     catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-
     }
     finally {
     }
@@ -183,10 +224,12 @@ public abstract class Arquivo extends Objeto {
       _dirCompleto = dirCompleto;
 
       if (Utils.getBooStrVazia(_dirCompleto)) {
+
         return;
       }
 
       if (!this.getBooExiste()) {
+
         return;
       }
 
@@ -196,6 +239,7 @@ public abstract class Arquivo extends Objeto {
       this.setStrNome(fil.getName());
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {

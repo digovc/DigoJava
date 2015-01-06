@@ -19,6 +19,7 @@ import com.digosofter.digojava.erro.Erro;
 public abstract class Utils {
 
   public enum EnmDataFormato {
+
     DD_MM,
     DD_MM_YY,
     DD_MM_YYYY,
@@ -30,6 +31,7 @@ public abstract class Utils {
   }
 
   public static enum EnmStrTipo {
+
     ALPHA,
     ALPHANUMERICO,
     NUMERICO
@@ -43,16 +45,22 @@ public abstract class Utils {
     double dblResultado = dblValor;
 
     try {
+
       dblResultado *= Math.pow(10, intQtdCasas);
+
       if (ceilOrFloor == 0) {
+
         dblResultado = Math.ceil(dblResultado);
       }
       else {
+
         dblResultado = Math.floor(dblResultado);
       }
+
       dblResultado /= Math.pow(10, intQtdCasas);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(109), ex);
     }
     finally {
@@ -66,6 +74,7 @@ public abstract class Utils {
     String strResultado = null;
 
     try {
+
       switch (enmDataFormato) {
         case DD_MM:
           strResultado = "dd/MM";
@@ -97,6 +106,7 @@ public abstract class Utils {
       }
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -110,11 +120,14 @@ public abstract class Utils {
     boolean booResultado = true;
 
     try {
+
       if (str != null && !str.isEmpty()) {
+
         booResultado = false;
       }
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -131,9 +144,11 @@ public abstract class Utils {
     boolean booResultado = true;
 
     try {
+
       new URL(url);
     }
     catch (Exception ex) {
+
       booResultado = false;
     }
     finally {
@@ -149,12 +164,10 @@ public abstract class Utils {
     try {
 
       intResultado = new Random().nextInt(intMaximo);
-
     }
     catch (Exception ex) {
 
       new Erro("Erro ao gerar cor aleatória.\n", ex);
-
     }
     finally {
     }
@@ -169,9 +182,9 @@ public abstract class Utils {
     try {
 
       dttResultado = new Date();
-
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(110), ex);
     }
     finally {
@@ -197,7 +210,6 @@ public abstract class Utils {
     catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-
     }
     finally {
     }
@@ -249,7 +261,6 @@ public abstract class Utils {
     catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-
     }
     finally {
     }
@@ -267,9 +278,11 @@ public abstract class Utils {
 
       objMessageDigest = MessageDigest.getInstance("MD5");
       objBigInteger = new BigInteger(1, objMessageDigest.digest(str.getBytes()));
+
       md5Resultado = String.format("%0" + (objMessageDigest.digest(str.getBytes()).length << 1) + "X", objBigInteger);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(112), ex);
     }
     finally {
@@ -285,6 +298,7 @@ public abstract class Utils {
     String strCharacters = "";
 
     try {
+
       switch (enmStrTipo) {
         case ALPHA:
           strCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -296,13 +310,17 @@ public abstract class Utils {
           strCharacters = "1234567890";
           break;
       }
+
       intCharactersLength = strCharacters.length();
+
       for (int i = 0; i < intTamanho; i++) {
+
         double index = Math.random() * intCharactersLength;
         stbResultado.append(strCharacters.charAt((int) index));
       }
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(111), ex);
     }
     finally {
@@ -322,6 +340,7 @@ public abstract class Utils {
       objSimpleDateFormat = new SimpleDateFormat(strDataFormato, LOCAL_BRASIL);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -337,6 +356,7 @@ public abstract class Utils {
       str = str.substring(0, 1).toUpperCase(LOCAL_BRASIL) + str.substring(1);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -352,22 +372,32 @@ public abstract class Utils {
     String[] arrChrSemAcento;
 
     try {
+
       strComplexa = strComplexa.toLowerCase(Utils.LOCAL_BRASIL);
+
       arrChrAcentos = new String[] { "ç", "á", "é", "í", "ó", "ú", "ý", "à", "è", "ì", "ò", "ù", "ã", "õ", "ñ", "ä", "ë", "ï", "ö", "ü", "ÿ", "â", "ê", "î", "ô", "û" };
       arrChrSemAcento = new String[] { "c", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u", "a", "o", "n", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u" };
+
       for (int intTemp = 0; intTemp < arrChrAcentos.length; intTemp++) {
+
         strComplexa = strComplexa.replace(arrChrAcentos[intTemp], arrChrSemAcento[intTemp]);
       }
+
       arrChrCaracteresEspeciais = new String[] { "/", "\\.", ",", "-", ":", "\\(", "\\)", "ª", "\\|", "\\\\", "°", "^\\s+", "\\s+$", "\\s+", ".", "(", ")" };
+
       for (String arrChrCaracteresEspeciai : arrChrCaracteresEspeciais) {
+
         strComplexa = strComplexa.replace(arrChrCaracteresEspeciai, "");
       }
+
       strComplexa = strComplexa.replace(" ", "");
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
+
       arrChrAcentos = null;
       arrChrCaracteresEspeciais = null;
       arrChrSemAcento = null;
@@ -391,15 +421,18 @@ public abstract class Utils {
       for (String strTermo : lstStrTermo) {
 
         if (Utils.getBooStrVazia(strTermo)) {
+
           continue;
         }
 
         strTermoMd5 = Utils.getMd5(strTermo);
         strResultado = Utils.getMd5(strResultado + strTermoMd5);
       }
+
       strResultado = strResultado.substring(0, intTamanho);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -413,9 +446,11 @@ public abstract class Utils {
     NumberFormat objNumberFormat = null;
 
     try {
+
       objNumberFormat = NumberFormat.getCurrencyInstance(LOCAL_BRASIL);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -429,10 +464,12 @@ public abstract class Utils {
     StringBuilder stbResultado = null;
 
     try {
+
       stbResultado = new StringBuilder();
       stbResultado.append(String.format("%d/%02d/%02d", objGregorianCalendar.get(Calendar.DAY_OF_MONTH), objGregorianCalendar.get(Calendar.MONTH) + 1, objGregorianCalendar.get(Calendar.YEAR)));
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -450,11 +487,14 @@ public abstract class Utils {
     HttpURLConnection objHttpURLConnection;
 
     try {
+
       objHttpURLConnection = (HttpURLConnection) new URL(url).openConnection();
       objHttpURLConnection.setRequestMethod("HEAD");
+
       booResultado = objHttpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK;
     }
     catch (Exception ex) {
+
       booResultado = false;
     }
     finally {
@@ -475,6 +515,7 @@ public abstract class Utils {
       str = str.substring(0, str.length() - 1);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -489,10 +530,12 @@ public abstract class Utils {
     SimpleDateFormat sdf;
 
     try {
+
       sdf = new SimpleDateFormat(Utils.enmDataFormatoToString(enmDataFormato), LOCAL_BRASIL);
       dteResultado = sdf.parse(strDte);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -506,14 +549,19 @@ public abstract class Utils {
     GregorianCalendar dteResultado = null;
 
     try {
+
       dteResultado = new GregorianCalendar();
+
       dteResultado.setTime(Utils.strToDte(strDte, EnmDataFormato.DD_MM_YYYY));
       dteResultado.add(Calendar.MONTH, 1);
+
       if (dteResultado.get(Calendar.MONTH) == 12) {
+
         dteResultado.add(Calendar.YEAR, 1);
       }
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
