@@ -147,6 +147,7 @@ public abstract class Arquivo extends Objeto {
 
       _dirCompleto = _dirCompleto.replace("_dir", this.getDir() != null ? this.getDir() : Utils.STR_VAZIA);
       _dirCompleto = _dirCompleto.replace("_str_nome", this.getStrNome());
+      _dirCompleto = _dirCompleto.replace("//", "/");
     }
     catch (Exception ex) {
 
@@ -163,6 +164,11 @@ public abstract class Arquivo extends Objeto {
     FileInputStream fis;
 
     try {
+
+      if (!Utils.getBooStrVazia(_strConteudo)) {
+
+        return _strConteudo;
+      }
 
       if (Utils.getBooStrVazia(this.getDirCompleto())) {
 
@@ -228,15 +234,15 @@ public abstract class Arquivo extends Objeto {
         return;
       }
 
-      if (!this.getBooExiste()) {
-
-        return;
-      }
+      // if (!this.getBooExiste()) {
+      //
+      // return;
+      // }
 
       fil = new File(_dirCompleto);
 
-      this.setDir(fil.getPath().replace(this.getStrNome(), Utils.STR_VAZIA));
       this.setStrNome(fil.getName());
+      this.setDir(fil.getPath().replace(this.getStrNome(), Utils.STR_VAZIA));
     }
     catch (Exception ex) {
 

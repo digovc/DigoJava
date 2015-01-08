@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.digosofter.digojava.MsgUsuario.EnmLingua;
-import com.digosofter.digojava.arquivo.ArquivoXml;
-import com.digosofter.digojava.database.DataBase;
 import com.digosofter.digojava.database.DbTabela;
 import com.digosofter.digojava.erro.Erro;
 import com.google.gson.Gson;
@@ -30,31 +28,6 @@ public abstract class App extends Objeto {
   private Gson _objGson;
   private String _strVersao;
   private DbTabela _tblSelec;
-
-  private ArquivoXml _arqXmlConfig;
-
-  protected ArquivoXml getArqXmlConfig() {
-
-    try {
-
-      if (_arqXmlConfig != null) {
-
-        return _arqXmlConfig;
-      }
-
-      _arqXmlConfig = new ArquivoXml();
-      _arqXmlConfig.setStrNome("AppConfig.xml");
-      _arqXmlConfig.criarArquivo();
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
-    return _arqXmlConfig;
-  }
 
   protected App() {
 
@@ -165,6 +138,8 @@ public abstract class App extends Objeto {
 
   public Gson getObjGson() {
 
+    GsonBuilder objGsonBuilder;
+
     try {
 
       if (_objGson != null) {
@@ -172,7 +147,11 @@ public abstract class App extends Objeto {
         return _objGson;
       }
 
-      _objGson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
+      objGsonBuilder = new GsonBuilder();
+
+      objGsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
+      _objGson = objGsonBuilder.create();
     }
     catch (Exception ex) {
 
