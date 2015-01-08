@@ -228,21 +228,6 @@ public abstract class DbTabela extends Objeto {
 
   public DataBase getObjDb() {
 
-    try {
-
-      if (_objDb != null) {
-
-        return _objDb;
-      }
-
-      _objDb = App.getI().getObjDbPrincipal();
-    }
-    catch (Exception ex) {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
-
     return _objDb;
   }
 

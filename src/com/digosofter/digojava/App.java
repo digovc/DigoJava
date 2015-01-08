@@ -27,7 +27,6 @@ public abstract class App extends Objeto {
   private int _intVersao;
   private List<MsgUsuario> _lstMsgUsuarioPadrao;
   private List<DbTabela> _lstTbl;
-  private DataBase _objDbPrincipal;
   private Gson _objGson;
   private String _strVersao;
   private DbTabela _tblSelec;
@@ -162,11 +161,6 @@ public abstract class App extends Objeto {
     }
 
     return _lstTbl;
-  }
-
-  public DataBase getObjDbPrincipal() {
-
-    return _objDbPrincipal;
   }
 
   public Gson getObjGson() {
