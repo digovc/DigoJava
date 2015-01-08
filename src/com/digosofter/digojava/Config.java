@@ -10,7 +10,7 @@ public abstract class Config extends Objeto {
   private ArquivoTxt _arqJson;
   private Gson _objGson;
 
-  private ArquivoTxt getArqJson() {
+  protected ArquivoTxt getArqJson() {
 
     try {
 
@@ -36,7 +36,7 @@ public abstract class Config extends Objeto {
 
   protected abstract String getDirArquivo();
 
-  private Gson getObjGson() {
+  protected Gson getObjGson() {
 
     GsonBuilder objGsonBuilder;
 
@@ -61,6 +61,8 @@ public abstract class Config extends Objeto {
 
     return _objGson;
   }
+
+  protected abstract void recuperar();
 
   public void salvar() {
 
