@@ -459,7 +459,7 @@ public class DbColuna extends Objeto {
           _strValorExibicao = this.getBooValor() ? "Sim" : "Não";
           break;
         case DATE_TIME:
-          _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor().getTime(), Utils.EnmDataFormato.DD_MM_YYYY);
+          _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.DD_MM_YYYY);
           break;
         case INTEGER:
           _strValorExibicao = this.getStrValor();
@@ -715,7 +715,7 @@ public class DbColuna extends Objeto {
     }
   }
 
-  public void setDttValor(Date dttValor) {
+  public void setDttValor(GregorianCalendar dttValor) {
 
     try {
 
@@ -837,7 +837,6 @@ public class DbColuna extends Objeto {
 
     return strResultado;
   }
-
 
   @Override
   public String toString() {

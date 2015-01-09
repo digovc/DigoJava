@@ -25,6 +25,7 @@ public abstract class Utils {
     DD_MM_YYYY,
     DD_MM_YYYY_HH_MM,
     DD_MM_YYYY_HH_MM_SS,
+    HH_MM,
     HH_MM_DD_MM_YYYY,
     HH_MM_SS_DD_MM_YYYY,
     YYYY_MM_DD_HH_MM_SS
@@ -90,6 +91,9 @@ public abstract class Utils {
           break;
         case DD_MM_YYYY_HH_MM_SS:
           strResultado = "dd/MM/yyyy HH:mm:ss";
+          break;
+        case HH_MM:
+          strResultado = "HH:mm";
           break;
         case HH_MM_DD_MM_YYYY:
           strResultado = "HH:mm dd/MM/yyyy";
@@ -329,7 +333,7 @@ public abstract class Utils {
     return stbResultado.toString();
   }
 
-  public static String getStrDataFormatada(Date objDate, EnmDataFormato enmDataFormato) {
+  public static String getStrDataFormatada(Calendar objCalendar, EnmDataFormato enmDataFormato) {
 
     String strDataFormato = Utils.STR_VAZIA;
     SimpleDateFormat objSimpleDateFormat = null;
@@ -346,7 +350,7 @@ public abstract class Utils {
     finally {
     }
 
-    return objSimpleDateFormat.format(objDate);
+    return objSimpleDateFormat.format(objCalendar);
   }
 
   public static String getStrPrimeiraMaiuscula(String str) {
