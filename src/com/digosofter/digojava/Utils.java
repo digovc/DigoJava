@@ -528,6 +528,22 @@ public abstract class Utils {
     return str;
   }
 
+  public static String removerUltimaLetra(String str, int intQtdCaracter) {
+
+    try {
+
+      str = str.substring(0, str.length() - intQtdCaracter);
+    }
+    catch (Exception ex) {
+
+      new Erro(App.getI().getStrTextoPadrao(0), ex);
+    }
+    finally {
+    }
+
+    return str;
+  }
+
   public static Date strToDte(String strDte, EnmDataFormato enmDataFormato) {
 
     Date dteResultado = null;

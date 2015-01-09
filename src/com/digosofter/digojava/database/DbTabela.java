@@ -282,13 +282,6 @@ public abstract class DbTabela extends Objeto {
 
   protected int inicializarColunas(int intOrdem) {
 
-    try {
-    }
-    catch (Exception ex) {
-      new Erro(App.getI().getStrTextoPadrao(128), ex);
-    }
-    finally {
-    }
     return intOrdem;
   }
 
