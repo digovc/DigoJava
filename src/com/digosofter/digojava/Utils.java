@@ -333,7 +333,7 @@ public abstract class Utils {
     return stbResultado.toString();
   }
 
-  public static String getStrDataFormatada(Calendar objCalendar, EnmDataFormato enmDataFormato) {
+  public static String getStrDataFormatada(GregorianCalendar objGregorianCalendar, EnmDataFormato enmDataFormato) {
 
     String strDataFormato = Utils.STR_VAZIA;
     SimpleDateFormat objSimpleDateFormat = null;
@@ -350,7 +350,7 @@ public abstract class Utils {
     finally {
     }
 
-    return objSimpleDateFormat.format(objCalendar);
+    return objSimpleDateFormat.format(objGregorianCalendar.getTime());
   }
 
   public static String getStrPrimeiraMaiuscula(String str) {
