@@ -285,6 +285,9 @@ public abstract class DbTabela extends Objeto {
     return intOrdem;
   }
 
+  /**
+   * Limpa os valores de todas as colunas da tabela.
+   */
   public void limparColunas() {
 
     try {
