@@ -179,24 +179,6 @@ public abstract class Utils {
     return intResultado;
   }
 
-  public static Date getDttAgora() {
-
-    Date dttResultado = null;
-
-    try {
-
-      dttResultado = new Date();
-    }
-    catch (Exception ex) {
-
-      new Erro(App.getI().getStrTextoPadrao(110), ex);
-    }
-    finally {
-    }
-
-    return dttResultado;
-  }
-
   public static String getStrConcatenarLst(String[] arrStr, String strDelimitador, boolean booEliminarDuplicata) {
 
     List<String> lstStr = null;
