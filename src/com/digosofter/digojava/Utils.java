@@ -179,81 +179,6 @@ public abstract class Utils {
     return intResultado;
   }
 
-  public static String getStrConcatenarLst(String[] arrStr, String strDelimitador, boolean booEliminarDuplicata) {
-
-    List<String> lstStr = null;
-
-    try {
-
-      lstStr = new ArrayList<String>();
-
-      for (String str : arrStr) {
-
-        lstStr.add(str);
-      }
-
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
-    return Utils.getStrConcatenarLst(lstStr, strDelimitador, booEliminarDuplicata);
-  }
-
-  public static String getStrConcatenarLst(List<String> lstStr, String strDelimitador, boolean booEliminarDuplicata) {
-
-    boolean booStrIncluida;
-    List<String> lstStrIncluida;
-    String strDelimitador2;
-    String strResultado = Utils.STR_VAZIA;
-    StringBuilder stb;
-
-    try {
-
-      booStrIncluida = false;
-      lstStrIncluida = new ArrayList<String>();
-      stb = new StringBuilder();
-      strDelimitador2 = Utils.STR_VAZIA;
-      strResultado = Utils.STR_VAZIA;
-
-      for (String str : lstStr) {
-
-        if (booEliminarDuplicata) {
-
-          for (String strInserida : lstStrIncluida) {
-
-            if (strInserida == str) {
-              booStrIncluida = true;
-            }
-          }
-        }
-
-        if (!booStrIncluida) {
-
-          stb.append(strDelimitador2);
-          stb.append(str);
-
-          strDelimitador2 = strDelimitador;
-
-          lstStrIncluida.add(str);
-        }
-      }
-
-      strResultado = stb.toString();
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
-    return strResultado;
-  }
-
   public static String getMd5(String str) {
 
     BigInteger objBigInteger;
@@ -313,6 +238,81 @@ public abstract class Utils {
     }
 
     return stbResultado.toString();
+  }
+
+  public static String getStrConcatenarLst(List<String> lstStr, String strDelimitador, boolean booEliminarDuplicata) {
+
+    boolean booStrIncluida;
+    List<String> lstStrIncluida;
+    String strDelimitador2;
+    String strResultado = Utils.STR_VAZIA;
+    StringBuilder stb;
+
+    try {
+
+      booStrIncluida = false;
+      lstStrIncluida = new ArrayList<String>();
+      stb = new StringBuilder();
+      strDelimitador2 = Utils.STR_VAZIA;
+      strResultado = Utils.STR_VAZIA;
+
+      for (String str : lstStr) {
+
+        if (booEliminarDuplicata) {
+
+          for (String strInserida : lstStrIncluida) {
+
+            if (strInserida == str) {
+              booStrIncluida = true;
+            }
+          }
+        }
+
+        if (!booStrIncluida) {
+
+          stb.append(strDelimitador2);
+          stb.append(str);
+
+          strDelimitador2 = strDelimitador;
+
+          lstStrIncluida.add(str);
+        }
+      }
+
+      strResultado = stb.toString();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return strResultado;
+  }
+
+  public static String getStrConcatenarLst(String[] arrStr, String strDelimitador, boolean booEliminarDuplicata) {
+
+    List<String> lstStr = null;
+
+    try {
+
+      lstStr = new ArrayList<String>();
+
+      for (String str : arrStr) {
+
+        lstStr.add(str);
+      }
+
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return Utils.getStrConcatenarLst(lstStr, strDelimitador, booEliminarDuplicata);
   }
 
   public static String getStrDataFormatada(GregorianCalendar objGregorianCalendar, EnmDataFormato enmDataFormato) {

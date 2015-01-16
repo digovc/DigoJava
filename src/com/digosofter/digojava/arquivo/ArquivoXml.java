@@ -18,7 +18,7 @@ public class ArquivoXml extends Arquivo {
     try {
 
       if (_objFile == null) {
-        
+
         _objFile = new File(this.getDirCompleto());
       }
     }

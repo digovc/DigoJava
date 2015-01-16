@@ -1,7 +1,6 @@
 package com.digosofter.digojava.database;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -71,6 +70,21 @@ public class DbColuna extends Objeto {
   private String _strValorSql;
   private DbTabela _tbl;
 
+  public DbColuna(String strNome, DbTabela tbl, EnmTipo enmTipo) {
+
+    try {
+
+      this.setStrNome(strNome);
+      this.setTbl(tbl);
+      this.setEnmTipo(enmTipo);
+    }
+    catch (Exception ex) {
+      new Erro(App.getI().getStrTextoPadrao(120), ex);
+    }
+    finally {
+    }
+  }
+
   /**
    * Adiciona uma opção para lista, tornando o campo selecionável por combobox.
    */
@@ -85,21 +99,6 @@ public class DbColuna extends Objeto {
 
       new Erro("Erro inesperado.\n", ex);
 
-    }
-    finally {
-    }
-  }
-
-  public DbColuna(String strNome, DbTabela tbl, EnmTipo enmTipo) {
-
-    try {
-
-      this.setStrNome(strNome);
-      this.setTbl(tbl);
-      this.setEnmTipo(enmTipo);
-    }
-    catch (Exception ex) {
-      new Erro(App.getI().getStrTextoPadrao(120), ex);
     }
     finally {
     }
@@ -487,6 +486,43 @@ public class DbColuna extends Objeto {
     return _strValorExibicao;
   }
 
+  public String getStrValorFormatado(String strValor) {
+
+    String strResultado = "";
+
+    try {
+
+      switch (this.getEnmTipoGrupo()) {
+
+        case ALPHANUMERICO:
+          strResultado = strValor;
+          break;
+
+        case NUMERICO:
+          strResultado = strValor;
+          break;
+
+        case TEMPORAL:
+          strResultado = strValor;
+          break;
+
+        default:
+          strResultado = strValor;
+          break;
+      }
+
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+
+    return strResultado;
+  }
+
   public String getStrValorMonetario() {
 
     String strResultado = null;
@@ -799,43 +835,6 @@ public class DbColuna extends Objeto {
     }
     finally {
     }
-  }
-
-  public String getStrValorFormatado(String strValor) {
-
-    String strResultado = "";
-
-    try {
-
-      switch (this.getEnmTipoGrupo()) {
-
-        case ALPHANUMERICO:
-          strResultado = strValor;
-          break;
-
-        case NUMERICO:
-          strResultado = strValor;
-          break;
-
-        case TEMPORAL:
-          strResultado = strValor;
-          break;
-
-        default:
-          strResultado = strValor;
-          break;
-      }
-
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-
-    }
-    finally {
-    }
-
-    return strResultado;
   }
 
   @Override
