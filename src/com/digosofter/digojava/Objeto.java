@@ -5,7 +5,7 @@ import com.digosofter.digojava.erro.Erro;
 public abstract class Objeto {
 
   private static int INT_INDEX;
-  private int _intIndexObjeto = Objeto.INT_INDEX;
+  private int _intObjetoId = Objeto.INT_INDEX;
   private String _strDescricao;
   private String _strNome;
   private String _strNomeExibicao;
@@ -25,9 +25,9 @@ public abstract class Objeto {
     }
   }
 
-  public int getIntIndexObjeto() {
+  public int getIntObjetoId() {
 
-    return _intIndexObjeto;
+    return _intObjetoId;
   }
 
   public String getStrDescricao() {
