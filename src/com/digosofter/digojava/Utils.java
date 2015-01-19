@@ -376,7 +376,7 @@ public abstract class Utils {
         strComplexa = strComplexa.replace(arrChrCaracteresEspeciai, "");
       }
 
-      strComplexa = strComplexa.replace(" ", "");
+      strComplexa = strComplexa.replace(" ", "_");
     }
     catch (Exception ex) {
 
