@@ -34,4 +34,5 @@ public abstract class DataBase extends Objeto {
   }
 
   public abstract String execSqlGetStr(String sql);
+
 }
