@@ -119,6 +119,30 @@ public abstract class Utils {
     return strResultado;
   }
 
+  /**
+   * @return Retorna true se o valor de "str" é um numeral.
+   */
+  public static boolean getBooNumeral(String str) {
+
+    try {
+
+      if (Utils.getBooStrVazia(str)) {
+
+        return false;
+      }
+
+      return str.matches("[-+]?\\d*\\.?\\d+");
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return false;
+  }
+
   public static boolean getBooStrVazia(String str) {
 
     boolean booResultado = true;
@@ -321,6 +345,11 @@ public abstract class Utils {
     SimpleDateFormat objSimpleDateFormat = null;
 
     try {
+
+      if (objGregorianCalendar == null) {
+
+        return Utils.STR_VAZIA;
+      }
 
       strDataFormato = Utils.enmDataFormatoToString(enmDataFormato);
       objSimpleDateFormat = new SimpleDateFormat(strDataFormato, LOCAL_BRASIL);

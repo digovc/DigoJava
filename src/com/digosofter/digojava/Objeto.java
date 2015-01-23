@@ -4,8 +4,9 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class Objeto {
 
-  private static int INT_INDEX;
-  private int _intObjetoId = Objeto.INT_INDEX;
+  private static int intObjetoIdStatic;
+
+  private int _intObjetoId = Objeto.intObjetoIdStatic;
   private String _strDescricao;
   private String _strNome;
   private String _strNomeExibicao;
@@ -15,7 +16,7 @@ public abstract class Objeto {
 
     try {
 
-      Objeto.INT_INDEX++;
+      Objeto.intObjetoIdStatic++;
     }
     catch (Exception ex) {
 
