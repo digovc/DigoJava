@@ -279,6 +279,12 @@ public class DbColuna extends Objeto {
         case BIGINT:
           _enmTipoGrupo = EnmTipoGrupo.NUMERICO;
           break;
+        case TIME_WITH_TIME_ZONE:
+        case TIME_WITHOUT_TIME_ZONE:
+        case TIMESTAMP_WITH_TIME_ZONE:
+        case TIMESTAMP_WITHOUT_TIME_ZONE:
+          _enmTipoGrupo = EnmTipoGrupo.TEMPORAL;
+          break;
         default:
           _enmTipoGrupo = EnmTipoGrupo.ALPHANUMERICO;
           break;
