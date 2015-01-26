@@ -7,6 +7,8 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class DataBase extends Objeto {
 
+  public abstract void execSql(String sql);
+
   public boolean execSqlGetBoo(String sql) {
 
     String str;
