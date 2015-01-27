@@ -4,19 +4,24 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class Objeto {
 
-  private static int intObjetoIdStatic;
+  private static int _intObjetoIdStatic;
 
-  private int _intObjetoId = Objeto.intObjetoIdStatic;
+  private int _intObjetoId;
   private String _strDescricao;
   private String _strNome;
   private String _strNomeExibicao;
   private String _strNomeSimplificado;
 
-  public Objeto() {
+  public int getIntObjetoId() {
 
     try {
 
-      Objeto.intObjetoIdStatic++;
+      if (_intObjetoId > 0) {
+
+        return _intObjetoId;
+      }
+
+      _intObjetoId = Objeto._intObjetoIdStatic++;
     }
     catch (Exception ex) {
 
@@ -24,9 +29,6 @@ public abstract class Objeto {
     }
     finally {
     }
-  }
-
-  public int getIntObjetoId() {
 
     return _intObjetoId;
   }
