@@ -136,19 +136,26 @@ public class DbColuna extends Objeto {
 
   public boolean getBooValor() {
 
-    boolean booResultado;
-
     try {
 
-      booResultado = Boolean.parseBoolean(this.getStrValor());
+      switch (this.getStrValor().toLowerCase()) {
+        case "true":
+        case "t":
+        case "sim":
+        case "s":
+        case "1":
+          return true;
+        default:
+          return false;
+      }
+
     }
     catch (Exception ex) {
+
       return false;
     }
     finally {
     }
-
-    return booResultado;
   }
 
   public boolean getBooVisivelCadastro() {
@@ -276,13 +283,25 @@ public class DbColuna extends Objeto {
 
       // TODO: Completar com o restante dos tipos.
       switch (this.getEnmTipo()) {
+        case INTEGER:
+        case INTERVAL:
         case BIGINT:
+        case BIGSERIAL:
+        case MONEY:
+        case DECIMAL:
+        case DOUBLE:
+        case NUMERIC:
+        case SMALLINT:
+        case REAL:
+        case SERIAL:
           _enmTipoGrupo = EnmTipoGrupo.NUMERICO;
           break;
         case TIME_WITH_TIME_ZONE:
         case TIME_WITHOUT_TIME_ZONE:
         case TIMESTAMP_WITH_TIME_ZONE:
         case TIMESTAMP_WITHOUT_TIME_ZONE:
+        case DATE:
+        case DATE_TIME:
           _enmTipoGrupo = EnmTipoGrupo.TEMPORAL;
           break;
         default:
@@ -421,19 +440,6 @@ public class DbColuna extends Objeto {
   }
 
   public String getStrValor() {
-
-    try {
-
-      if (Utils.getBooStrVazia(_strValor)) {
-
-        _strValor = Utils.STR_VAZIA;
-      }
-    }
-    catch (Exception ex) {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
 
     return _strValor;
   }
