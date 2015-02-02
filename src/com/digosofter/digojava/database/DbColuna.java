@@ -685,6 +685,7 @@ public class DbColuna extends Objeto {
       if (booOrdemCadastro) {
 
         for (DbColuna cln : this.getTbl().getLstCln()) {
+
           cln._booOrdemCadastro = false;
         }
 

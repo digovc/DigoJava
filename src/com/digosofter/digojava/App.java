@@ -171,7 +171,6 @@ public abstract class App extends Objeto {
   public String getStrMsgUsuario(int intId, EnmLingua enmLingua, boolean booMsgPadrao) {
 
     List<MsgUsuario> lstMsgUsuarioTemp;
-    String strResultado = Utils.STR_VAZIA;
 
     try {
 
@@ -186,11 +185,12 @@ public abstract class App extends Objeto {
 
       for (MsgUsuario msgUsuario : lstMsgUsuarioTemp) {
 
-        if (msgUsuario.getIntId() == intId && msgUsuario.getEnmLingua() == enmLingua) {
+        if (msgUsuario.getIntId() != intId || msgUsuario.getEnmLingua() != enmLingua) {
 
-          strResultado = msgUsuario.getStrTexto();
-          break;
+          continue;
         }
+
+        return msgUsuario.getStrTexto();
       }
     }
     catch (Exception ex) {
@@ -200,7 +200,7 @@ public abstract class App extends Objeto {
     finally {
     }
 
-    return strResultado;
+    return null;
   }
 
   public String getStrMsgUsuarioPadrao(int intId) {

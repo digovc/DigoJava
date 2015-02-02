@@ -228,30 +228,33 @@ public abstract class Utils {
 
   public static String getStrAleatoria(int intTamanho, EnmStrTipo enmStrTipo) {
 
+    double i2;
     int intCharactersLength;
-    StringBuffer stbResultado = new StringBuffer();
-    String strCharacters = "";
+    String strCharacters;
+    StringBuffer stbResultado = null;
 
     try {
 
       switch (enmStrTipo) {
-        case ALPHA:
-          strCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-          break;
         case ALPHANUMERICO:
           strCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
           break;
         case NUMERICO:
           strCharacters = "1234567890";
           break;
+        default:
+          strCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          break;
       }
 
       intCharactersLength = strCharacters.length();
 
+      stbResultado = new StringBuffer();
+
       for (int i = 0; i < intTamanho; i++) {
 
-        double index = Math.random() * intCharactersLength;
-        stbResultado.append(strCharacters.charAt((int) index));
+        i2 = Math.random() * intCharactersLength;
+        stbResultado.append(strCharacters.charAt((int) i2));
       }
     }
     catch (Exception ex) {
@@ -287,6 +290,7 @@ public abstract class Utils {
           for (String strInserida : lstStrIncluida) {
 
             if (strInserida == str) {
+
               booStrIncluida = true;
             }
           }
