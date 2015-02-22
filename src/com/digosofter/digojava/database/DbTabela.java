@@ -23,7 +23,7 @@ public abstract class DbTabela extends Objeto {
   private DataBase _objDb;
   private String _strPesquisaActConsulta;
 
-  public DbTabela(String strNome) {
+  protected DbTabela(String strNome) {
 
     try {
 

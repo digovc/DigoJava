@@ -8,7 +8,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +19,7 @@ public abstract class Utils {
 
   public enum EnmDataFormato {
 
+    DD,
     DD_MM,
     DD_MM_YY,
     DD_MM_YYYY,
@@ -28,7 +28,10 @@ public abstract class Utils {
     HH_MM,
     HH_MM_DD_MM_YYYY,
     HH_MM_SS_DD_MM_YYYY,
-    YYYY_MM_DD_HH_MM_SS
+    MM,
+    YYYY,
+    YYYY_MM_DD,
+    YYYY_MM_DD_HH_MM_SS,
   }
 
   public static enum EnmStrTipo {
@@ -77,11 +80,11 @@ public abstract class Utils {
     try {
 
       switch (enmDataFormato) {
+        case DD:
+          strResultado = "dd";
+          break;
         case DD_MM:
           strResultado = "dd/MM";
-          break;
-        case DD_MM_YY:
-          strResultado = "dd/MM/yy";
           break;
         case DD_MM_YYYY:
           strResultado = "dd/MM/yyyy";
@@ -101,8 +104,17 @@ public abstract class Utils {
         case HH_MM_SS_DD_MM_YYYY:
           strResultado = "HH:mm:ss dd/MM/yyyy";
           break;
+        case YYYY:
+          strResultado = "yyyy";
+          break;
+        case YYYY_MM_DD:
+          strResultado = "yyyy/MM/dd";
+          break;
         case YYYY_MM_DD_HH_MM_SS:
           strResultado = "yyyy/MM/dd HH:mm:ss";
+          break;
+        case MM:
+          strResultado = "MM";
           break;
         default:
           strResultado = "dd/MM/yyyy";
@@ -343,14 +355,14 @@ public abstract class Utils {
     return Utils.getStrConcatenarLst(lstStr, strDelimitador, booEliminarDuplicata);
   }
 
-  public static String getStrDataFormatada(GregorianCalendar objGregorianCalendar, EnmDataFormato enmDataFormato) {
+  public static String getStrDataFormatada(GregorianCalendar dtt, EnmDataFormato enmDataFormato) {
 
-    String strDataFormato = Utils.STR_VAZIA;
     SimpleDateFormat objSimpleDateFormat = null;
+    String strDataFormato;
 
     try {
 
-      if (objGregorianCalendar == null) {
+      if (dtt == null) {
 
         return Utils.STR_VAZIA;
       }
@@ -365,7 +377,7 @@ public abstract class Utils {
     finally {
     }
 
-    return objSimpleDateFormat.format(objGregorianCalendar.getTime());
+    return objSimpleDateFormat.format(dtt.getTime());
   }
 
   public static String getStrPrimeiraMaiuscula(String str) {
@@ -391,6 +403,11 @@ public abstract class Utils {
     String[] arrChrSemAcento;
 
     try {
+
+      if (Utils.getBooStrVazia(strComplexa)) {
+
+        return Utils.STR_VAZIA;
+      }
 
       strComplexa = strComplexa.toLowerCase(Utils.LOCAL_BRASIL);
 
@@ -559,41 +576,22 @@ public abstract class Utils {
     return str;
   }
 
-  public static Date strToDte(String strDte, EnmDataFormato enmDataFormato) {
+  public static GregorianCalendar strToDtt(String strDte) {
 
-    Date dteResultado = null;
-    SimpleDateFormat sdf;
-
-    try {
-
-      sdf = new SimpleDateFormat(Utils.enmDataFormatoToString(enmDataFormato), LOCAL_BRASIL);
-      dteResultado = sdf.parse(strDte);
-    }
-    catch (Exception ex) {
-
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
-
-    return dteResultado;
+    return Utils.strToDtt(strDte, EnmDataFormato.DD_MM_YYYY);
   }
 
-  public static GregorianCalendar strToGregorianCalendar(String strDte) {
+  public static GregorianCalendar strToDtt(String strDte, EnmDataFormato enmDataFormato) {
 
-    GregorianCalendar dteResultado = null;
+    GregorianCalendar dttResultado = null;
+    SimpleDateFormat objSimpleDateFormat;
 
     try {
 
-      dteResultado = new GregorianCalendar();
+      objSimpleDateFormat = new SimpleDateFormat(Utils.enmDataFormatoToString(enmDataFormato), LOCAL_BRASIL);
 
-      dteResultado.setTime(Utils.strToDte(strDte, EnmDataFormato.DD_MM_YYYY));
-      dteResultado.add(Calendar.MONTH, 1);
-
-      if (dteResultado.get(Calendar.MONTH) == 12) {
-
-        dteResultado.add(Calendar.YEAR, 1);
-      }
+      dttResultado = new GregorianCalendar();
+      dttResultado.setTime(objSimpleDateFormat.parse(strDte));
     }
     catch (Exception ex) {
 
@@ -602,6 +600,6 @@ public abstract class Utils {
     finally {
     }
 
-    return dteResultado;
+    return dttResultado;
   }
 }
