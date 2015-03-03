@@ -32,6 +32,8 @@ public abstract class Arquivo extends Objeto {
 
     try {
 
+      this.criarDiretorio(dirDestino);
+
       filOriginal = new FileInputStream(this.getDirCompleto());
       filCopia = new FileOutputStream(dirDestino + "/" + this.getStrNome());
       arrBytBuffer = new byte[1024];
@@ -78,16 +80,21 @@ public abstract class Arquivo extends Objeto {
 
   private void criarDiretorio() {
 
+    this.criarDiretorio(this.getDir());
+  }
+
+  private void criarDiretorio(String dir) {
+
     File fil;
 
     try {
 
-      if (Utils.getBooStrVazia(this.getDir())) {
+      if (Utils.getBooStrVazia(dir)) {
 
         return;
       }
 
-      fil = new File(this.getDir());
+      fil = new File(dir);
       fil.mkdirs();
     }
     catch (Exception ex) {

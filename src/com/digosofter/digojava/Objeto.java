@@ -7,6 +7,7 @@ public abstract class Objeto {
   private static int _intObjetoIdStatic;
 
   private int _intObjetoId;
+
   private String _strDescricao;
   private String _strNome;
   private String _strNomeExibicao;

@@ -1,6 +1,7 @@
 package com.digosofter.digojava.database;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -48,9 +49,11 @@ public class DbColuna extends Objeto {
 
   private boolean _booChavePrimaria;
   private boolean _booClnNome;
+  private boolean _booMonetario;
   private boolean _booNotNull;
   private boolean _booOrdemCadastro;
   private boolean _booOrdemDecrecente;
+  private boolean _booPercentual;
   private boolean _booSenha;
   private boolean _booVisivelCadastro = true;
   private boolean _booVisivelConsulta = true;
@@ -68,6 +71,7 @@ public class DbColuna extends Objeto {
   private String _strValorDefault;
   private String _strValorExibicao;
   private String _strValorSql;
+
   private DbTabela _tbl;
 
   public DbColuna(String strNome, DbTabela tbl, EnmTipo enmTipo) {
@@ -114,6 +118,11 @@ public class DbColuna extends Objeto {
     return _booClnNome;
   }
 
+  private boolean getBooMonetario() {
+
+    return _booMonetario;
+  }
+
   public boolean getBooNotNull() {
 
     return _booNotNull;
@@ -127,6 +136,11 @@ public class DbColuna extends Objeto {
   public boolean getBooOrdemDecrecente() {
 
     return _booOrdemDecrecente;
+  }
+
+  private boolean getBooPercentual() {
+
+    return _booPercentual;
   }
 
   public boolean getBooSenha() {
@@ -472,17 +486,9 @@ public class DbColuna extends Objeto {
         case DATE_TIME:
           _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.DD_MM_YYYY);
           break;
-        case INTEGER:
-          _strValorExibicao = this.getStrValor();
-          break;
         case NUMERIC:
-          _strValorExibicao = this.getStrValor();
-          break;
         case REAL:
-          _strValorExibicao = this.getStrValor();
-          break;
-        case TEXT:
-          _strValorExibicao = this.getStrValor();
+          _strValorExibicao = this.getStrValorExibicaoNumeric();
           break;
         default:
           _strValorExibicao = this.getStrValor();
@@ -490,12 +496,44 @@ public class DbColuna extends Objeto {
       }
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
     }
 
     return _strValorExibicao;
+  }
+
+  private String getStrValorExibicaoNumeric() {
+
+    try {
+
+      if (Utils.getBooStrVazia(this.getStrValor())) {
+
+        return "0,00";
+      }
+
+      if (this.getBooMonetario()) {
+
+        return this.getStrValorMonetario();
+      }
+
+      if (this.getBooPercentual()) {
+
+        return this.getStrValorPercentual();
+      }
+
+      return this.getStrValor().replace(".", ",");
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return "0,00";
   }
 
   public String getStrValorFormatado(String strValor) {
@@ -537,24 +575,47 @@ public class DbColuna extends Objeto {
 
   public String getStrValorMonetario() {
 
-    String strResultado = null;
-
     try {
 
-      strResultado = Utils.getStrValorMonetario(Double.parseDouble(this.getStrValor()));
+      if (Utils.getBooStrVazia(this.getStrValor())) {
+
+        return "R$ 0,00";
+      }
+
+      return Utils.getStrValorMonetario(Double.parseDouble(this.getStrValor()));
     }
     catch (Exception ex) {
+
       return "R$ 0,00";
     }
     finally {
     }
+  }
 
-    return strResultado;
+  private String getStrValorPercentual() {
+
+    try {
+
+      return this.getStrValorMonetario().replace("R$ ", "") + " %";
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
   }
 
   public String getStrValorSql() {
 
     try {
+
+      if (Utils.getBooStrVazia(this.getStrValor())) {
+
+        return null;
+      }
 
       // TODO: Fazer validações para impedir "sql injection".
       switch (this.getEnmTipo()) {
@@ -580,6 +641,8 @@ public class DbColuna extends Objeto {
           _strValorSql = this.getStrValor();
           break;
       }
+
+      _strValorSql = _strValorSql.replace("'", "''");
     }
     catch (Exception ex) {
 
@@ -673,6 +736,11 @@ public class DbColuna extends Objeto {
     }
   }
 
+  public void setBooMonetario(boolean booMonetario) {
+
+    _booMonetario = booMonetario;
+  }
+
   public void setBooNotNull(boolean booNotNull) {
 
     _booNotNull = booNotNull;
@@ -703,6 +771,11 @@ public class DbColuna extends Objeto {
   public void setBooOrdemDecrecente(boolean booOrdemDecrecente) {
 
     _booOrdemDecrecente = booOrdemDecrecente;
+  }
+
+  public void setBooPercentual(boolean booPercentual) {
+
+    _booPercentual = booPercentual;
   }
 
   public void setBooSenha(boolean booSenha) {
@@ -764,7 +837,7 @@ public class DbColuna extends Objeto {
     }
   }
 
-  public void setDttValor(GregorianCalendar dttValor) {
+  public void setDttValor(Calendar dttValor) {
 
     try {
 

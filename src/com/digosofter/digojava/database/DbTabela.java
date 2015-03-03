@@ -155,6 +155,8 @@ public abstract class DbTabela extends Objeto {
 
       _lstClnCadastro = new ArrayList<DbColuna>();
 
+      _lstClnCadastro.add(this.getClnNome());
+
       for (DbColuna cln : this.getLstCln()) {
 
         if (!cln.getBooVisivelCadastro() && !cln.getBooChavePrimaria()) {
@@ -185,10 +187,26 @@ public abstract class DbTabela extends Objeto {
 
       _lstClnConsulta = new ArrayList<DbColuna>();
 
+      _lstClnConsulta.add(this.getClnChavePrimaria());
+      _lstClnConsulta.add(this.getClnNome());
+
       for (DbColuna cln : this.getLstCln()) {
+
+        if (cln == null) {
+
+          continue;
+        }
 
         if (!cln.getBooVisivelConsulta()) {
 
+          continue;
+        }
+
+        if (cln.getBooChavePrimaria()) {
+          continue;
+        }
+
+        if (cln.getBooClnNome()) {
           continue;
         }
 
@@ -206,7 +224,28 @@ public abstract class DbTabela extends Objeto {
     return _lstClnConsulta;
   }
 
-  protected List<DbFiltro> getLstObjDbFiltroConsulta() {
+  private ArrayList<DbFiltro> getLstObjDbFiltroCadastro() {
+
+    try {
+
+      if (_lstObjDbFiltroCadastro != null) {
+
+        return _lstObjDbFiltroCadastro;
+      }
+
+      _lstObjDbFiltroCadastro = new ArrayList<DbFiltro>();
+    }
+    catch (Exception ex) {
+
+      new Erro(App.getI().getStrTextoPadrao(0), ex);
+    }
+    finally {
+    }
+
+    return _lstObjDbFiltroCadastro;
+  }
+
+  public List<DbFiltro> getLstObjDbFiltroConsulta() {
 
     try {
 
@@ -230,26 +269,6 @@ public abstract class DbTabela extends Objeto {
   public DataBase getObjDb() {
 
     return _objDb;
-  }
-
-  public ArrayList<DbFiltro> getObjLstDbFiltroCadastro() {
-
-    try {
-
-      if (_lstObjDbFiltroCadastro != null) {
-
-        return _lstObjDbFiltroCadastro;
-      }
-
-      _lstObjDbFiltroCadastro = new ArrayList<DbFiltro>();
-    }
-    catch (Exception ex) {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
-
-    return _lstObjDbFiltroCadastro;
   }
 
   public String getStrClnNome(String strNomeSimplificado) {

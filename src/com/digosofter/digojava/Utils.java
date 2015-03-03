@@ -46,10 +46,11 @@ public abstract class Utils {
 
   public static double arredondar(double dblValor, int intQtdCasas, int ceilOrFloor) {
 
-    double dblResultado = dblValor;
+    double dblResultado = 0;
 
     try {
 
+      dblResultado = dblValor;
       dblResultado *= Math.pow(10, intQtdCasas);
 
       if (ceilOrFloor == 0) {
@@ -240,33 +241,33 @@ public abstract class Utils {
 
   public static String getStrAleatoria(int intTamanho, EnmStrTipo enmStrTipo) {
 
-    double i2;
-    int intCharactersLength;
-    String strCharacters;
-    StringBuffer stbResultado = null;
+    double dblIndex;
+    int intQtd;
+    String strConjunto;
+    String strResultado = Utils.STR_VAZIA;
 
     try {
 
+      strConjunto = Utils.STR_VAZIA;
+
       switch (enmStrTipo) {
         case ALPHANUMERICO:
-          strCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+          strConjunto = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
           break;
         case NUMERICO:
-          strCharacters = "1234567890";
+          strConjunto = "1234567890";
           break;
         default:
-          strCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          strConjunto = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
           break;
       }
 
-      intCharactersLength = strCharacters.length();
-
-      stbResultado = new StringBuffer();
+      intQtd = strConjunto.length();
 
       for (int i = 0; i < intTamanho; i++) {
 
-        i2 = Math.random() * intCharactersLength;
-        stbResultado.append(strCharacters.charAt((int) i2));
+        dblIndex = Math.random() * intQtd;
+        strResultado += strConjunto.charAt((int) dblIndex);
       }
     }
     catch (Exception ex) {
@@ -276,7 +277,7 @@ public abstract class Utils {
     finally {
     }
 
-    return stbResultado.toString();
+    return strResultado;
   }
 
   public static String getStrConcatenarLst(List<String> lstStr, String strDelimitador, boolean booEliminarDuplicata) {
@@ -355,7 +356,7 @@ public abstract class Utils {
     return Utils.getStrConcatenarLst(lstStr, strDelimitador, booEliminarDuplicata);
   }
 
-  public static String getStrDataFormatada(GregorianCalendar dtt, EnmDataFormato enmDataFormato) {
+  public static String getStrDataFormatada(Calendar dtt, EnmDataFormato enmDataFormato) {
 
     SimpleDateFormat objSimpleDateFormat = null;
     String strDataFormato;
@@ -479,11 +480,14 @@ public abstract class Utils {
 
   public static String getStrValorMonetario(double monValor) {
 
-    NumberFormat objNumberFormat = null;
+    NumberFormat objNumberFormat;
+    String strResultado = Utils.STR_VAZIA;
 
     try {
 
       objNumberFormat = NumberFormat.getCurrencyInstance(LOCAL_BRASIL);
+
+      strResultado = objNumberFormat.format(monValor).replace("R$", "R$ ");
     }
     catch (Exception ex) {
 
@@ -492,17 +496,17 @@ public abstract class Utils {
     finally {
     }
 
-    return objNumberFormat.format(monValor);
+    return strResultado;
   }
 
-  public static String gregorianCalendarToString(GregorianCalendar objGregorianCalendar) {
+  public static String calendarToString(Calendar dtt) {
 
     StringBuilder stbResultado = null;
 
     try {
 
       stbResultado = new StringBuilder();
-      stbResultado.append(String.format("%d/%02d/%02d", objGregorianCalendar.get(Calendar.DAY_OF_MONTH), objGregorianCalendar.get(Calendar.MONTH) + 1, objGregorianCalendar.get(Calendar.YEAR)));
+      stbResultado.append(String.format("%d/%02d/%02d", dtt.get(Calendar.DAY_OF_MONTH), dtt.get(Calendar.MONTH) + 1, dtt.get(Calendar.YEAR)));
     }
     catch (Exception ex) {
 
@@ -525,6 +529,7 @@ public abstract class Utils {
     try {
 
       objHttpURLConnection = (HttpURLConnection) new URL(url).openConnection();
+
       objHttpURLConnection.setRequestMethod("HEAD");
 
       booResultado = objHttpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK;
@@ -546,18 +551,7 @@ public abstract class Utils {
 
   public static String removerUltimaLetra(String str) {
 
-    try {
-
-      str = str.substring(0, str.length() - 1);
-    }
-    catch (Exception ex) {
-
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
-
-    return str;
+    return Utils.removerUltimaLetra(str, 1);
   }
 
   public static String removerUltimaLetra(String str, int intQtdCaracter) {
@@ -576,7 +570,7 @@ public abstract class Utils {
     return str;
   }
 
-  public static GregorianCalendar strToDtt(String strDte) {
+  public static Calendar strToDtt(String strDte) {
 
     return Utils.strToDtt(strDte, EnmDataFormato.DD_MM_YYYY);
   }
