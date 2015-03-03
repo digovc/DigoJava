@@ -46,10 +46,11 @@ public abstract class Utils {
 
   public static double arredondar(double dblValor, int intQtdCasas, int ceilOrFloor) {
 
-    double dblResultado = dblValor;
+    double dblResultado = 0;
 
     try {
 
+      dblResultado = dblValor;
       dblResultado *= Math.pow(10, intQtdCasas);
 
       if (ceilOrFloor == 0) {
@@ -240,33 +241,33 @@ public abstract class Utils {
 
   public static String getStrAleatoria(int intTamanho, EnmStrTipo enmStrTipo) {
 
-    double i2;
-    int intCharactersLength;
-    String strCharacters;
-    StringBuffer stbResultado = null;
+    double dblIndex;
+    int intQtd;
+    String strConjunto;
+    String strResultado = Utils.STR_VAZIA;
 
     try {
 
+      strConjunto = Utils.STR_VAZIA;
+
       switch (enmStrTipo) {
         case ALPHANUMERICO:
-          strCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+          strConjunto = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
           break;
         case NUMERICO:
-          strCharacters = "1234567890";
+          strConjunto = "1234567890";
           break;
         default:
-          strCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          strConjunto = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
           break;
       }
 
-      intCharactersLength = strCharacters.length();
-
-      stbResultado = new StringBuffer();
+      intQtd = strConjunto.length();
 
       for (int i = 0; i < intTamanho; i++) {
 
-        i2 = Math.random() * intCharactersLength;
-        stbResultado.append(strCharacters.charAt((int) i2));
+        dblIndex = Math.random() * intQtd;
+        strResultado += strConjunto.charAt((int) dblIndex);
       }
     }
     catch (Exception ex) {
@@ -276,7 +277,7 @@ public abstract class Utils {
     finally {
     }
 
-    return stbResultado.toString();
+    return strResultado;
   }
 
   public static String getStrConcatenarLst(List<String> lstStr, String strDelimitador, boolean booEliminarDuplicata) {
@@ -479,11 +480,14 @@ public abstract class Utils {
 
   public static String getStrValorMonetario(double monValor) {
 
-    NumberFormat objNumberFormat = null;
+    NumberFormat objNumberFormat;
+    String strResultado = Utils.STR_VAZIA;
 
     try {
 
       objNumberFormat = NumberFormat.getCurrencyInstance(LOCAL_BRASIL);
+
+      strResultado = objNumberFormat.format(monValor).replace("R$", "R$ ");
     }
     catch (Exception ex) {
 
@@ -492,7 +496,7 @@ public abstract class Utils {
     finally {
     }
 
-    return objNumberFormat.format(monValor);
+    return strResultado;
   }
 
   public static String gregorianCalendarToString(GregorianCalendar objGregorianCalendar) {
@@ -525,6 +529,7 @@ public abstract class Utils {
     try {
 
       objHttpURLConnection = (HttpURLConnection) new URL(url).openConnection();
+
       objHttpURLConnection.setRequestMethod("HEAD");
 
       booResultado = objHttpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK;
@@ -546,18 +551,7 @@ public abstract class Utils {
 
   public static String removerUltimaLetra(String str) {
 
-    try {
-
-      str = str.substring(0, str.length() - 1);
-    }
-    catch (Exception ex) {
-
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
-
-    return str;
+    return Utils.removerUltimaLetra(str, 1);
   }
 
   public static String removerUltimaLetra(String str, int intQtdCaracter) {

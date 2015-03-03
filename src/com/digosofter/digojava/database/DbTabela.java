@@ -155,6 +155,8 @@ public abstract class DbTabela extends Objeto {
 
       _lstClnCadastro = new ArrayList<DbColuna>();
 
+      _lstClnCadastro.add(this.getClnNome());
+
       for (DbColuna cln : this.getLstCln()) {
 
         if (!cln.getBooVisivelCadastro() && !cln.getBooChavePrimaria()) {
@@ -185,10 +187,26 @@ public abstract class DbTabela extends Objeto {
 
       _lstClnConsulta = new ArrayList<DbColuna>();
 
+      _lstClnConsulta.add(this.getClnChavePrimaria());
+      _lstClnConsulta.add(this.getClnNome());
+
       for (DbColuna cln : this.getLstCln()) {
+
+        if (cln == null) {
+
+          continue;
+        }
 
         if (!cln.getBooVisivelConsulta()) {
 
+          continue;
+        }
+
+        if (cln.getBooChavePrimaria()) {
+          continue;
+        }
+
+        if (cln.getBooClnNome()) {
           continue;
         }
 

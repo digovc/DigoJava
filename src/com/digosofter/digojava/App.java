@@ -22,7 +22,7 @@ public abstract class App extends Objeto {
   private long _intMilisegLigado;
   private long _intSegundosLigado;
   private long _intStartTime;
-  private int _intVersao;
+  private int _intVersao = 1;
   private List<MsgUsuario> _lstMsgUsuarioPadrao;
   private List<DbTabela> _lstTbl;
   private Gson _objGson;
