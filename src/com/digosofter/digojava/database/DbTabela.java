@@ -155,8 +155,6 @@ public abstract class DbTabela extends Objeto {
 
       _lstClnCadastro = new ArrayList<DbColuna>();
 
-      _lstClnCadastro.add(this.getClnNome());
-
       for (DbColuna cln : this.getLstCln()) {
 
         if (!cln.getBooVisivelCadastro() && !cln.getBooChavePrimaria()) {
