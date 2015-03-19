@@ -56,6 +56,7 @@ public abstract class DbTabela extends Objeto {
       _clnChavePrimaria = this.getLstCln().get(0);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -201,10 +202,17 @@ public abstract class DbTabela extends Objeto {
         }
 
         if (cln.getBooChavePrimaria()) {
+
           continue;
         }
 
         if (cln.getBooClnNome()) {
+
+          continue;
+        }
+
+        if (_lstClnConsulta.contains(cln)) {
+
           continue;
         }
 
@@ -214,7 +222,6 @@ public abstract class DbTabela extends Objeto {
     catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-
     }
     finally {
     }
