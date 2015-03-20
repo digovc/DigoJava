@@ -923,9 +923,4 @@ public class DbColuna extends Objeto {
     }
   }
 
-  @Override
-  public String toString() {
-
-    return this.getStrValor();
-  }
 }
