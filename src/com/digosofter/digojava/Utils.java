@@ -74,6 +74,25 @@ public abstract class Utils {
     return dblResultado;
   }
 
+  public static String calendarToString(Calendar dtt) {
+
+    StringBuilder stbResultado = null;
+
+    try {
+
+      stbResultado = new StringBuilder();
+      stbResultado.append(String.format("%d/%02d/%02d", dtt.get(Calendar.DAY_OF_MONTH), dtt.get(Calendar.MONTH) + 1, dtt.get(Calendar.YEAR)));
+    }
+    catch (Exception ex) {
+
+      new Erro(App.getI().getStrTextoPadrao(0), ex);
+    }
+    finally {
+    }
+
+    return stbResultado.toString();
+  }
+
   private static String enmDataFormatoToString(EnmDataFormato enmDataFormato) {
 
     String strResultado = null;
@@ -497,25 +516,6 @@ public abstract class Utils {
     }
 
     return strResultado;
-  }
-
-  public static String calendarToString(Calendar dtt) {
-
-    StringBuilder stbResultado = null;
-
-    try {
-
-      stbResultado = new StringBuilder();
-      stbResultado.append(String.format("%d/%02d/%02d", dtt.get(Calendar.DAY_OF_MONTH), dtt.get(Calendar.MONTH) + 1, dtt.get(Calendar.YEAR)));
-    }
-    catch (Exception ex) {
-
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
-
-    return stbResultado.toString();
   }
 
   /**

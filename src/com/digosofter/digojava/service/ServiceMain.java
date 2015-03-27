@@ -4,11 +4,11 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class ServiceMain extends Thread {
 
-  protected void dormirMilissegundo(int intMilissegundo) {
+  protected void dormirHora(int intHora) {
 
     try {
 
-      Thread.sleep(intMilissegundo);
+      this.dormirMinuto(intHora * 60);
     }
     catch (Exception ex) {
 
@@ -18,11 +18,11 @@ public abstract class ServiceMain extends Thread {
     }
   }
 
-  protected void dormirSegundo(int intSegundo) {
+  protected void dormirMilissegundo(int intMilissegundo) {
 
     try {
 
-      this.dormirMilissegundo(intSegundo * 1000);
+      Thread.sleep(intMilissegundo);
     }
     catch (Exception ex) {
 
@@ -46,11 +46,11 @@ public abstract class ServiceMain extends Thread {
     }
   }
 
-  protected void dormirHora(int intHora) {
+  protected void dormirSegundo(int intSegundo) {
 
     try {
 
-      this.dormirMinuto(intHora * 60);
+      this.dormirMilissegundo(intSegundo * 1000);
     }
     catch (Exception ex) {
 

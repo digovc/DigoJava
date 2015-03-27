@@ -66,10 +66,12 @@ public class DbColuna extends Objeto {
   private int _intTamanhoCampo = 100;
   private List<Integer> _lstIntOpcaoValor;
   private List<String> _lstStrOpcao;
+  private String _sqlSubSelectColunaRef;
   private String _sqlTipo;
   private String _strTblNomeClnNome;
   private String _strValor;
   private String _strValorDefault;
+
   private String _strValorExibicao;
 
   private String _strValorSql;
@@ -413,6 +415,38 @@ public class DbColuna extends Objeto {
     }
 
     return _lstStrOpcao;
+  }
+
+  public String getSqlSubSelectColunaRef() {
+
+    try {
+
+      if (_sqlSubSelectColunaRef != null) {
+
+        return _sqlSubSelectColunaRef;
+      }
+
+      if (this.getClnRef() == null) {
+
+        return Utils.STR_VAZIA;
+      }
+
+      _sqlSubSelectColunaRef = "(select _tbl_ref_nome._cln_ref_nome from _tbl_ref_nome where _tbl_ref_nome._cln_ref_pk = _tbl_nome._cln_nome) _cln_nome, ";
+
+      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_tbl_ref_nome", this.getClnRef().getTbl().getStrNomeSimplificado());
+      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getStrNomeSimplificado());
+      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnChavePrimaria().getStrNomeSimplificado());
+      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_tbl_nome", this.getTbl().getStrNomeSimplificado());
+      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_nome", this.getStrNomeSimplificado());
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _sqlSubSelectColunaRef;
   }
 
   public String getSqlTipo() {
@@ -948,39 +982,5 @@ public class DbColuna extends Objeto {
     }
     finally {
     }
-  }
-
-  private String _sqlSubSelectColunaRef;
-
-  public String getSqlSubSelectColunaRef() {
-
-    try {
-
-      if (_sqlSubSelectColunaRef != null) {
-
-        return _sqlSubSelectColunaRef;
-      }
-
-      if (this.getClnRef() == null) {
-
-        return Utils.STR_VAZIA;
-      }
-
-      _sqlSubSelectColunaRef = "(select _tbl_ref_nome._cln_ref_nome from _tbl_ref_nome where _tbl_ref_nome._cln_ref_pk = _tbl_nome._cln_nome) _cln_nome, ";
-
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_tbl_ref_nome", this.getClnRef().getTbl().getStrNomeSimplificado());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getStrNomeSimplificado());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnChavePrimaria().getStrNomeSimplificado());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_tbl_nome", this.getTbl().getStrNomeSimplificado());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_nome", this.getStrNomeSimplificado());
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
-    return _sqlSubSelectColunaRef;
   }
 }
