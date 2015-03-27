@@ -231,7 +231,7 @@ public abstract class DbTabela extends Objeto {
     return _lstClnConsulta;
   }
 
-  private ArrayList<DbFiltro> getLstObjDbFiltroCadastro() {
+  public ArrayList<DbFiltro> getLstObjDbFiltroCadastro() {
 
     try {
 
