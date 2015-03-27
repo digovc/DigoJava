@@ -51,12 +51,12 @@ public class DbColuna extends Objeto {
   private boolean _booClnNome;
   private boolean _booMonetario;
   private boolean _booNotNull;
-  private boolean _booOrdemCadastro;
+  private boolean _booOrdem;
   private boolean _booOrdemDecrecente;
   private boolean _booPercentual;
   private boolean _booSenha;
   private boolean _booVisivelCadastro = true;
-  private boolean _booVisivelConsulta = true;
+  private boolean _booVisivelConsulta;
   private DbColuna _clnRef;
   private EnmTipo _enmTipo;
   private EnmTipoGrupo _enmTipoGrupo;
@@ -130,9 +130,9 @@ public class DbColuna extends Objeto {
     return _booNotNull;
   }
 
-  public boolean getBooOrdemCadastro() {
+  public boolean getBooOrdem() {
 
-    return _booOrdemCadastro;
+    return _booOrdem;
   }
 
   public boolean getBooOrdemDecrecente() {
@@ -772,20 +772,21 @@ public class DbColuna extends Objeto {
     _booNotNull = booNotNull;
   }
 
-  public void setBooOrdemCadastro(boolean booOrdemCadastro) {
+  public void setBooOrdem(boolean booOrdem) {
 
     try {
 
-      if (booOrdemCadastro) {
+      if (booOrdem) {
 
         for (DbColuna cln : this.getTbl().getLstCln()) {
 
-          cln._booOrdemCadastro = false;
+          cln._booOrdem = false;
         }
 
-        this.getTbl().setClnOrdemCadastro(this);
+        this.getTbl().setClnOrdem(this);
       }
-      _booOrdemCadastro = booOrdemCadastro;
+
+      _booOrdem = booOrdem;
     }
     catch (Exception ex) {
       new Erro(App.getI().getStrTextoPadrao(0), ex);

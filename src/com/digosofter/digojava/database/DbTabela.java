@@ -13,7 +13,7 @@ public abstract class DbTabela extends Objeto {
   private boolean _booPermitirCadastroNovo;
   private DbColuna _clnChavePrimaria;
   private DbColuna _clnNome;
-  private DbColuna _clnOrdemCadastro;
+  private DbColuna _clnOrdem;
   private int _intQtdLinha;
   private List<DbColuna> _lstCln;
   private List<DbColuna> _lstClnCadastro;
@@ -85,24 +85,25 @@ public abstract class DbTabela extends Objeto {
     return _clnNome;
   }
 
-  public DbColuna getClnOrdemCadastro() {
+  public DbColuna getClnOrdem() {
 
     try {
 
-      if (_clnOrdemCadastro != null) {
+      if (_clnOrdem != null) {
 
-        return _clnOrdemCadastro;
+        return _clnOrdem;
       }
 
-      _clnOrdemCadastro = this.getClnChavePrimaria();
+      _clnOrdem = this.getClnChavePrimaria();
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
     }
 
-    return _clnOrdemCadastro;
+    return _clnOrdem;
   }
 
   public int getIntQtdLinha() {
@@ -349,9 +350,9 @@ public abstract class DbTabela extends Objeto {
     _clnNome = clnNome;
   }
 
-  public void setClnOrdemCadastro(DbColuna clnOrdemCadastro) {
+  public void setClnOrdem(DbColuna clnOrdem) {
 
-    _clnOrdemCadastro = clnOrdemCadastro;
+    _clnOrdem = clnOrdem;
   }
 
   public void setObjDb(DataBase objDb) {

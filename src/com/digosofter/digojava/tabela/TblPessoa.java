@@ -27,7 +27,7 @@ public class TblPessoa extends TblMain {
       _clnStrNome = new DbColuna("str_nome", this, EnmTipo.TEXT);
 
       _clnStrNome.setBooClnNome(true);
-      _clnStrNome.setBooOrdemCadastro(true);
+      _clnStrNome.setBooOrdem(true);
       _clnStrNome.setBooVisivelConsulta(true);
       _clnStrNome.setStrNomeExibicao("Nome");
     }
