@@ -10,6 +10,8 @@ public class TblPessoa extends TblMain {
   private DbColuna _clnStrNome;
   private DbColuna _clnStrSobrenome;
 
+  
+  
   public TblPessoa() {
 
     super("tbl_pessoa");

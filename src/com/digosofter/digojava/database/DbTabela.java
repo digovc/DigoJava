@@ -21,6 +21,7 @@ public abstract class DbTabela extends Objeto {
   private ArrayList<DbFiltro> _lstObjDbFiltroCadastro;
   private List<DbFiltro> _lstObjDbFiltroConsulta;
   private DataBase _objDb;
+  private String _strNomeSql;
   private String _strPesquisaActConsulta;
 
   protected DbTabela(String strNome) {
@@ -113,7 +114,7 @@ public abstract class DbTabela extends Objeto {
     try {
 
       sql = "select count(1) from _tbl_nome;";
-      sql = sql.replace("_tbl_nome", this.getStrNomeSimplificado());
+      sql = sql.replace("_tbl_nome", this.getStrNomeSql());
 
       _intQtdLinha = this.getObjDb().execSqlGetInt(sql);
     }
@@ -289,7 +290,7 @@ public abstract class DbTabela extends Objeto {
 
       for (DbColuna cln : this.getLstCln()) {
 
-        if (!cln.getStrNomeSimplificado().equals(strNomeSimplificado)) {
+        if (!cln.getStrNomeSql().equals(strNomeSimplificado)) {
 
           continue;
         }
@@ -304,6 +305,27 @@ public abstract class DbTabela extends Objeto {
     }
 
     return strResultado;
+  }
+
+  public String getStrNomeSql() {
+
+    try {
+
+      if (!Utils.getBooStrVazia(_strNomeSql)) {
+
+        return _strNomeSql;
+      }
+
+      _strNomeSql = this.getStrNomeSql();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _strNomeSql;
   }
 
   public String getStrPesquisaActConsulta() {

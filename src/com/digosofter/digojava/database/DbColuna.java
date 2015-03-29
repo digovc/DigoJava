@@ -68,14 +68,12 @@ public class DbColuna extends Objeto {
   private List<String> _lstStrOpcao;
   private String _sqlSubSelectColunaRef;
   private String _sqlTipo;
+  private String _strNomeSql;
   private String _strTblNomeClnNome;
   private String _strValor;
   private String _strValorDefault;
-
   private String _strValorExibicao;
-
   private String _strValorSql;
-
   private DbTabela _tbl;
 
   public DbColuna(String strNome, DbTabela tbl, EnmTipo enmTipo) {
@@ -433,11 +431,11 @@ public class DbColuna extends Objeto {
 
       _sqlSubSelectColunaRef = "(select _tbl_ref_nome._cln_ref_nome from _tbl_ref_nome where _tbl_ref_nome._cln_ref_pk = _tbl_nome._cln_nome) _cln_nome, ";
 
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_tbl_ref_nome", this.getClnRef().getTbl().getStrNomeSimplificado());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getStrNomeSimplificado());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnChavePrimaria().getStrNomeSimplificado());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_tbl_nome", this.getTbl().getStrNomeSimplificado());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_nome", this.getStrNomeSimplificado());
+      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_tbl_ref_nome", this.getClnRef().getTbl().getStrNomeSql());
+      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getStrNomeSql());
+      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnChavePrimaria().getStrNomeSql());
+      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_tbl_nome", this.getTbl().getStrNomeSql());
+      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_nome", this.getStrNomeSql());
     }
     catch (Exception ex) {
 
@@ -489,6 +487,27 @@ public class DbColuna extends Objeto {
     return _sqlTipo;
   }
 
+  public String getStrNomeSql() {
+
+    try {
+
+      if (!Utils.getBooStrVazia(_strNomeSql)) {
+
+        return _strNomeSql;
+      }
+
+      _strNomeSql = this.getStrNomeSql();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _strNomeSql;
+  }
+
   public String getStrTblNomeClnNome() {
 
     try {
@@ -500,8 +519,8 @@ public class DbColuna extends Objeto {
 
       _strTblNomeClnNome = "_tbl_nome._cln_nome, ";
 
-      _strTblNomeClnNome = _strTblNomeClnNome.replace("_tbl_nome", this.getTbl().getStrNomeSimplificado());
-      _strTblNomeClnNome = _strTblNomeClnNome.replace("_cln_nome", this.getStrNomeSimplificado());
+      _strTblNomeClnNome = _strTblNomeClnNome.replace("_tbl_nome", this.getTbl().getStrNomeSql());
+      _strTblNomeClnNome = _strTblNomeClnNome.replace("_cln_nome", this.getStrNomeSql());
     }
     catch (Exception ex) {
 
