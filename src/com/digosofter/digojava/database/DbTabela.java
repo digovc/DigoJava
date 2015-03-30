@@ -316,7 +316,7 @@ public abstract class DbTabela extends Objeto {
         return _strNomeSql;
       }
 
-      _strNomeSql = this.getStrNomeSql();
+      _strNomeSql = this.getStrNomeSimplificado();
     }
     catch (Exception ex) {
 
