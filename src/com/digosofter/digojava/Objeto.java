@@ -4,10 +4,9 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class Objeto {
 
-  private static int _intObjetoIdStatic;
+  private static int intObjetoIdStatic;
 
   private int _intObjetoId;
-
   private String _strDescricao;
   private String _strNome;
   private String _strNomeExibicao;
@@ -22,7 +21,7 @@ public abstract class Objeto {
         return _intObjetoId;
       }
 
-      _intObjetoId = Objeto._intObjetoIdStatic++;
+      _intObjetoId = Objeto.intObjetoIdStatic++;
     }
     catch (Exception ex) {
 
@@ -53,7 +52,7 @@ public abstract class Objeto {
         return _strNomeExibicao;
       }
 
-      _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNome);
+      _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
     }
     catch (Exception ex) {
 
@@ -74,7 +73,7 @@ public abstract class Objeto {
         return _strNomeSimplificado;
       }
 
-      _strNomeSimplificado = Utils.getStrSimplificada(_strNome);
+      _strNomeSimplificado = Utils.getStrSimplificada(this.getStrNome());
     }
     catch (Exception ex) {
 
