@@ -52,7 +52,7 @@ public abstract class Objeto {
         return _strNomeExibicao;
       }
 
-      _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNome);
+      _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
     }
     catch (Exception ex) {
 
@@ -73,7 +73,7 @@ public abstract class Objeto {
         return _strNomeSimplificado;
       }
 
-      _strNomeSimplificado = Utils.getStrSimplificada(_strNome);
+      _strNomeSimplificado = Utils.getStrSimplificada(this.getStrNome());
     }
     catch (Exception ex) {
 
