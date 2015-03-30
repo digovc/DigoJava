@@ -68,6 +68,7 @@ public class DbColuna extends Objeto {
   private List<String> _lstStrOpcao;
   private String _sqlSubSelectColunaRef;
   private String _sqlTipo;
+  private String _strGrupoNome;
   private String _strNomeSql;
   private String _strTblNomeClnNome;
   private String _strValor;
@@ -485,6 +486,11 @@ public class DbColuna extends Objeto {
     }
 
     return _sqlTipo;
+  }
+
+  public String getStrGrupoNome() {
+
+    return _strGrupoNome;
   }
 
   public String getStrNomeSql() {
@@ -971,6 +977,11 @@ public class DbColuna extends Objeto {
     }
     finally {
     }
+  }
+
+  public void setStrGrupoNome(String strGrupoNome) {
+
+    _strGrupoNome = strGrupoNome;
   }
 
   public void setStrValor(String strValor) {
