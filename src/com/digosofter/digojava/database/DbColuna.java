@@ -1005,6 +1005,11 @@ public class DbColuna extends Objeto {
         return;
       }
 
+      if (_tbl.getLstCln().contains(this)) {
+
+        return;
+      }
+
       _tbl.getLstCln().add(this);
     }
     catch (Exception ex) {

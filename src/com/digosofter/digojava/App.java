@@ -271,4 +271,29 @@ public abstract class App extends Objeto {
 
     _tblSelec = tblSelec;
   }
+
+  public void addTbl(DbTabela tbl) {
+
+    try {
+
+      if (tbl == null) {
+
+        return;
+      }
+
+      if (this.getLstTbl().contains(tbl)) {
+
+        return;
+      }
+
+      this.getLstTbl().add(tbl);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+  }
 }

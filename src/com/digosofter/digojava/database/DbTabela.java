@@ -28,7 +28,7 @@ public abstract class DbTabela extends Objeto {
 
     try {
 
-      App.getI().getLstTbl().add(this);
+      App.getI().addTbl(this);
 
       this.setStrNome(strNome);
       this.inicializarColunas(-1);
@@ -162,7 +162,22 @@ public abstract class DbTabela extends Objeto {
 
       for (DbColuna cln : this.getLstCln()) {
 
-        if (!cln.getBooVisivelCadastro() && !cln.getBooChavePrimaria()) {
+        if (cln.getBooChavePrimaria()) {
+
+          continue;
+        }
+
+        if (cln.getBooClnNome()) {
+
+          continue;
+        }
+
+        if (!cln.getBooVisivelCadastro()) {
+
+          continue;
+        }
+
+        if (_lstClnCadastro.contains(cln)) {
 
           continue;
         }
