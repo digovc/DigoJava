@@ -497,16 +497,20 @@ public abstract class Utils {
     return strResultado;
   }
 
-  public static String getStrValorMonetario(double monValor) {
+  public static String getStrValorMonetario(double dblValor) {
 
     NumberFormat objNumberFormat;
-    String strResultado = Utils.STR_VAZIA;
 
     try {
 
+      if (dblValor == 0) {
+
+        return "R$ 0,00";
+      }
+
       objNumberFormat = NumberFormat.getCurrencyInstance(LOCAL_BRASIL);
 
-      strResultado = objNumberFormat.format(monValor).replace("R$", "R$ ");
+      return objNumberFormat.format(dblValor).replace("R$", "R$ ");
     }
     catch (Exception ex) {
 
@@ -515,7 +519,32 @@ public abstract class Utils {
     finally {
     }
 
-    return strResultado;
+    return "R$ 0,00";
+  }
+
+  public static String getStrValorNumerico(double dblValor) {
+
+    NumberFormat objNumberFormat;
+
+    try {
+
+      if (dblValor == 0) {
+
+        return "0";
+      }
+
+      objNumberFormat = NumberFormat.getNumberInstance(LOCAL_BRASIL);
+
+      return objNumberFormat.format(dblValor);
+    }
+    catch (Exception ex) {
+
+      new Erro(App.getI().getStrTextoPadrao(0), ex);
+    }
+    finally {
+    }
+
+    return "0";
   }
 
   /**

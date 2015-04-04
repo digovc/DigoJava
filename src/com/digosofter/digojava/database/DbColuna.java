@@ -603,7 +603,7 @@ public class DbColuna extends Objeto {
 
       if (Utils.getBooStrVazia(this.getStrValor())) {
 
-        return "0,00";
+        return "0";
       }
 
       if (this.getBooMonetario()) {
