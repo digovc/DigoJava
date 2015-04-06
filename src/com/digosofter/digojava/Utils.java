@@ -625,4 +625,25 @@ public abstract class Utils {
 
     return dttResultado;
   }
+
+  public static double toDouble(String str) {
+
+    try {
+
+      if (Utils.getBooStrVazia(str)) {
+
+        return 0;
+      }
+
+      return Double.valueOf(str.replace(",", "."));
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return 0;
+  }
 }
