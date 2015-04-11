@@ -67,10 +67,10 @@ public class TblUsuario extends TblMain {
   }
 
   @Override
-  protected int inicializarColunas(int intOrdem) {
+  protected int inicializarColuna(int intOrdem) {
 
     try {
-      intOrdem = super.inicializarColunas(intOrdem);
+      intOrdem = super.inicializarColuna(intOrdem);
       this.getClnIntPessoaId().setIntOrdem(++intOrdem);
       this.getClnStrLogin().setIntOrdem(++intOrdem);
       this.getClnStrPassword().setIntOrdem(++intOrdem);

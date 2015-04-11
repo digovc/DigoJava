@@ -139,11 +139,11 @@ public abstract class TblMain extends DbTabela {
   }
 
   @Override
-  protected int inicializarColunas(int intOrdem) {
+  protected int inicializarColuna(int intOrdem) {
 
     try {
 
-      intOrdem = super.inicializarColunas(intOrdem);
+      intOrdem = super.inicializarColuna(intOrdem);
 
       this.getClnDttAlteracao().setIntOrdem(++intOrdem);
       this.getClnDttCadastro().setIntOrdem(++intOrdem);

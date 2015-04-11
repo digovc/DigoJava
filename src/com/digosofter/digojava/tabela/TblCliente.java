@@ -31,10 +31,10 @@ public class TblCliente extends TblMain {
   }
 
   @Override
-  protected int inicializarColunas(int intOrdem) {
+  protected int inicializarColuna(int intOrdem) {
 
     try {
-      intOrdem = super.inicializarColunas(intOrdem);
+      intOrdem = super.inicializarColuna(intOrdem);
       this.getClnIntPessoaId().setIntOrdem(++intOrdem);
     }
     catch (Exception ex) {

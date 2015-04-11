@@ -578,6 +578,7 @@ public class DbColuna extends Objeto {
         case DATE_TIME:
           _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.DD_MM_YYYY);
           break;
+        case DOUBLE:
         case NUMERIC:
         case REAL:
           _strValorExibicao = this.getStrValorExibicaoNumeric();

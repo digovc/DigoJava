@@ -68,11 +68,11 @@ public class TblPessoa extends TblMain {
   }
 
   @Override
-  protected int inicializarColunas(int intOrdem) {
+  protected int inicializarColuna(int intOrdem) {
 
     try {
 
-      intOrdem = super.inicializarColunas(intOrdem);
+      intOrdem = super.inicializarColuna(intOrdem);
 
       this.getClnStrNome().setIntOrdem(++intOrdem);
       this.getClnStrSobrenome().setIntOrdem(++intOrdem);

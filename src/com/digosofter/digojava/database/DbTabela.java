@@ -18,11 +18,11 @@ public abstract class DbTabela extends Objeto {
   private List<DbColuna> _lstCln;
   private List<DbColuna> _lstClnCadastro;
   private List<DbColuna> _lstClnConsulta;
-  private ArrayList<DbFiltro> _lstObjDbFiltroCadastro;
-  private List<DbFiltro> _lstObjDbFiltroConsulta;
+  private ArrayList<DbFiltro> _lstFilCadastro;
+  private List<DbFiltro> _lstFilConsulta;
   private DataBase _objDb;
   private String _strNomeSql;
-  private String _strPesquisaActConsulta;
+  private String _strPesquisa;
 
   protected DbTabela(String strNome) {
 
@@ -31,7 +31,7 @@ public abstract class DbTabela extends Objeto {
       App.getI().addTbl(this);
 
       this.setStrNome(strNome);
-      this.inicializarColunas(-1);
+      this.inicializarColuna(-1);
     }
     catch (Exception ex) {
       new Erro(App.getI().getStrTextoPadrao(122), ex);
@@ -119,6 +119,7 @@ public abstract class DbTabela extends Objeto {
       _intQtdLinha = this.getObjDb().execSqlGetInt(sql);
     }
     catch (Exception ex) {
+
       _intQtdLinha = 0;
     }
     finally {
@@ -139,6 +140,7 @@ public abstract class DbTabela extends Objeto {
       _lstCln = new ArrayList<DbColuna>();
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -157,7 +159,6 @@ public abstract class DbTabela extends Objeto {
       }
 
       _lstClnCadastro = new ArrayList<DbColuna>();
-
       _lstClnCadastro.add(this.getClnNome());
 
       for (DbColuna cln : this.getLstCln()) {
@@ -186,6 +187,7 @@ public abstract class DbTabela extends Objeto {
       }
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
@@ -248,16 +250,16 @@ public abstract class DbTabela extends Objeto {
     return _lstClnConsulta;
   }
 
-  public ArrayList<DbFiltro> getLstObjDbFiltroCadastro() {
+  public ArrayList<DbFiltro> getLstFilCadastro() {
 
     try {
 
-      if (_lstObjDbFiltroCadastro != null) {
+      if (_lstFilCadastro != null) {
 
-        return _lstObjDbFiltroCadastro;
+        return _lstFilCadastro;
       }
 
-      _lstObjDbFiltroCadastro = new ArrayList<DbFiltro>();
+      _lstFilCadastro = new ArrayList<DbFiltro>();
     }
     catch (Exception ex) {
 
@@ -266,28 +268,28 @@ public abstract class DbTabela extends Objeto {
     finally {
     }
 
-    return _lstObjDbFiltroCadastro;
+    return _lstFilCadastro;
   }
 
-  public List<DbFiltro> getLstObjDbFiltroConsulta() {
+  public List<DbFiltro> getLstFilConsulta() {
 
     try {
 
-      if (_lstObjDbFiltroConsulta == null) {
+      if (_lstFilConsulta != null) {
 
-        _lstObjDbFiltroConsulta = new ArrayList<>();
+        return _lstFilConsulta;
       }
 
+      _lstFilConsulta = new ArrayList<>();
     }
     catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-
     }
     finally {
     }
 
-    return _lstObjDbFiltroConsulta;
+    return _lstFilConsulta;
   }
 
   public DataBase getObjDb() {
@@ -314,6 +316,7 @@ public abstract class DbTabela extends Objeto {
       }
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(128), ex);
     }
     finally {
@@ -343,12 +346,12 @@ public abstract class DbTabela extends Objeto {
     return _strNomeSql;
   }
 
-  public String getStrPesquisaActConsulta() {
+  public String getStrPesquisa() {
 
-    return _strPesquisaActConsulta;
+    return _strPesquisa;
   }
 
-  protected int inicializarColunas(int intOrdem) {
+  protected int inicializarColuna(int intOrdem) {
 
     return intOrdem;
   }
@@ -366,6 +369,7 @@ public abstract class DbTabela extends Objeto {
       }
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(130), ex);
     }
     finally {
@@ -397,8 +401,8 @@ public abstract class DbTabela extends Objeto {
     _objDb = objDb;
   }
 
-  public void setStrPesquisaActConsulta(String strPesquisaActConsulta) {
+  public void setStrPesquisa(String strPesquisa) {
 
-    _strPesquisaActConsulta = strPesquisaActConsulta;
+    _strPesquisa = strPesquisa;
   }
 }
