@@ -575,8 +575,13 @@ public class DbColuna extends Objeto {
         case BOOLEAN:
           _strValorExibicao = this.getBooValor() ? "Sim" : "Não";
           break;
-        case DATE_TIME:
+        case DATE:
           _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.DD_MM_YYYY);
+          break;
+        case DATE_TIME:
+        case TIMESTAMP_WITH_TIME_ZONE:
+        case TIMESTAMP_WITHOUT_TIME_ZONE:
+          _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.HH_MM_DD_MM_YYYY);
           break;
         case DOUBLE:
         case NUMERIC:
