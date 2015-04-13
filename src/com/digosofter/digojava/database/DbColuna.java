@@ -789,7 +789,11 @@ public class DbColuna extends Objeto {
 
       if (_booChavePrimaria) {
 
-        this.getTbl().getClnChavePrimaria()._booChavePrimaria = false;
+        if (!this.equals(this.getTbl().getClnChavePrimaria())) {
+
+          this.getTbl().getClnChavePrimaria()._booChavePrimaria = false;
+        }
+
         this.getTbl().setClnChavePrimaria(this);
       }
       else {
@@ -813,7 +817,11 @@ public class DbColuna extends Objeto {
 
       if (_booClnNome) {
 
-        this.getTbl().getClnNome()._booClnNome = false;
+        if (!this.equals(this.getTbl().getClnNome())) {
+
+          this.getTbl().getClnNome()._booClnNome = false;
+        }
+
         this.getTbl().setClnNome(this);
       }
       else {
@@ -847,7 +855,11 @@ public class DbColuna extends Objeto {
 
       if (_booOrdem) {
 
-        this.getTbl().getClnOrdem()._booOrdem = false;
+        if (!this.equals(this.getTbl().getClnOrdem())) {
+
+          this.getTbl().getClnOrdem()._booOrdem = false;
+        }
+
         this.getTbl().setClnOrdem(this);
       }
       else {
