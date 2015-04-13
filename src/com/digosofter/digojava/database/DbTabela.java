@@ -95,7 +95,7 @@ public abstract class DbTabela extends Objeto {
         return _clnOrdem;
       }
 
-      _clnOrdem = this.getClnChavePrimaria();
+      _clnOrdem = this.getClnNome();
     }
     catch (Exception ex) {
 
