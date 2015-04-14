@@ -11,6 +11,7 @@ import com.digosofter.digojava.erro.Erro;
 public abstract class DbTabela extends Objeto {
 
   private boolean _booPermitirAdicionar;
+  private boolean _booPermitirAlterar;
   private DbColuna _clnChavePrimaria;
   private DbColuna _clnNome;
   private DbColuna _clnOrdem;
@@ -43,6 +44,11 @@ public abstract class DbTabela extends Objeto {
   public boolean getBooPermitirAdicionar() {
 
     return _booPermitirAdicionar;
+  }
+
+  public boolean getBooPermitirAlterar() {
+
+    return _booPermitirAlterar;
   }
 
   public DbColuna getClnChavePrimaria() {
@@ -379,6 +385,11 @@ public abstract class DbTabela extends Objeto {
   protected void setBooPermitirAdicionar(boolean booPermitirAdicionar) {
 
     _booPermitirAdicionar = booPermitirAdicionar;
+  }
+
+  protected void setBooPermitirAlterar(boolean booPermitirAlterar) {
+
+    _booPermitirAlterar = booPermitirAlterar;
   }
 
   public void setClnChavePrimaria(DbColuna clnChavePrimaria) {
