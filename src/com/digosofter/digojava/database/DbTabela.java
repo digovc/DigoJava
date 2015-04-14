@@ -10,8 +10,9 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class DbTabela extends Objeto {
 
-  private boolean _booPermitirAdicionar;
-  private boolean _booPermitirAlterar;
+  private boolean _booMenuAdicionar;
+  private boolean _booMenuAlterar;
+  private boolean _booMenuApagar;
   private DbColuna _clnChavePrimaria;
   private DbColuna _clnNome;
   private DbColuna _clnOrdem;
@@ -41,14 +42,19 @@ public abstract class DbTabela extends Objeto {
     }
   }
 
-  public boolean getBooPermitirAdicionar() {
+  public boolean getBooMenuAdicionar() {
 
-    return _booPermitirAdicionar;
+    return _booMenuAdicionar;
   }
 
-  public boolean getBooPermitirAlterar() {
+  public boolean getBooMenuAlterar() {
 
-    return _booPermitirAlterar;
+    return _booMenuAlterar;
+  }
+
+  public boolean getBooMenuApagar() {
+
+    return _booMenuApagar;
   }
 
   public DbColuna getClnChavePrimaria() {
@@ -382,14 +388,19 @@ public abstract class DbTabela extends Objeto {
     }
   }
 
-  protected void setBooPermitirAdicionar(boolean booPermitirAdicionar) {
+  protected void setBooMenuAdicionar(boolean booMenuAdicionar) {
 
-    _booPermitirAdicionar = booPermitirAdicionar;
+    _booMenuAdicionar = booMenuAdicionar;
   }
 
-  protected void setBooPermitirAlterar(boolean booPermitirAlterar) {
+  protected void setBooMenuAlterar(boolean booMenuAlterar) {
 
-    _booPermitirAlterar = booPermitirAlterar;
+    _booMenuAlterar = booMenuAlterar;
+  }
+
+  protected void setBooMenuApagar(boolean booMenuApagar) {
+
+    _booMenuApagar = booMenuApagar;
   }
 
   public void setClnChavePrimaria(DbColuna clnChavePrimaria) {
