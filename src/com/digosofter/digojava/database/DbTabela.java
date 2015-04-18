@@ -20,6 +20,7 @@ public abstract class DbTabela extends Objeto {
   private List<DbColuna> _lstCln;
   private List<DbColuna> _lstClnCadastro;
   private List<DbColuna> _lstClnConsulta;
+  private List<TblOnChangeListener> _lstEvtTblOnChangeListener;
   private ArrayList<DbFiltro> _lstFilCadastro;
   private List<DbFiltro> _lstFilConsulta;
   private DataBase _objDb;
@@ -37,6 +38,31 @@ public abstract class DbTabela extends Objeto {
     }
     catch (Exception ex) {
       new Erro(App.getI().getStrTextoPadrao(122), ex);
+    }
+    finally {
+    }
+  }
+
+  public void addEvtTblOnChangeListener(TblOnChangeListener evtTblOnChangeListener) {
+
+    try {
+
+      if (evtTblOnChangeListener == null) {
+
+        return;
+      }
+
+      if (this.getLstEvtTblOnChangeListener().contains(evtTblOnChangeListener)) {
+
+        return;
+      }
+
+      this.getLstEvtTblOnChangeListener().add(evtTblOnChangeListener);
+
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
     }
     finally {
     }
@@ -161,6 +187,25 @@ public abstract class DbTabela extends Objeto {
     return _lstCln;
   }
 
+  public void apagar(int intId) {
+
+    TblOnChangeArg arg;
+
+    try {
+
+      arg = new TblOnChangeArg();
+      arg.setIntRegistroId(intId);
+
+      this.OnApagarRegDispatcher(arg);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
   public List<DbColuna> getLstClnCadastro() {
 
     try {
@@ -260,6 +305,27 @@ public abstract class DbTabela extends Objeto {
     }
 
     return _lstClnConsulta;
+  }
+
+  private List<TblOnChangeListener> getLstEvtTblOnChangeListener() {
+
+    try {
+
+      if (_lstEvtTblOnChangeListener != null) {
+
+        return _lstEvtTblOnChangeListener;
+      }
+
+      _lstEvtTblOnChangeListener = new ArrayList<TblOnChangeListener>();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _lstEvtTblOnChangeListener;
   }
 
   public ArrayList<DbFiltro> getLstFilCadastro() {
@@ -383,6 +449,96 @@ public abstract class DbTabela extends Objeto {
     catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(130), ex);
+    }
+    finally {
+    }
+  }
+
+  protected void OnAdicionarRegDispatcher(TblOnChangeArg arg) {
+
+    try {
+
+      for (TblOnChangeListener evt : this.getLstEvtTblOnChangeListener()) {
+
+        if (evt == null) {
+
+          return;
+        }
+
+        evt.OnAdicionarReg(arg);
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
+  protected void OnApagarRegDispatcher(TblOnChangeArg arg) {
+
+    try {
+
+      for (TblOnChangeListener evt : this.getLstEvtTblOnChangeListener()) {
+
+        if (evt == null) {
+
+          return;
+        }
+
+        evt.OnApagarReg(arg);
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
+  protected void OnAtualizarRegDispatcher(TblOnChangeArg arg) {
+
+    try {
+
+      for (TblOnChangeListener evt : this.getLstEvtTblOnChangeListener()) {
+
+        if (evt == null) {
+
+          return;
+        }
+
+        evt.OnAtualizarReg(arg);
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
+  public void removeEvtTblOnChangeListener(TblOnChangeListener evtTblOnChangeListener) {
+
+    try {
+
+      if (evtTblOnChangeListener == null) {
+
+        return;
+      }
+
+      if (!this.getLstEvtTblOnChangeListener().contains(evtTblOnChangeListener)) {
+
+        return;
+      }
+
+      this.getLstEvtTblOnChangeListener().remove(evtTblOnChangeListener);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
     }
     finally {
     }
