@@ -21,7 +21,7 @@ public abstract class DbTabela extends Objeto {
   private List<DbColuna> _lstClnCadastro;
   private List<DbColuna> _lstClnConsulta;
   private List<TblOnChangeListener> _lstEvtTblOnChangeListener;
-  private ArrayList<DbFiltro> _lstFilCadastro;
+  private List<DbFiltro> _lstFilCadastro;
   private List<DbFiltro> _lstFilConsulta;
   private DataBase _objDb;
   private String _strNomeSql;
@@ -328,7 +328,7 @@ public abstract class DbTabela extends Objeto {
     return _lstEvtTblOnChangeListener;
   }
 
-  public ArrayList<DbFiltro> getLstFilCadastro() {
+  public List<DbFiltro> getLstFilCadastro() {
 
     try {
 
