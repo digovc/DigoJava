@@ -68,6 +68,25 @@ public abstract class DbTabela extends Objeto {
     }
   }
 
+  public void apagar(int intId) {
+
+    TblOnChangeArg arg;
+
+    try {
+
+      arg = new TblOnChangeArg();
+      arg.setIntRegistroId(intId);
+
+      this.OnApagarRegDispatcher(arg);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
   public boolean getBooMenuAdicionar() {
 
     return _booMenuAdicionar;
@@ -185,25 +204,6 @@ public abstract class DbTabela extends Objeto {
     }
 
     return _lstCln;
-  }
-
-  public void apagar(int intId) {
-
-    TblOnChangeArg arg;
-
-    try {
-
-      arg = new TblOnChangeArg();
-      arg.setIntRegistroId(intId);
-
-      this.OnApagarRegDispatcher(arg);
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
   }
 
   public List<DbColuna> getLstClnCadastro() {

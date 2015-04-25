@@ -44,6 +44,31 @@ public abstract class App extends Objeto {
     }
   }
 
+  public void addTbl(DbTabela tbl) {
+
+    try {
+
+      if (tbl == null) {
+
+        return;
+      }
+
+      if (this.getLstTbl().contains(tbl)) {
+
+        return;
+      }
+
+      this.getLstTbl().add(tbl);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+  }
+
   public boolean getBooDebug() {
 
     return _booDebug;
@@ -270,30 +295,5 @@ public abstract class App extends Objeto {
   public void setTblSelec(DbTabela tblSelec) {
 
     _tblSelec = tblSelec;
-  }
-
-  public void addTbl(DbTabela tbl) {
-
-    try {
-
-      if (tbl == null) {
-
-        return;
-      }
-
-      if (this.getLstTbl().contains(tbl)) {
-
-        return;
-      }
-
-      this.getLstTbl().add(tbl);
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
   }
 }
