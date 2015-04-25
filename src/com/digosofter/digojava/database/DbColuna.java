@@ -51,7 +51,7 @@ public class DbColuna extends Objeto {
   private boolean _booMonetario;
   private boolean _booNotNull;
   private boolean _booOrdem;
-  private boolean _booOrdemDecrecente;
+  private boolean _booOrdemDecrescente;
   private boolean _booPercentual;
   private boolean _booSenha;
   private boolean _booVisivelCadastro = true;
@@ -135,9 +135,9 @@ public class DbColuna extends Objeto {
     return _booOrdem;
   }
 
-  public boolean getBooOrdemDecrecente() {
+  public boolean getBooOrdemDecrescente() {
 
-    return _booOrdemDecrecente;
+    return _booOrdemDecrescente;
   }
 
   private boolean getBooPercentual() {
@@ -800,11 +800,10 @@ public class DbColuna extends Objeto {
         }
 
         this.getTbl().setClnChavePrimaria(this);
+        return;
       }
-      else {
 
-        this.getTbl().setClnChavePrimaria(null);
-      }
+      this.getTbl().setClnChavePrimaria(null);
     }
     catch (Exception ex) {
 
@@ -828,11 +827,10 @@ public class DbColuna extends Objeto {
         }
 
         this.getTbl().setClnNome(this);
+        return;
       }
-      else {
 
-        this.getTbl().setClnNome(null);
-      }
+      this.getTbl().setClnNome(null);
     }
     catch (Exception ex) {
 
@@ -879,9 +877,9 @@ public class DbColuna extends Objeto {
     }
   }
 
-  public void setBooOrdemDecrecente(boolean booOrdemDecrecente) {
+  public void setBooOrdemDecrescente(boolean booOrdemDecrescente) {
 
-    _booOrdemDecrecente = booOrdemDecrecente;
+    _booOrdemDecrescente = booOrdemDecrescente;
   }
 
   public void setBooPercentual(boolean booPercentual) {

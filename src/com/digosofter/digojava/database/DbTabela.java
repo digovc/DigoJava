@@ -37,6 +37,7 @@ public abstract class DbTabela extends Objeto {
       this.inicializarColuna(-1);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(122), ex);
     }
     finally {
@@ -112,6 +113,7 @@ public abstract class DbTabela extends Objeto {
       }
 
       _clnChavePrimaria = this.getLstCln().get(0);
+      _clnChavePrimaria.setBooChavePrimaria(true);
     }
     catch (Exception ex) {
 
@@ -133,8 +135,10 @@ public abstract class DbTabela extends Objeto {
       }
 
       _clnNome = this.getClnChavePrimaria();
+      _clnNome.setBooClnNome(true);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -153,6 +157,7 @@ public abstract class DbTabela extends Objeto {
       }
 
       _clnOrdem = this.getClnNome();
+      _clnOrdem.setBooOrdem(true);
     }
     catch (Exception ex) {
 
@@ -443,6 +448,11 @@ public abstract class DbTabela extends Objeto {
 
       for (DbColuna cln : this.getLstCln()) {
 
+        if (cln == null) {
+
+          continue;
+        }
+
         cln.setStrValor(null);
       }
     }
@@ -462,7 +472,7 @@ public abstract class DbTabela extends Objeto {
 
         if (evt == null) {
 
-          return;
+          continue;
         }
 
         evt.OnAdicionarReg(arg);
@@ -484,7 +494,7 @@ public abstract class DbTabela extends Objeto {
 
         if (evt == null) {
 
-          return;
+          continue;
         }
 
         evt.OnApagarReg(arg);
@@ -506,7 +516,7 @@ public abstract class DbTabela extends Objeto {
 
         if (evt == null) {
 
-          return;
+          continue;
         }
 
         evt.OnAtualizarReg(arg);
