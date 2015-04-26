@@ -28,7 +28,7 @@ public abstract class TblMain extends DbTabela {
         return _clnDttAlteracao;
       }
       _clnDttAlteracao = new DbColuna("dtt_alteracao", this, EnmTipo.TEXT);
-      _clnDttAlteracao.setStrNomeExibicao("Alteração");
+      _clnDttAlteracao.setStrNomeExibicao("Data alteração");
     }
     catch (Exception ex) {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
@@ -45,7 +45,7 @@ public abstract class TblMain extends DbTabela {
         return _clnDttCadastro;
       }
       _clnDttCadastro = new DbColuna("dtt_cadastro", this, EnmTipo.TEXT);
-      _clnDttCadastro.setStrNomeExibicao("Cadastro");
+      _clnDttCadastro.setStrNomeExibicao("Data cadastro");
     }
     catch (Exception ex) {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
