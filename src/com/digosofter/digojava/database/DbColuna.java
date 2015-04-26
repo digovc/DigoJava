@@ -908,12 +908,45 @@ public class DbColuna extends Objeto {
 
   public void setBooVisivelCadastro(boolean booVisivelCadastro) {
 
-    _booVisivelCadastro = booVisivelCadastro;
+    try {
+
+      _booVisivelCadastro = booVisivelCadastro;
+
+      if (!_booVisivelCadastro) {
+
+        return;
+      }
+
+      this.getTbl().setLstClnCadastro(null);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
   }
 
   public void setBooVisivelConsulta(boolean booVisivelConsulta) {
 
-    _booVisivelConsulta = booVisivelConsulta;
+    try {
+
+      _booVisivelConsulta = booVisivelConsulta;
+
+      if (!_booVisivelConsulta) {
+
+        return;
+      }
+
+      this.getTbl().setLstClnConsulta(null);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
   }
 
   public void setChrValor(char chrValor) {

@@ -584,6 +584,16 @@ public abstract class DbTabela extends Objeto {
     _clnOrdem = clnOrdem;
   }
 
+  void setLstClnCadastro(List<DbColuna> lstClnCadastro) {
+
+    _lstClnCadastro = lstClnCadastro;
+  }
+
+  void setLstClnConsulta(List<DbColuna> lstClnConsulta) {
+
+    _lstClnConsulta = lstClnConsulta;
+  }
+
   public void setObjDb(DataBase objDb) {
 
     _objDb = objDb;
