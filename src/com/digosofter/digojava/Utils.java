@@ -104,40 +104,40 @@ public abstract class Utils {
           strResultado = "dd";
           break;
         case DD_MM:
-          strResultado = "dd/MM";
+          strResultado = "dd-MM";
           break;
         case DD_MM_YYYY:
-          strResultado = "dd/MM/yyyy";
+          strResultado = "dd-MM-yyyy";
           break;
         case DD_MM_YYYY_HH_MM:
-          strResultado = "dd/MM/yyyy HH:mm";
+          strResultado = "dd-MM-yyyy HH:mm";
           break;
         case DD_MM_YYYY_HH_MM_SS:
-          strResultado = "dd/MM/yyyy HH:mm:ss";
+          strResultado = "dd-MM-yyyy HH:mm:ss";
           break;
         case HH_MM:
           strResultado = "HH:mm";
           break;
         case HH_MM_DD_MM_YYYY:
-          strResultado = "HH:mm dd/MM/yyyy";
+          strResultado = "HH:mm dd-MM-yyyy";
           break;
         case HH_MM_SS_DD_MM_YYYY:
-          strResultado = "HH:mm:ss dd/MM/yyyy";
+          strResultado = "HH:mm:ss dd-MM-yyyy";
           break;
         case YYYY:
           strResultado = "yyyy";
           break;
         case YYYY_MM_DD:
-          strResultado = "yyyy/MM/dd";
+          strResultado = "yyyy-MM-dd";
           break;
         case YYYY_MM_DD_HH_MM_SS:
-          strResultado = "yyyy/MM/dd HH:mm:ss";
+          strResultado = "yyyy-MM-dd HH:mm:ss";
           break;
         case MM:
           strResultado = "MM";
           break;
         default:
-          strResultado = "dd/MM/yyyy";
+          strResultado = "dd-MM-yyyy";
           break;
       }
     }
