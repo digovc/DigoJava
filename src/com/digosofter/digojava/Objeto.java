@@ -73,7 +73,7 @@ public abstract class Objeto {
         return _strNomeSimplificado;
       }
 
-      _strNomeSimplificado = Utils.getStrSimplificada(this.getStrNome());
+      _strNomeSimplificado = Utils.simplificar(this.getStrNome());
     }
     catch (Exception ex) {
 

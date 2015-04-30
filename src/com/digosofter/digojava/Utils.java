@@ -26,6 +26,7 @@ public abstract class Utils {
     DD_MM_YYYY_HH_MM,
     DD_MM_YYYY_HH_MM_SS,
     HH_MM,
+    HH_MM_DD_MM_YY,
     HH_MM_DD_MM_YYYY,
     HH_MM_SS_DD_MM_YYYY,
     MM,
@@ -43,6 +44,94 @@ public abstract class Utils {
 
   public static final Locale LOCAL_BRASIL = new Locale("pt", "BR");
   public static final String STR_VAZIA = "";
+
+  public static String addMascara(String str, String strMascara) {
+
+    String strResultado = null;
+
+    try {
+
+      if (Utils.getBooStrVazia(str)) {
+
+        return null;
+      }
+
+      if (Utils.getBooStrVazia(strMascara)) {
+
+        return null;
+      }
+
+      strResultado = Utils.STR_VAZIA;
+
+      for (char chr : strMascara.toCharArray()) {
+
+        if (chr == '*' && str.length() > 0) {
+
+          strResultado += str.charAt(0);
+          str = str.substring(1);
+          continue;
+        }
+
+        strResultado += chr;
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return strResultado;
+  }
+
+  public static String addMascaraCnpj(String strCnpj) {
+
+    try {
+
+      if (Utils.getBooStrVazia(strCnpj)) {
+
+        return null;
+      }
+
+      strCnpj = Utils.simplificar(strCnpj);
+      strCnpj = Utils.getStrFixo(strCnpj, 14);
+
+      return Utils.addMascara(strCnpj, "**.***.***/****-**");
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
+  }
+
+  public static String addMascaraCpf(String strCpf) {
+
+    try {
+
+      if (Utils.getBooStrVazia(strCpf)) {
+
+        return null;
+      }
+
+      strCpf = Utils.simplificar(strCpf);
+      strCpf = Utils.getStrFixo(strCpf, 10);
+
+      return Utils.addMascara(strCpf, "##.###.###-##");
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
+  }
 
   public static double arredondar(double dblValor, int intQtdCasas, int ceilOrFloor) {
 
@@ -104,25 +193,25 @@ public abstract class Utils {
           strResultado = "dd";
           break;
         case DD_MM:
-          strResultado = "dd-MM";
-          break;
-        case DD_MM_YYYY:
-          strResultado = "dd-MM-yyyy";
+          strResultado = "dd/MM";
           break;
         case DD_MM_YYYY_HH_MM:
-          strResultado = "dd-MM-yyyy HH:mm";
+          strResultado = "dd/MM/yyyy HH:mm";
           break;
         case DD_MM_YYYY_HH_MM_SS:
-          strResultado = "dd-MM-yyyy HH:mm:ss";
+          strResultado = "dd/MM/yyyy HH:mm:ss";
           break;
         case HH_MM:
           strResultado = "HH:mm";
           break;
+        case HH_MM_DD_MM_YY:
+          strResultado = "HH:mm dd/MM/yy";
+          break;
         case HH_MM_DD_MM_YYYY:
-          strResultado = "HH:mm dd-MM-yyyy";
+          strResultado = "HH:mm dd/MM/yyyy";
           break;
         case HH_MM_SS_DD_MM_YYYY:
-          strResultado = "HH:mm:ss dd-MM-yyyy";
+          strResultado = "HH:mm:ss dd/MM/yyyy";
           break;
         case YYYY:
           strResultado = "yyyy";
@@ -137,7 +226,7 @@ public abstract class Utils {
           strResultado = "MM";
           break;
         default:
-          strResultado = "dd-MM-yyyy";
+          strResultado = "dd/MM/yyyy";
           break;
       }
     }
@@ -400,6 +489,72 @@ public abstract class Utils {
     return objSimpleDateFormat.format(dtt.getTime());
   }
 
+  public static String getStrFixo(int intNumero, int intQtd) {
+
+    String str;
+
+    try {
+
+      str = String.valueOf(intNumero);
+
+      if (str == null) {
+
+        str = Utils.STR_VAZIA;
+      }
+
+      while (str.length() < intQtd) {
+
+        str = "0" + str;
+      }
+
+      if (str.length() > intQtd) {
+
+        str = str.substring(0, intQtd);
+      }
+
+      return str;
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
+  }
+
+  public static String getStrFixo(String str, int intQtd) {
+
+    try {
+
+      if (str == null) {
+
+        str = Utils.STR_VAZIA;
+      }
+
+      while (str.length() < intQtd) {
+
+        str = str.concat(" ");
+      }
+
+      if (str.length() > intQtd) {
+
+        str = str.substring(0, intQtd);
+      }
+
+      return str;
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
+  }
+
   public static String getStrPrimeiraMaiuscula(String str) {
 
     try {
@@ -414,52 +569,6 @@ public abstract class Utils {
     }
 
     return str;
-  }
-
-  public static String getStrSimplificada(String strComplexa) {
-
-    String[] arrChrAcentos;
-    String[] arrChrCaracteresEspeciais;
-    String[] arrChrSemAcento;
-
-    try {
-
-      if (Utils.getBooStrVazia(strComplexa)) {
-
-        return Utils.STR_VAZIA;
-      }
-
-      strComplexa = strComplexa.toLowerCase(Utils.LOCAL_BRASIL);
-
-      arrChrAcentos = new String[] { "ç", "á", "é", "í", "ó", "ú", "ý", "à", "è", "ì", "ò", "ù", "ã", "õ", "ñ", "ä", "ë", "ï", "ö", "ü", "ÿ", "â", "ê", "î", "ô", "û" };
-      arrChrSemAcento = new String[] { "c", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u", "a", "o", "n", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u" };
-
-      for (int intTemp = 0; intTemp < arrChrAcentos.length; intTemp++) {
-
-        strComplexa = strComplexa.replace(arrChrAcentos[intTemp], arrChrSemAcento[intTemp]);
-      }
-
-      arrChrCaracteresEspeciais = new String[] { "/", "\\.", ",", "-", ":", "\\(", "\\)", "ª", "\\|", "\\\\", "°", "^\\s+", "\\s+$", "\\s+", ".", "(", ")" };
-
-      for (String arrChrCaracteresEspeciai : arrChrCaracteresEspeciais) {
-
-        strComplexa = strComplexa.replace(arrChrCaracteresEspeciai, "");
-      }
-
-      strComplexa = strComplexa.replace(" ", "_");
-    }
-    catch (Exception ex) {
-
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-
-      arrChrAcentos = null;
-      arrChrCaracteresEspeciais = null;
-      arrChrSemAcento = null;
-    }
-
-    return strComplexa;
   }
 
   public static String getStrToken(List<String> lstStrTermo) {
@@ -599,6 +708,52 @@ public abstract class Utils {
     return str;
   }
 
+  public static String simplificar(String strComplexa) {
+
+    String[] arrChrAcentos;
+    String[] arrChrCaracteresEspeciais;
+    String[] arrChrSemAcento;
+
+    try {
+
+      if (Utils.getBooStrVazia(strComplexa)) {
+
+        return Utils.STR_VAZIA;
+      }
+
+      strComplexa = strComplexa.toLowerCase(Utils.LOCAL_BRASIL);
+
+      arrChrAcentos = new String[] { "ç", "á", "é", "í", "ó", "ú", "ý", "à", "è", "ì", "ò", "ù", "ã", "õ", "ñ", "ä", "ë", "ï", "ö", "ü", "ÿ", "â", "ê", "î", "ô", "û" };
+      arrChrSemAcento = new String[] { "c", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u", "a", "o", "n", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u" };
+
+      for (int intTemp = 0; intTemp < arrChrAcentos.length; intTemp++) {
+
+        strComplexa = strComplexa.replace(arrChrAcentos[intTemp], arrChrSemAcento[intTemp]);
+      }
+
+      arrChrCaracteresEspeciais = new String[] { "/", "\\.", ",", "-", ":", "\\(", "\\)", "ª", "\\|", "\\\\", "°", "^\\s+", "\\s+$", "\\s+", ".", "(", ")" };
+
+      for (String arrChrCaracteresEspeciai : arrChrCaracteresEspeciais) {
+
+        strComplexa = strComplexa.replace(arrChrCaracteresEspeciai, "");
+      }
+
+      strComplexa = strComplexa.replace(" ", "_");
+    }
+    catch (Exception ex) {
+
+      new Erro(App.getI().getStrTextoPadrao(0), ex);
+    }
+    finally {
+
+      arrChrAcentos = null;
+      arrChrCaracteresEspeciais = null;
+      arrChrSemAcento = null;
+    }
+
+    return strComplexa;
+  }
+
   public static Calendar strToDtt(String strDte) {
 
     return Utils.strToDtt(strDte, EnmDataFormato.DD_MM_YYYY);
@@ -645,5 +800,10 @@ public abstract class Utils {
     }
 
     return 0;
+  }
+
+  public static String toString(double dblValor) {
+
+    return String.valueOf(dblValor).replace(".", ",");
   }
 }
