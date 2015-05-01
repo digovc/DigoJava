@@ -7,6 +7,11 @@ import com.digosofter.digojava.erro.Erro;
 
 public class DbFiltro extends Objeto {
 
+  public enum EnmCondicao {
+    AND,
+    OR,
+  }
+
   public enum EnmOperador {
     DIFERENTE,
     IGUAL,
@@ -20,9 +25,9 @@ public class DbFiltro extends Objeto {
 
   private boolean _booSelect;
   private DbColuna _clnFiltro;
+  private EnmCondicao _enmCondicao = EnmCondicao.AND;
   private EnmOperador _enmOperador = EnmOperador.IGUAL;
   private String _sqlFiltro;
-  private String _strCondicao;
   private String _strFiltro;
   private String _strOperador;
 
@@ -108,6 +113,11 @@ public class DbFiltro extends Objeto {
     return _clnFiltro;
   }
 
+  private EnmCondicao getEnmCondicao() {
+
+    return _enmCondicao;
+  }
+
   private EnmOperador getEnmOperador() {
 
     return _enmOperador;
@@ -157,19 +167,24 @@ public class DbFiltro extends Objeto {
 
     try {
 
-      if (!Utils.getBooStrVazia(_strCondicao)) {
+      switch (this.getEnmCondicao()) {
 
-        return _strCondicao;
+        case OR:
+          return "or";
+
+        default:
+          return "and";
       }
 
-      _strCondicao = "and";
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
     }
-    return _strCondicao;
+
+    return null;
   }
 
   private String getStrFiltro() {
@@ -235,14 +250,14 @@ public class DbFiltro extends Objeto {
     _clnFiltro = clnFiltro;
   }
 
+  public void setEnmCondicao(EnmCondicao enmCondicao) {
+
+    _enmCondicao = enmCondicao;
+  }
+
   public void setEnmOperador(EnmOperador enmOperador) {
 
     _enmOperador = enmOperador;
-  }
-
-  public void setStrCondicao(String strCondicao) {
-
-    _strCondicao = strCondicao;
   }
 
   private void setStrFiltro(String strFiltro) {

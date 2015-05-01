@@ -656,6 +656,31 @@ public abstract class Utils {
     return "0";
   }
 
+  public static String getStrValorPercentual(double dblValor) {
+
+    NumberFormat objNumberFormat;
+
+    try {
+
+      if (dblValor == 0) {
+
+        return "0,00 %";
+      }
+
+      objNumberFormat = NumberFormat.getPercentInstance(LOCAL_BRASIL);
+
+      return objNumberFormat.format(dblValor).replace("%", " %");
+    }
+    catch (Exception ex) {
+
+      new Erro(App.getI().getStrTextoPadrao(0), ex);
+    }
+    finally {
+    }
+
+    return "0,00 %";
+  }
+
   /**
    * "Pinga" um host e retorna true caso haja resposta deste.
    */

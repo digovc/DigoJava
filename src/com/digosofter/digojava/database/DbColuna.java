@@ -19,14 +19,18 @@ public class DbColuna extends Objeto {
     BIGSERIAL,
     BOOLEAN,
     CHAR,
+    CNPJ,
+    CPF,
     DATE,
     DATE_TIME,
     DECIMAL,
     DOUBLE,
+    FLOAT,
     INTEGER,
     INTERVAL,
     MONEY,
     NUMERIC,
+    PERCENTUAL,
     REAL,
     SERIAL,
     SMALLINT,
@@ -36,7 +40,7 @@ public class DbColuna extends Objeto {
     TIMESTAMP_WITH_TIME_ZONE,
     TIMESTAMP_WITHOUT_TIME_ZONE,
     VARCHAR,
-    XML
+    XML,
   }
 
   public static enum EnmTipoGrupo {
@@ -48,11 +52,9 @@ public class DbColuna extends Objeto {
 
   private boolean _booChavePrimaria;
   private boolean _booClnNome;
-  private boolean _booMonetario;
   private boolean _booNotNull;
   private boolean _booOrdem;
   private boolean _booOrdemDecrescente;
-  private boolean _booPercentual;
   private boolean _booSenha;
   private boolean _booVisivelCadastro = true;
   private boolean _booVisivelConsulta;
@@ -66,7 +68,6 @@ public class DbColuna extends Objeto {
   private List<Integer> _lstIntOpcaoValor;
   private List<String> _lstStrOpcao;
   private String _sqlSubSelectColunaRef;
-  private String _sqlTipo;
   private String _strGrupoNome;
   private String _strNomeSql;
   private String _strTblNomeClnNome;
@@ -120,11 +121,6 @@ public class DbColuna extends Objeto {
     return _booClnNome;
   }
 
-  private boolean getBooMonetario() {
-
-    return _booMonetario;
-  }
-
   public boolean getBooNotNull() {
 
     return _booNotNull;
@@ -138,11 +134,6 @@ public class DbColuna extends Objeto {
   public boolean getBooOrdemDecrescente() {
 
     return _booOrdemDecrescente;
-  }
-
-  private boolean getBooPercentual() {
-
-    return _booPercentual;
   }
 
   public boolean getBooSenha() {
@@ -451,48 +442,6 @@ public class DbColuna extends Objeto {
     return _sqlSubSelectColunaRef;
   }
 
-  public String getSqlTipo() {
-
-    try {
-
-      if (!Utils.getBooStrVazia(_sqlTipo)) {
-
-        return _sqlTipo;
-      }
-
-      switch (this.getEnmTipo()) {
-        case BOOLEAN:
-          _sqlTipo = "integer";
-          break;
-        case DATE_TIME:
-          _sqlTipo = "text";
-          break;
-        case INTEGER:
-          _sqlTipo = "integer";
-          break;
-        case NUMERIC:
-          _sqlTipo = "numeric";
-          break;
-        case REAL:
-          _sqlTipo = "real";
-          break;
-        case TEXT:
-          _sqlTipo = "text";
-          break;
-        default:
-          _sqlTipo = "text";
-      }
-    }
-    catch (Exception ex) {
-
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
-
-    return _sqlTipo;
-  }
-
   public String getStrGrupoNome() {
 
     return _strGrupoNome;
@@ -572,22 +521,43 @@ public class DbColuna extends Objeto {
     try {
 
       switch (this.getEnmTipo()) {
+
         case BOOLEAN:
           _strValorExibicao = this.getBooValor() ? "Sim" : "Não";
           break;
+
         case DATE:
           _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.DD_MM_YYYY);
           break;
+
         case DATE_TIME:
         case TIMESTAMP_WITH_TIME_ZONE:
         case TIMESTAMP_WITHOUT_TIME_ZONE:
           _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.HH_MM_DD_MM_YYYY);
           break;
+
         case DOUBLE:
         case NUMERIC:
         case REAL:
-          _strValorExibicao = this.getStrValorExibicaoNumeric();
+          _strValorExibicao = Utils.getStrValorNumerico(this.getDblValor());
           break;
+
+        case CNPJ:
+          _strValorExibicao = Utils.addMascaraCnpj(this.getStrValor());
+          break;
+
+        case CPF:
+          _strValorExibicao = Utils.addMascaraCpf(this.getStrValor());
+          break;
+
+        case MONEY:
+          _strValorExibicao = Utils.getStrValorMonetario(this.getDblValor());
+          break;
+
+        case PERCENTUAL:
+          _strValorExibicao = Utils.getStrValorPercentual(this.getDblValor());
+          break;
+
         default:
           _strValorExibicao = this.getStrValor();
           break;
@@ -601,37 +571,6 @@ public class DbColuna extends Objeto {
     }
 
     return _strValorExibicao;
-  }
-
-  private String getStrValorExibicaoNumeric() {
-
-    try {
-
-      if (Utils.getBooStrVazia(this.getStrValor())) {
-
-        return "0";
-      }
-
-      if (this.getBooMonetario()) {
-
-        return this.getStrValorMonetario();
-      }
-
-      if (this.getBooPercentual()) {
-
-        return this.getStrValorPercentual();
-      }
-
-      return this.getStrValor().replace(".", ",");
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
-    return "0,00";
   }
 
   public String getStrValorFormatado(String strValor) {
@@ -686,22 +625,6 @@ public class DbColuna extends Objeto {
     }
     finally {
     }
-  }
-
-  private String getStrValorPercentual() {
-
-    try {
-
-      return this.getStrValorMonetario().replace("R$ ", "") + " %";
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
-    return null;
   }
 
   public String getStrValorSql() {
@@ -840,11 +763,6 @@ public class DbColuna extends Objeto {
     }
   }
 
-  public void setBooMonetario(boolean booMonetario) {
-
-    _booMonetario = booMonetario;
-  }
-
   public void setBooNotNull(boolean booNotNull) {
 
     _booNotNull = booNotNull;
@@ -880,11 +798,6 @@ public class DbColuna extends Objeto {
   public void setBooOrdemDecrescente(boolean booOrdemDecrescente) {
 
     _booOrdemDecrescente = booOrdemDecrescente;
-  }
-
-  public void setBooPercentual(boolean booPercentual) {
-
-    _booPercentual = booPercentual;
   }
 
   public void setBooSenha(boolean booSenha) {
