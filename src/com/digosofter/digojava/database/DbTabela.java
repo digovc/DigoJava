@@ -1,6 +1,8 @@
 package com.digosofter.digojava.database;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.digosofter.digojava.App;
@@ -20,6 +22,8 @@ public abstract class DbTabela extends Objeto {
   private List<DbColuna> _lstCln;
   private List<DbColuna> _lstClnCadastro;
   private List<DbColuna> _lstClnConsulta;
+  private List<DbColuna> _lstClnConsultaOrdenado;
+  private List<DbColuna> _lstClnOrdenado;
   private List<TblOnChangeListener> _lstEvtTblOnChangeListener;
   private List<DbFiltro> _lstFilCadastro;
   private List<DbFiltro> _lstFilConsulta;
@@ -199,6 +203,8 @@ public abstract class DbTabela extends Objeto {
         return _lstCln;
       }
 
+      _lstClnOrdenado = null;
+
       _lstCln = new ArrayList<DbColuna>();
     }
     catch (Exception ex) {
@@ -267,6 +273,8 @@ public abstract class DbTabela extends Objeto {
         return _lstClnConsulta;
       }
 
+      _lstClnConsultaOrdenado = null;
+
       _lstClnConsulta = new ArrayList<DbColuna>();
 
       _lstClnConsulta.add(this.getClnChavePrimaria());
@@ -310,6 +318,66 @@ public abstract class DbTabela extends Objeto {
     }
 
     return _lstClnConsulta;
+  }
+
+  public List<DbColuna> getLstClnConsultaOrdenado() {
+
+    try {
+
+      if (_lstClnConsultaOrdenado != null) {
+
+        return _lstClnConsultaOrdenado;
+      }
+
+      _lstClnConsultaOrdenado = this.getLstClnConsulta();
+
+      Collections.sort(_lstClnConsultaOrdenado, new Comparator<DbColuna>() {
+
+        @Override
+        public int compare(DbColuna cln1, DbColuna cln2) {
+
+          return cln1.getStrNomeExibicao().compareTo(cln2.getStrNomeExibicao());
+        }
+      });
+    }
+    catch (Exception ex) {
+
+      new Erro(App.getI().getStrTextoPadrao(0), ex);
+    }
+    finally {
+    }
+
+    return _lstClnConsultaOrdenado;
+  }
+
+  public List<DbColuna> getLstClnOrdenado() {
+
+    try {
+
+      if (_lstClnOrdenado != null) {
+
+        return _lstClnOrdenado;
+      }
+
+      _lstClnOrdenado = this.getLstCln();
+
+      Collections.sort(_lstClnOrdenado, new Comparator<DbColuna>() {
+
+        @Override
+        public int compare(DbColuna cln1, DbColuna cln2) {
+
+          return cln1.getStrNomeExibicao().compareTo(cln2.getStrNomeExibicao());
+        }
+      });
+    }
+    catch (Exception ex) {
+
+      new Erro(App.getI().getStrTextoPadrao(0), ex);
+    }
+    finally {
+    }
+
+    return _lstClnOrdenado;
   }
 
   private List<TblOnChangeListener> getLstEvtTblOnChangeListener() {

@@ -26,6 +26,7 @@ public class DbColuna extends Objeto {
     DATE_TIME,
     DECIMAL,
     DOUBLE,
+    EMAIL,
     FLOAT,
     INTEGER,
     INTERVAL,
@@ -553,6 +554,10 @@ public class DbColuna extends Objeto {
         case NUMERIC:
         case REAL:
           _strValorExibicao = Utils.getStrValorNumerico(this.getDblValor());
+          break;
+
+        case EMAIL:
+          _strValorExibicao = this.getStrValor() != null ? this.getStrValor().toLowerCase() : null;
           break;
 
         case MONEY:
