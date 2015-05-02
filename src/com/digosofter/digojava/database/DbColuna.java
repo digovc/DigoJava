@@ -18,6 +18,7 @@ public class DbColuna extends Objeto {
     BIGINT,
     BIGSERIAL,
     BOOLEAN,
+    CEP,
     CHAR,
     CNPJ,
     CPF,
@@ -526,6 +527,18 @@ public class DbColuna extends Objeto {
           _strValorExibicao = this.getBooValor() ? "Sim" : "Não";
           break;
 
+        case CEP:
+          _strValorExibicao = Utils.addMascaraCep(this.getStrValor());
+          break;
+
+        case CNPJ:
+          _strValorExibicao = Utils.addMascaraCnpj(this.getStrValor());
+          break;
+
+        case CPF:
+          _strValorExibicao = Utils.addMascaraCpf(this.getStrValor());
+          break;
+
         case DATE:
           _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.DD_MM_YYYY);
           break;
@@ -540,14 +553,6 @@ public class DbColuna extends Objeto {
         case NUMERIC:
         case REAL:
           _strValorExibicao = Utils.getStrValorNumerico(this.getDblValor());
-          break;
-
-        case CNPJ:
-          _strValorExibicao = Utils.addMascaraCnpj(this.getStrValor());
-          break;
-
-        case CPF:
-          _strValorExibicao = Utils.addMascaraCpf(this.getStrValor());
           break;
 
         case MONEY:
@@ -571,41 +576,6 @@ public class DbColuna extends Objeto {
     }
 
     return _strValorExibicao;
-  }
-
-  public String getStrValorFormatado(String strValor) {
-
-    String strResultado = "";
-
-    try {
-
-      switch (this.getEnmTipoGrupo()) {
-
-        case ALPHANUMERICO:
-          strResultado = strValor;
-          break;
-
-        case NUMERICO:
-          strResultado = strValor;
-          break;
-
-        case TEMPORAL:
-          strResultado = strValor;
-          break;
-
-        default:
-          strResultado = strValor;
-          break;
-      }
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
-    return strResultado;
   }
 
   public String getStrValorMonetario() {

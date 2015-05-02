@@ -85,6 +85,30 @@ public abstract class Utils {
     return strResultado;
   }
 
+  public static String addMascaraCep(String strCep) {
+
+    try {
+
+      if (Utils.getBooStrVazia(strCep)) {
+
+        return null;
+      }
+
+      strCep = Utils.simplificar(strCep);
+      strCep = Utils.getStrFixo(strCep, 10);
+
+      return Utils.addMascara(strCep, "**.***.***-**");
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
+  }
+
   public static String addMascaraCnpj(String strCnpj) {
 
     try {
@@ -121,7 +145,7 @@ public abstract class Utils {
       strCpf = Utils.simplificar(strCpf);
       strCpf = Utils.getStrFixo(strCpf, 10);
 
-      return Utils.addMascara(strCpf, "##.###.###-##");
+      return Utils.addMascara(strCpf, "**.***.***-**");
     }
     catch (Exception ex) {
 
