@@ -97,7 +97,7 @@ public abstract class Utils {
       strCep = Utils.simplificar(strCep);
       strCep = Utils.getStrFixo(strCep, 10);
 
-      return Utils.addMascara(strCep, "**.***.***-**");
+      return Utils.addMascara(strCep, "**.***-***");
     }
     catch (Exception ex) {
 
