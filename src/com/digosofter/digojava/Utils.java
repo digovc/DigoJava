@@ -492,6 +492,7 @@ public abstract class Utils {
 
     SimpleDateFormat objSimpleDateFormat = null;
     String strDataFormato;
+    String strResultado;
 
     try {
 
@@ -502,6 +503,17 @@ public abstract class Utils {
 
       strDataFormato = Utils.enmDataFormatoToString(enmDataFormato);
       objSimpleDateFormat = new SimpleDateFormat(strDataFormato, LOCAL_BRASIL);
+
+      strResultado = objSimpleDateFormat.format(dtt.getTime());
+
+      if (Utils.getBooStrVazia(strResultado)) {
+
+        return null;
+      }
+
+      strResultado = strResultado.replace("00:00 ", Utils.STR_VAZIA);
+
+      return strResultado;
     }
     catch (Exception ex) {
 
@@ -510,7 +522,7 @@ public abstract class Utils {
     finally {
     }
 
-    return objSimpleDateFormat.format(dtt.getTime());
+    return null;
   }
 
   public static String getStrFixo(int intNumero, int intQtd) {
