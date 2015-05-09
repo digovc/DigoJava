@@ -219,15 +219,6 @@ public class DbColuna extends Objeto {
 
   public GregorianCalendar getDttValor() {
 
-    GregorianCalendar dttResultado = null;
-
-    int intAno;
-    int intDia;
-    int intHora = 0;
-    int intMes;
-    int intMin = 0;
-    int intSeg = 0;
-
     try {
 
       if (Utils.getBooStrVazia(this.getStrValor())) {
@@ -235,38 +226,16 @@ public class DbColuna extends Objeto {
         return null;
       }
 
-      intAno = Integer.parseInt(this.getStrValor().substring(0, 4));
-      intMes = Integer.parseInt(this.getStrValor().substring(5, 7));
-      intDia = Integer.parseInt(this.getStrValor().substring(8, 10));
-
-      try {
-        intHora = Integer.parseInt(this.getStrValor().substring(11, 13));
-      }
-      catch (Exception e) {
-      }
-
-      try {
-        intMin = Integer.parseInt(this.getStrValor().substring(14, 16));
-      }
-      catch (Exception e) {
-      }
-
-      try {
-        intSeg = Integer.parseInt(this.getStrValor().substring(17, 19));
-      }
-      catch (Exception e) {
-      }
-
-      dttResultado = new GregorianCalendar(intAno, intMes - 1, intDia, intHora, intMin, intSeg);
+      Utils.strToDtt(this.getStrValor());
     }
     catch (Exception ex) {
 
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
+      return null;
     }
     finally {
     }
 
-    return dttResultado;
+    return null;
   }
 
   public EnmTipo getEnmTipo() {

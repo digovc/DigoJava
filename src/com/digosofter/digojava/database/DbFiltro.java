@@ -9,6 +9,8 @@ public class DbFiltro extends Objeto {
 
   public enum EnmCondicao {
     AND,
+    IS,
+    IS_NOT,
     OR,
   }
 
@@ -168,6 +170,12 @@ public class DbFiltro extends Objeto {
     try {
 
       switch (this.getEnmCondicao()) {
+
+        case IS:
+          return "is";
+
+        case IS_NOT:
+          return "is not";
 
         case OR:
           return "or";

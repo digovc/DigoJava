@@ -525,6 +525,89 @@ public abstract class Utils {
     return null;
   }
 
+  private static String getStrDttFormato(String strDtt) {
+
+    try {
+
+      if (Utils.getBooStrVazia(strDtt)) {
+
+        return null;
+      }
+
+      strDtt = strDtt.toLowerCase();
+      strDtt = strDtt.replace("/", "-");
+      strDtt = strDtt.replace("t", " ");
+
+      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d.\\d\\d\\d")) {
+
+        return "dd-MM-yyyy HH:mm:ss.SSS";
+      }
+
+      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d")) {
+
+        return "dd-MM-yyyy HH:mm:ss";
+      }
+
+      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d")) {
+
+        return "dd-MM-yyyy HH:mm";
+      }
+
+      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d")) {
+
+        return "dd-MM-yyyy";
+      }
+
+      if (strDtt.matches("\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d")) {
+
+        return "HH:mm:ss.SSS dd-MM-yyyy";
+      }
+
+      if (strDtt.matches("\\d\\d:\\d\\d:\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d")) {
+
+        return "HH:mm:ss dd-MM-yyyy";
+      }
+
+      if (strDtt.matches("\\d\\d:\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d")) {
+
+        return "HH:mm dd-MM-yyyy";
+      }
+
+      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d")) {
+
+        return "dd-MM-yyyy";
+      }
+
+      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d.\\d\\d\\d")) {
+
+        return "yyyy-MM-dd HH:mm:ss.SSS";
+      }
+
+      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d")) {
+
+        return "yyyy-MM-dd HH:mm:ss";
+      }
+
+      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d")) {
+
+        return "yyyy-MM-dd HH:mm";
+      }
+
+      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d")) {
+
+        return "yyyy-MM-dd";
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
+  }
+
   public static String getStrFixo(int intNumero, int intQtd) {
 
     String str;
@@ -815,31 +898,38 @@ public abstract class Utils {
     return strComplexa;
   }
 
-  public static Calendar strToDtt(String strDte) {
+  public static GregorianCalendar strToDtt(String strDtt) {
 
-    return Utils.strToDtt(strDte, EnmDataFormato.DD_MM_YYYY);
-  }
-
-  public static GregorianCalendar strToDtt(String strDte, EnmDataFormato enmDataFormato) {
-
-    GregorianCalendar dttResultado = null;
-    SimpleDateFormat objSimpleDateFormat;
+    GregorianCalendar dttResultado;
+    SimpleDateFormat sdf;
 
     try {
 
-      objSimpleDateFormat = new SimpleDateFormat(Utils.enmDataFormatoToString(enmDataFormato), LOCAL_BRASIL);
+      if (Utils.getBooStrVazia(strDtt)) {
+
+        return null;
+      }
+
+      strDtt = strDtt.toLowerCase();
+
+      strDtt = strDtt.replace("/", "-");
+      strDtt = strDtt.replace("t", " ");
 
       dttResultado = new GregorianCalendar();
-      dttResultado.setTime(objSimpleDateFormat.parse(strDte));
+      sdf = new SimpleDateFormat(Utils.getStrDttFormato(strDtt));
+
+      dttResultado.setTime(sdf.parse(strDtt));
+
+      return dttResultado;
     }
     catch (Exception ex) {
 
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
+      new Erro("Erro inesperado.\n", ex);
     }
     finally {
     }
 
-    return dttResultado;
+    return null;
   }
 
   public static double toDouble(String str) {
