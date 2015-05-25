@@ -15,10 +15,7 @@ public class Erro extends Exception implements Serializable {
 
     try {
 
-      if (!Utils.getBooStrVazia(strMsg)) {
-
-        this.setStrMsg(strMsg);
-      }
+      this.setStrMsg(strMsg);
 
       if (ex != null && !Utils.getBooStrVazia(ex.getMessage())) {
 
@@ -43,13 +40,14 @@ public class Erro extends Exception implements Serializable {
     try {
 
       if (!Utils.getBooStrVazia(_strMsg)) {
+
         return _strMsg;
       }
 
-      _strMsg = "Erro do sistema.";
-
+      _strMsg = "Erro inesperado.";
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
@@ -63,13 +61,14 @@ public class Erro extends Exception implements Serializable {
     try {
 
       if (!Utils.getBooStrVazia(_strMsgDetalhe)) {
+
         return _strMsgDetalhe;
       }
 
-      _strMsgDetalhe = "Sem mais detalhes do erro.";
-
+      _strMsgDetalhe = "Não há detalhes do erro.";
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
@@ -91,6 +90,7 @@ public class Erro extends Exception implements Serializable {
       System.out.println(this.getStrMsgDetalhe());
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {

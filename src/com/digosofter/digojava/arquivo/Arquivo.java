@@ -25,26 +25,26 @@ public abstract class Arquivo extends Objeto {
    */
   public void copiar(String dirDestino) {
 
-    byte[] arrBytBuffer;
+    byte[] arrBte;
     FileInputStream filOriginal;
     FileOutputStream filCopia;
-    int intLength;
+    int i;
 
     try {
 
       this.criarDiretorio(dirDestino);
 
-      filOriginal = new FileInputStream(this.getDirCompleto());
+      arrBte = new byte[1024];
       filCopia = new FileOutputStream(dirDestino + "/" + this.getStrNome());
-      arrBytBuffer = new byte[1024];
+      filOriginal = new FileInputStream(this.getDirCompleto());
 
-      while ((intLength = filOriginal.read(arrBytBuffer)) > 0) {
+      while ((i = filOriginal.read(arrBte)) > 0) {
 
-        filCopia.write(arrBytBuffer, 0, intLength);
+        filCopia.write(arrBte, 0, i);
       }
 
-      filOriginal.close();
       filCopia.close();
+      filOriginal.close();
     }
     catch (Exception ex) {
 
@@ -107,8 +107,6 @@ public abstract class Arquivo extends Objeto {
 
   protected boolean getBooExiste() {
 
-    File fil;
-
     try {
 
       if (Utils.getBooStrVazia(this.getDirCompleto())) {
@@ -116,8 +114,7 @@ public abstract class Arquivo extends Objeto {
         return false;
       }
 
-      fil = new File(this.getDirCompleto());
-      _booExiste = fil.exists();
+      _booExiste = new File(this.getDirCompleto()).exists();
     }
     catch (Exception ex) {
 
@@ -212,6 +209,7 @@ public abstract class Arquivo extends Objeto {
       this.criarDiretorio();
 
       filWriter = new FileWriter(new File(this.getDirCompleto()));
+
       filWriter.write(this.getStrConteudo());
       filWriter.close();
     }
@@ -240,11 +238,6 @@ public abstract class Arquivo extends Objeto {
 
         return;
       }
-
-      // if (!this.getBooExiste()) {
-      //
-      // return;
-      // }
 
       fil = new File(_dirCompleto);
 

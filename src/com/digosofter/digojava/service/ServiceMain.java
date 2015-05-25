@@ -4,25 +4,26 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class ServiceMain extends Thread {
 
+  private boolean _booParar;
+
   protected void dormirHora(int intHora) {
 
-    try {
-
-      this.dormirMinuto(intHora * 60);
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
+    this.dormirMinuto(intHora * 60);
   }
 
   protected void dormirMilissegundo(int intMilissegundo) {
 
+    long lng;
+
     try {
 
-      Thread.sleep(intMilissegundo);
+      lng = 0;
+
+      while ((!this.getBooParar()) && (lng < intMilissegundo)) {
+
+        Thread.sleep(100);
+        lng += 100;
+      }
     }
     catch (Exception ex) {
 
@@ -34,30 +35,21 @@ public abstract class ServiceMain extends Thread {
 
   protected void dormirMinuto(int intMinuto) {
 
-    try {
-
-      this.dormirSegundo(intMinuto * 60);
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
+    this.dormirSegundo(intMinuto * 60);
   }
 
   protected void dormirSegundo(int intSegundo) {
 
-    try {
-
-      this.dormirMilissegundo(intSegundo * 1000);
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
+    this.dormirMilissegundo(intSegundo * 1000);
   }
 
+  private boolean getBooParar() {
+
+    return _booParar;
+  }
+
+  public void setBooParar(boolean booParar) {
+
+    _booParar = booParar;
+  }
 }

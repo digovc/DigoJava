@@ -31,8 +31,9 @@ public abstract class Objeto {
         return _intObjetoId;
       }
 
-      _intObjetoId = Objeto.getIntObjetoIdStatic() + 1;
-      Objeto.setIntObjetoIdStatic(_intObjetoId);
+      Objeto.setIntObjetoIdStatic(Objeto.getIntObjetoIdStatic() + 1);
+
+      _intObjetoId = Objeto.getIntObjetoIdStatic();
     }
     catch (Exception ex) {
 

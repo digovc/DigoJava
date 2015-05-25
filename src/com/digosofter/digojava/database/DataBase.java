@@ -23,18 +23,21 @@ public abstract class DataBase extends Objeto {
       }
 
       switch (str.toLowerCase()) {
-        case "true":
-        case "t":
-        case "sim":
-        case "s":
+
         case "1":
+        case "s":
+        case "sim":
+        case "t":
+        case "true":
           return true;
 
         default:
+
           return false;
       }
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -45,7 +48,6 @@ public abstract class DataBase extends Objeto {
 
   public double execSqlGetDbl(String sql) {
 
-    double dblResultado = 0;
     String str;
 
     try {
@@ -53,15 +55,16 @@ public abstract class DataBase extends Objeto {
       str = this.execSqlGetStr(sql);
       str = !Utils.getBooStrVazia(str) ? str : "0";
 
-      dblResultado = Double.valueOf(str);
+      return Double.valueOf(str);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
     }
 
-    return dblResultado;
+    return 0;
   }
 
   public int execSqlGetInt(String sql) {

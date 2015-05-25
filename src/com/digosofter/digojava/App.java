@@ -20,10 +20,10 @@ public abstract class App extends Objeto {
 
   private boolean _booDebug;
   private long _intMilisegLigado;
-  private long _intSegundosLigado;
+  private long _intSegLigado;
   private long _intStartTime;
   private int _intVersao = 1;
-  private List<MsgUsuario> _lstMsgUsuarioPadrao;
+  private List<MsgUsuario> _lstMsgUsrPadrao;
   private List<DbTabela> _lstTbl;
   private Gson _objGson;
   private String _strVersao;
@@ -90,11 +90,11 @@ public abstract class App extends Objeto {
     return _intMilisegLigado;
   }
 
-  public long getIntSegundosLigado() {
+  public long getIntSegLigado() {
 
     try {
 
-      _intSegundosLigado = this.getIntMilisegLigado() / 1000;
+      _intSegLigado = this.getIntMilisegLigado() / 1000;
     }
     catch (Exception ex) {
 
@@ -103,7 +103,7 @@ public abstract class App extends Objeto {
     finally {
     }
 
-    return _intSegundosLigado;
+    return _intSegLigado;
   }
 
   private long getIntStartTime() {
@@ -116,31 +116,32 @@ public abstract class App extends Objeto {
     return _intVersao;
   }
 
-  public abstract List<MsgUsuario> getLstMsgUsuario();
+  public abstract List<MsgUsuario> getLstMsgUsr();
 
-  protected List<MsgUsuario> getLstMsgUsuarioPadrao() {
+  protected List<MsgUsuario> getLstMsgUsrPadrao() {
 
     try {
 
-      if (_lstMsgUsuarioPadrao != null) {
+      if (_lstMsgUsrPadrao != null) {
 
-        return _lstMsgUsuarioPadrao;
+        return _lstMsgUsrPadrao;
       }
 
-      _lstMsgUsuarioPadrao = new ArrayList<MsgUsuario>();
-      _lstMsgUsuarioPadrao.add(new MsgUsuario("Erro inesperado..", 0));
+      _lstMsgUsrPadrao = new ArrayList<MsgUsuario>();
+
+      _lstMsgUsrPadrao.add(new MsgUsuario("Erro inesperado.", 0));
     }
     catch (Exception ex) {
 
-      new Erro(this.getStrMsgUsuarioPadrao(0), ex);
+      new Erro(this.getStrMsgUsrPadrao(0), ex);
     }
     finally {
     }
 
-    return _lstMsgUsuarioPadrao;
+    return _lstMsgUsrPadrao;
   }
 
-  public List<DbTabela> getLstTbl() {
+  protected List<DbTabela> getLstTbl() {
 
     try {
 
@@ -188,27 +189,27 @@ public abstract class App extends Objeto {
     return _objGson;
   }
 
-  public String getStrMsgUsuario(int intId) {
+  public String getStrMsgUsr(int intId) {
 
-    return this.getStrMsgUsuario(intId, EnmLingua.PORTUGUES, false);
+    return this.getStrMsgUsr(intId, EnmLingua.PORTUGUES, false);
   }
 
-  public String getStrMsgUsuario(int intId, EnmLingua enmLingua, boolean booMsgPadrao) {
+  public String getStrMsgUsr(int intId, EnmLingua enmLingua, boolean booMsgPadrao) {
 
-    List<MsgUsuario> lstMsgUsuarioTemp;
+    List<MsgUsuario> lstMsgUsrTemp;
 
     try {
 
       if (booMsgPadrao) {
 
-        lstMsgUsuarioTemp = this.getLstMsgUsuarioPadrao();
+        lstMsgUsrTemp = this.getLstMsgUsrPadrao();
       }
       else {
 
-        lstMsgUsuarioTemp = this.getLstMsgUsuario();
+        lstMsgUsrTemp = this.getLstMsgUsr();
       }
 
-      for (MsgUsuario msgUsuario : lstMsgUsuarioTemp) {
+      for (MsgUsuario msgUsuario : lstMsgUsrTemp) {
 
         if (msgUsuario.getIntId() != intId || msgUsuario.getEnmLingua() != enmLingua) {
 
@@ -228,19 +229,19 @@ public abstract class App extends Objeto {
     return null;
   }
 
-  public String getStrMsgUsuarioPadrao(int intId) {
+  public String getStrMsgUsrPadrao(int intId) {
 
-    return this.getStrMsgUsuario(intId, EnmLingua.PORTUGUES, true);
+    return this.getStrMsgUsr(intId, EnmLingua.PORTUGUES, true);
   }
 
   public String getStrTexto(int intId) {
 
-    return this.getStrMsgUsuario(intId);
+    return this.getStrMsgUsr(intId);
   }
 
   public String getStrTextoPadrao(int intId) {
 
-    return this.getStrMsgUsuarioPadrao(intId);
+    return this.getStrMsgUsrPadrao(intId);
   }
 
   public String getStrVersao() {

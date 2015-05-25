@@ -1,10 +1,8 @@
 package com.digosofter.digojava.database;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
+import java.util.HashMap;
 
 import com.digosofter.digojava.App;
 import com.digosofter.digojava.Objeto;
@@ -49,11 +47,11 @@ public class DbColuna extends Objeto {
 
     ALPHANUMERICO,
     NUMERICO,
-    TEMPORAL
+    TEMPORAL,
   }
 
   private boolean _booChavePrimaria;
-  private boolean _booClnNome;
+  private boolean _booNome;
   private boolean _booNotNull;
   private boolean _booOrdem;
   private boolean _booOrdemDecrescente;
@@ -67,16 +65,15 @@ public class DbColuna extends Objeto {
   private int _intFrmLinhaPeso = 1;
   private int _intOrdem;
   private int _intTamanhoCampo = 100;
-  private List<Integer> _lstIntOpcaoValor;
-  private List<String> _lstStrOpcao;
-  private String _sqlSubSelectColunaRef;
+  private HashMap<Integer, String> _mapOpcao;
+  private String _sqlSubSelectClnRef;
   private String _strGrupoNome;
   private String _strNomeSql;
-  private String _strTblNomeClnNome;
   private String _strValor;
   private String _strValorDefault;
   private String _strValorExibicao;
   private String _strValorSql;
+
   private DbTabela _tbl;
 
   public DbColuna(String strNome, DbTabela tbl, EnmTipo enmTipo) {
@@ -96,14 +93,19 @@ public class DbColuna extends Objeto {
   }
 
   /**
-   * Adiciona uma opção para lista, tornando o campo selecionável por combobox.
+   * Adiciona uma opção para lista, tornando o campo selecionável por
+   * "Combobox".
    */
-  public void adicionarOpcao(int intValor, String strNome) {
+  public void addOpcao(int intValor, String strNome) {
 
     try {
 
-      this.getLstIntOpcaoValor().add(intValor);
-      this.getLstStrOpcao().add(strNome);
+      if (this.getMapOpcao().containsKey(intValor)) {
+
+        return;
+      }
+
+      this.getMapOpcao().put(intValor, strNome);
     }
     catch (Exception ex) {
 
@@ -118,9 +120,9 @@ public class DbColuna extends Objeto {
     return _booChavePrimaria;
   }
 
-  public boolean getBooClnNome() {
+  public boolean getBooNome() {
 
-    return _booClnNome;
+    return _booNome;
   }
 
   public boolean getBooNotNull() {
@@ -178,11 +180,9 @@ public class DbColuna extends Objeto {
 
   public char getChrValor() {
 
-    char chrResultado = 0;
-
     try {
 
-      chrResultado = this.getStrValor().charAt(0);
+      return this.getStrValor().charAt(0);
     }
     catch (Exception ex) {
 
@@ -190,8 +190,6 @@ public class DbColuna extends Objeto {
     }
     finally {
     }
-
-    return chrResultado;
   }
 
   public DbColuna getClnRef() {
@@ -201,11 +199,9 @@ public class DbColuna extends Objeto {
 
   public double getDblValor() {
 
-    double dlbResultado;
-
     try {
 
-      dlbResultado = Double.parseDouble(this.getStrValor());
+      return Double.parseDouble(this.getStrValor());
     }
     catch (Exception ex) {
 
@@ -213,8 +209,6 @@ public class DbColuna extends Objeto {
     }
     finally {
     }
-
-    return dlbResultado;
   }
 
   public GregorianCalendar getDttValor() {
@@ -263,32 +257,34 @@ public class DbColuna extends Objeto {
 
     try {
 
-      // TODO: Completar com o restante dos tipos.
       switch (this.getEnmTipo()) {
-        case INTEGER:
-        case INTERVAL:
+
         case BIGINT:
         case BIGSERIAL:
-        case MONEY:
         case DECIMAL:
         case DOUBLE:
+        case INTEGER:
+        case INTERVAL:
+        case MONEY:
         case NUMERIC:
-        case SMALLINT:
         case REAL:
         case SERIAL:
+        case SMALLINT:
           _enmTipoGrupo = EnmTipoGrupo.NUMERICO;
-          break;
+          return _enmTipoGrupo;
+
+        case DATE:
+        case DATE_TIME:
         case TIME_WITH_TIME_ZONE:
         case TIME_WITHOUT_TIME_ZONE:
         case TIMESTAMP_WITH_TIME_ZONE:
         case TIMESTAMP_WITHOUT_TIME_ZONE:
-        case DATE:
-        case DATE_TIME:
           _enmTipoGrupo = EnmTipoGrupo.TEMPORAL;
-          break;
+          return _enmTipoGrupo;
+
         default:
           _enmTipoGrupo = EnmTipoGrupo.ALPHANUMERICO;
-          break;
+          return _enmTipoGrupo;
       }
     }
     catch (Exception ex) {
@@ -323,11 +319,9 @@ public class DbColuna extends Objeto {
 
   public int getIntValor() {
 
-    int intResultado;
-
     try {
 
-      intResultado = Integer.parseInt(this.getStrValor());
+      return Integer.parseInt(this.getStrValor());
     }
     catch (Exception ex) {
 
@@ -335,20 +329,18 @@ public class DbColuna extends Objeto {
     }
     finally {
     }
-
-    return intResultado;
   }
 
-  protected List<Integer> getLstIntOpcaoValor() {
+  public HashMap<Integer, String> getMapOpcao() {
 
     try {
 
-      if (_lstIntOpcaoValor != null) {
+      if (_mapOpcao != null) {
 
-        return _lstIntOpcaoValor;
+        return _mapOpcao;
       }
 
-      _lstIntOpcaoValor = new ArrayList<Integer>();
+      _mapOpcao = new HashMap<Integer, String>();
     }
     catch (Exception ex) {
 
@@ -357,51 +349,30 @@ public class DbColuna extends Objeto {
     finally {
     }
 
-    return _lstIntOpcaoValor;
+    return _mapOpcao;
   }
 
-  public List<String> getLstStrOpcao() {
+  public String getSqlSubSelectClnRef() {
 
     try {
-
-      if (_lstStrOpcao != null) {
-
-        return _lstStrOpcao;
-      }
-
-      _lstStrOpcao = new ArrayList<String>();
-    }
-    catch (Exception ex) {
-
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
-
-    return _lstStrOpcao;
-  }
-
-  public String getSqlSubSelectColunaRef() {
-
-    try {
-
-      if (_sqlSubSelectColunaRef != null) {
-
-        return _sqlSubSelectColunaRef;
-      }
 
       if (this.getClnRef() == null) {
 
-        return Utils.STR_VAZIA;
+        return null;
       }
 
-      _sqlSubSelectColunaRef = "(select _tbl_ref_nome._cln_ref_nome from _tbl_ref_nome where _tbl_ref_nome._cln_ref_pk = _tbl_nome._cln_nome) _cln_nome, ";
+      if (!Utils.getBooStrVazia(_sqlSubSelectClnRef)) {
 
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_tbl_ref_nome", this.getClnRef().getTbl().getStrNomeSql());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getStrNomeSql());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnChavePrimaria().getStrNomeSql());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_tbl_nome", this.getTbl().getStrNomeSql());
-      _sqlSubSelectColunaRef = _sqlSubSelectColunaRef.replace("_cln_nome", this.getStrNomeSql());
+        return _sqlSubSelectClnRef;
+      }
+
+      _sqlSubSelectClnRef = "(select _tbl_ref_nome._cln_ref_nome from _tbl_ref_nome where _tbl_ref_nome._cln_ref_pk = _tbl_nome._cln_nome) _cln_nome, ";
+
+      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_ref_nome", this.getClnRef().getTbl().getStrNomeSql());
+      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getStrNomeSql());
+      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnChavePrimaria().getStrNomeSql());
+      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_nome", this.getTbl().getStrNomeSql());
+      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_nome", this.getStrNomeSql());
     }
     catch (Exception ex) {
 
@@ -410,7 +381,7 @@ public class DbColuna extends Objeto {
     finally {
     }
 
-    return _sqlSubSelectColunaRef;
+    return _sqlSubSelectClnRef;
   }
 
   public String getStrGrupoNome() {
@@ -439,50 +410,12 @@ public class DbColuna extends Objeto {
     return _strNomeSql;
   }
 
-  public String getStrTblNomeClnNome() {
-
-    try {
-
-      if (_strTblNomeClnNome != null) {
-
-        return _strTblNomeClnNome;
-      }
-
-      _strTblNomeClnNome = "_tbl_nome._cln_nome, ";
-
-      _strTblNomeClnNome = _strTblNomeClnNome.replace("_tbl_nome", this.getTbl().getStrNomeSql());
-      _strTblNomeClnNome = _strTblNomeClnNome.replace("_cln_nome", this.getStrNomeSql());
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
-    return _strTblNomeClnNome;
-  }
-
   public String getStrValor() {
 
     return _strValor;
   }
 
   public String getStrValorDefault() {
-
-    try {
-
-      if (Utils.getBooStrVazia(_strValorDefault)) {
-
-        _strValorDefault = Utils.STR_VAZIA;
-      }
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
 
     return _strValorDefault;
   }
@@ -580,32 +513,32 @@ public class DbColuna extends Objeto {
         return null;
       }
 
-      // TODO: Fazer validações para impedir "sql injection".
       switch (this.getEnmTipo()) {
+
         case BOOLEAN:
-          _strValorSql = this.getStrValorSqlBoolean();
+          _strValorSql = this.getBooValor() ? "1" : "0";
           break;
+
         case DATE_TIME:
           _strValorSql = this.getStrValor();
           break;
+
         case INTEGER:
           _strValorSql = this.getStrValor();
           break;
+
         case NUMERIC:
           _strValorSql = this.getStrValor();
           break;
+
         case REAL:
           _strValorSql = this.getStrValor();
           break;
-        case TEXT:
-          _strValorSql = this.getStrValor();
-          break;
+
         default:
-          _strValorSql = this.getStrValor();
+          _strValorSql = getStrValorSqlText();
           break;
       }
-
-      _strValorSql = _strValorSql.replace("'", "''");
     }
     catch (Exception ex) {
 
@@ -617,26 +550,22 @@ public class DbColuna extends Objeto {
     return _strValorSql;
   }
 
-  private String getStrValorSqlBoolean() {
+  private String getStrValorSqlText() {
 
-    String strResultado = null;
+    String str;
 
     try {
 
       if (Utils.getBooStrVazia(this.getStrValor())) {
 
-        return "0";
+        return "null";
       }
 
-      switch (this.getStrValor().toLowerCase(Locale.ROOT)) {
-        case "true":
-        case "t":
-        case "sim":
-        case "1":
-          return "1";
-        default:
-          return "0";
-      }
+      str = this.getStrValor();
+
+      str = str.replace("'", "''");
+
+      return str;
     }
     catch (Exception ex) {
 
@@ -645,12 +574,27 @@ public class DbColuna extends Objeto {
     finally {
     }
 
-    return strResultado;
+    return null;
   }
 
   public DbTabela getTbl() {
 
     return _tbl;
+  }
+
+  public void limpar() {
+
+    try {
+
+      this.setStrValor(null);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
   }
 
   public void setBooChavePrimaria(boolean booChavePrimaria) {
@@ -659,18 +603,18 @@ public class DbColuna extends Objeto {
 
       _booChavePrimaria = booChavePrimaria;
 
-      if (_booChavePrimaria) {
+      if (!_booChavePrimaria) {
 
-        if (!this.equals(this.getTbl().getClnChavePrimaria())) {
-
-          this.getTbl().getClnChavePrimaria()._booChavePrimaria = false;
-        }
-
-        this.getTbl().setClnChavePrimaria(this);
+        this.getTbl().setClnChavePrimaria(null);
         return;
       }
 
-      this.getTbl().setClnChavePrimaria(null);
+      if (!this.equals(this.getTbl().getClnChavePrimaria())) {
+
+        this.getTbl().getClnChavePrimaria()._booChavePrimaria = false;
+      }
+
+      this.getTbl().setClnChavePrimaria(this);
     }
     catch (Exception ex) {
 
@@ -680,24 +624,24 @@ public class DbColuna extends Objeto {
     }
   }
 
-  public void setBooClnNome(boolean booClnNome) {
+  public void setBooNome(boolean booNome) {
 
     try {
 
-      _booClnNome = booClnNome;
+      _booNome = booNome;
 
-      if (_booClnNome) {
+      if (!_booNome) {
 
-        if (!this.equals(this.getTbl().getClnNome())) {
-
-          this.getTbl().getClnNome()._booClnNome = false;
-        }
-
-        this.getTbl().setClnNome(this);
+        this.getTbl().setClnNome(null);
         return;
       }
 
-      this.getTbl().setClnNome(null);
+      if (!this.equals(this.getTbl().getClnNome())) {
+
+        this.getTbl().getClnNome()._booNome = false;
+      }
+
+      this.getTbl().setClnNome(this);
     }
     catch (Exception ex) {
 
@@ -718,19 +662,18 @@ public class DbColuna extends Objeto {
 
       _booOrdem = booOrdem;
 
-      if (_booOrdem) {
-
-        if (!this.equals(this.getTbl().getClnOrdem())) {
-
-          this.getTbl().getClnOrdem()._booOrdem = false;
-        }
-
-        this.getTbl().setClnOrdem(this);
-      }
-      else {
+      if (!_booOrdem) {
 
         this.getTbl().setClnOrdem(null);
+        return;
       }
+
+      if (!this.equals(this.getTbl().getClnOrdem())) {
+
+        this.getTbl().getClnOrdem()._booOrdem = false;
+      }
+
+      this.getTbl().setClnOrdem(this);
     }
     catch (Exception ex) {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
@@ -924,12 +867,7 @@ public class DbColuna extends Objeto {
         return;
       }
 
-      if (_tbl.getLstCln().contains(this)) {
-
-        return;
-      }
-
-      _tbl.getLstCln().add(this);
+      _tbl.addCln(this);
     }
     catch (Exception ex) {
 

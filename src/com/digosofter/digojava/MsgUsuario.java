@@ -16,10 +16,12 @@ public class MsgUsuario extends Objeto {
   public MsgUsuario(String strTexto, int intId) {
 
     try {
+
       this.setIntId(intId);
       this.setStrTexto(strTexto);
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
@@ -29,11 +31,13 @@ public class MsgUsuario extends Objeto {
   public MsgUsuario(String strTexto, int intId, EnmLingua enmLingua) {
 
     try {
+
       this.setIntId(intId);
       this.setStrTexto(strTexto);
       this.setEnmLingua(enmLingua);
     }
     catch (Exception ex) {
+
       new Erro("Erro inesperado.\n", ex);
     }
     finally {

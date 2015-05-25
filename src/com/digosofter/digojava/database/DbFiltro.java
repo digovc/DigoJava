@@ -8,6 +8,7 @@ import com.digosofter.digojava.erro.Erro;
 public class DbFiltro extends Objeto {
 
   public enum EnmCondicao {
+
     AND,
     IS,
     IS_NOT,
@@ -15,6 +16,7 @@ public class DbFiltro extends Objeto {
   }
 
   public enum EnmOperador {
+
     DIFERENTE,
     IGUAL,
     IS_NOT_NULL,
@@ -22,7 +24,7 @@ public class DbFiltro extends Objeto {
     MAIOR,
     MAIOR_IGUAL,
     MENOR,
-    MENOR_IGUAL
+    MENOR_IGUAL,
   }
 
   private boolean _booSelect;
@@ -38,10 +40,11 @@ public class DbFiltro extends Objeto {
     try {
 
       this.setClnFiltro(clnFiltro);
-      this.setStrFiltro(String.valueOf(intFiltro));
       this.setEnmOperador(enmOperador);
+      this.setStrFiltro(String.valueOf(intFiltro));
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -53,10 +56,11 @@ public class DbFiltro extends Objeto {
     try {
 
       this.setClnFiltro(clnFiltro);
-      this.setStrFiltro(strFiltro);
       this.setEnmOperador(enmOperador);
+      this.setStrFiltro(strFiltro);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
@@ -71,6 +75,7 @@ public class DbFiltro extends Objeto {
       this.setStrFiltro(String.valueOf(intFiltro));
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(121), ex);
     }
     finally {
@@ -85,6 +90,7 @@ public class DbFiltro extends Objeto {
       this.setStrFiltro(strFiltro);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(121), ex);
     }
     finally {
@@ -99,6 +105,7 @@ public class DbFiltro extends Objeto {
       this.setStrFiltro(strSubSelect);
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(121), ex);
     }
     finally {
@@ -139,30 +146,75 @@ public class DbFiltro extends Objeto {
 
       if (this.getBooSelect()) {
 
-        _sqlFiltro = "_condicao (_sub_select)";
-        _sqlFiltro = _sqlFiltro.replace("_condicao", !booPrimeiroTermo ? this.getStrCondicao() : Utils.STR_VAZIA);
-        _sqlFiltro = _sqlFiltro.replace("_sub_select", this.getStrFiltro());
+        _sqlFiltro = this.getSqlFiltroSelect(booPrimeiroTermo);
 
         return _sqlFiltro;
       }
 
-      _sqlFiltro = "_condicao _tbl_nome._cln_nome _operador '_filtro'";
+      _sqlFiltro = this.getSqlFiltroNaoSelect(booPrimeiroTermo);
 
-      _sqlFiltro = _sqlFiltro.replace("_condicao", !booPrimeiroTermo ? this.getStrCondicao() : Utils.STR_VAZIA);
-      _sqlFiltro = _sqlFiltro.replace("_tbl_nome", this.getClnFiltro().getTbl().getStrNomeSql());
-      _sqlFiltro = _sqlFiltro.replace("_cln_nome", this.getClnFiltro().getStrNomeSql());
-      _sqlFiltro = _sqlFiltro.replace("_operador", this.getStrOperador());
-      _sqlFiltro = _sqlFiltro.replace("_filtro", this.getStrFiltro());
-
-      _sqlFiltro = booPrimeiroTermo ? _sqlFiltro.substring(1) : _sqlFiltro;
+      return _sqlFiltro;
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {
     }
 
-    return _sqlFiltro;
+    return null;
+  }
+
+  private String getSqlFiltroNaoSelect(boolean booPrimeiroTermo) {
+
+    String strResultado;
+
+    try {
+
+      strResultado = "_condicao _tbl_nome._cln_nome _operador '_filtro'";
+
+      strResultado = strResultado.replace("_condicao", !booPrimeiroTermo ? this.getStrCondicao() : Utils.STR_VAZIA);
+      strResultado = strResultado.replace("_tbl_nome", this.getClnFiltro().getTbl().getStrNomeSql());
+      strResultado = strResultado.replace("_cln_nome", this.getClnFiltro().getStrNomeSql());
+      strResultado = strResultado.replace("_operador", this.getStrOperador());
+      strResultado = strResultado.replace("_filtro", this.getStrFiltro());
+      strResultado = booPrimeiroTermo ? strResultado.substring(1) : strResultado;
+
+      return strResultado;
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+
+    return null;
+  }
+
+  private String getSqlFiltroSelect(boolean booPrimeiroTermo) {
+
+    String strResultado;
+
+    try {
+
+      strResultado = "_condicao (_sub_select)";
+      strResultado = strResultado.replace("_condicao", !booPrimeiroTermo ? this.getStrCondicao() : Utils.STR_VAZIA);
+      strResultado = strResultado.replace("_sub_select", this.getStrFiltro());
+      strResultado = booPrimeiroTermo ? strResultado.substring(1) : strResultado;
+
+      return strResultado;
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+
+    return null;
   }
 
   private String getStrCondicao() {
@@ -183,7 +235,6 @@ public class DbFiltro extends Objeto {
         default:
           return "and";
       }
-
     }
     catch (Exception ex) {
 
@@ -210,36 +261,42 @@ public class DbFiltro extends Objeto {
       }
 
       switch (this.getEnmOperador()) {
+
         case DIFERENTE:
           _strOperador = "<>";
-          break;
-        case IGUAL:
-          _strOperador = "=";
-          break;
+          return _strOperador;
+
         case IS_NOT_NULL:
           _strOperador = "is not null";
-          break;
+          return _strOperador;
+
         case IS_NULL:
           _strOperador = "is null";
-          break;
+          return _strOperador;
+
         case MAIOR:
           _strOperador = ">";
-          break;
+          return _strOperador;
+
         case MAIOR_IGUAL:
           _strOperador = ">=";
-          break;
+          return _strOperador;
+
         case MENOR:
           _strOperador = "<";
-          break;
+          return _strOperador;
+
         case MENOR_IGUAL:
           _strOperador = "<=";
-          break;
+          return _strOperador;
+
         default:
           _strOperador = "=";
-          break;
+          return _strOperador;
       }
     }
     catch (Exception ex) {
+
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
     finally {

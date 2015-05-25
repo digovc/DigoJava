@@ -48,6 +48,36 @@ public abstract class DbTabela extends Objeto {
     }
   }
 
+  public void addCln(DbColuna cln) {
+
+    try {
+
+      if (cln == null) {
+
+        return;
+      }
+
+      if (!this.equals(cln.getTbl())) {
+
+        return;
+      }
+
+      if (this.getLstCln().contains(cln)) {
+
+        return;
+      }
+
+      this.getLstCln().add(cln);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+
+    }
+    finally {
+    }
+  }
+
   public void addEvtTblOnChangeListener(TblOnChangeListener evtTblOnChangeListener) {
 
     try {
@@ -63,7 +93,6 @@ public abstract class DbTabela extends Objeto {
       }
 
       this.getLstEvtTblOnChangeListener().add(evtTblOnChangeListener);
-
     }
     catch (Exception ex) {
 
@@ -139,7 +168,7 @@ public abstract class DbTabela extends Objeto {
       }
 
       _clnNome = this.getClnChavePrimaria();
-      _clnNome.setBooClnNome(true);
+      _clnNome.setBooNome(true);
     }
     catch (Exception ex) {
 
@@ -227,6 +256,7 @@ public abstract class DbTabela extends Objeto {
       }
 
       _lstClnCadastro = new ArrayList<DbColuna>();
+
       _lstClnCadastro.add(this.getClnNome());
 
       for (DbColuna cln : this.getLstCln()) {
@@ -236,7 +266,7 @@ public abstract class DbTabela extends Objeto {
           continue;
         }
 
-        if (cln.getBooClnNome()) {
+        if (cln.getBooNome()) {
 
           continue;
         }
@@ -297,7 +327,7 @@ public abstract class DbTabela extends Objeto {
           continue;
         }
 
-        if (cln.getBooClnNome()) {
+        if (cln.getBooNome()) {
 
           continue;
         }
@@ -448,17 +478,13 @@ public abstract class DbTabela extends Objeto {
     return _objDb;
   }
 
-  public String getStrClnNome(String strNomeSimplificado) {
-
-    String strResultado = null;
+  public String getStrClnNome(String strNomeSql) {
 
     try {
 
-      strResultado = Utils.STR_VAZIA;
-
       for (DbColuna cln : this.getLstCln()) {
 
-        if (!cln.getStrNomeSql().equals(strNomeSimplificado)) {
+        if (!cln.getStrNomeSql().equals(strNomeSql)) {
 
           continue;
         }
@@ -473,7 +499,7 @@ public abstract class DbTabela extends Objeto {
     finally {
     }
 
-    return strResultado;
+    return null;
   }
 
   public String getStrNomeSql() {
@@ -521,7 +547,7 @@ public abstract class DbTabela extends Objeto {
           continue;
         }
 
-        cln.setStrValor(null);
+        cln.limpar();
       }
     }
     catch (Exception ex) {

@@ -11,16 +11,18 @@ import com.digosofter.digojava.erro.Erro;
 
 public class ArquivoXml extends Arquivo {
 
-  private File _objFile;
+  private File _fil;
 
-  private File getObjFile() {
+  private File getFil() {
 
     try {
 
-      if (_objFile == null) {
+      if (_fil != null) {
 
-        _objFile = new File(this.getDirCompleto());
+        return _fil;
       }
+
+      _fil = new File(this.getDirCompleto());
     }
     catch (Exception ex) {
 
@@ -29,28 +31,26 @@ public class ArquivoXml extends Arquivo {
     finally {
     }
 
-    return _objFile;
+    return _fil;
   }
 
   /**
    * Retorna o valor de um elemento do "XML".
-   *
-   * @param string
    */
   public String getStrElemento(String strElemento, String strValorDefault) {
 
     Document doc;
-    DocumentBuilder db;
-    DocumentBuilderFactory dbf;
+    DocumentBuilder objDocumentBuilder;
+    DocumentBuilderFactory objDocumentBuilderFactory;
     String strResultado = null;
 
     try {
 
-      dbf = DocumentBuilderFactory.newInstance();
+      objDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
 
-      db = dbf.newDocumentBuilder();
+      objDocumentBuilder = objDocumentBuilderFactory.newDocumentBuilder();
 
-      doc = db.parse(this.getObjFile());
+      doc = objDocumentBuilder.parse(this.getFil());
 
       strResultado = doc.getDocumentElement().getAttribute(strElemento);
     }
@@ -63,5 +63,4 @@ public class ArquivoXml extends Arquivo {
 
     return strResultado;
   }
-
 }
