@@ -4,7 +4,17 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class Objeto {
 
-  private static int intObjetoIdStatic;
+  private static int _intObjetoIdStatic;
+
+  private static int getIntObjetoIdStatic() {
+
+    return _intObjetoIdStatic;
+  }
+
+  private static void setIntObjetoIdStatic(int intObjetoIdStatic) {
+
+    _intObjetoIdStatic = intObjetoIdStatic;
+  }
 
   private int _intObjetoId;
   private String _strDescricao;
@@ -21,7 +31,8 @@ public abstract class Objeto {
         return _intObjetoId;
       }
 
-      _intObjetoId = Objeto.intObjetoIdStatic++;
+      _intObjetoId = Objeto.getIntObjetoIdStatic() + 1;
+      Objeto.setIntObjetoIdStatic(_intObjetoId);
     }
     catch (Exception ex) {
 
