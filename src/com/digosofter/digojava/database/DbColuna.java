@@ -69,11 +69,11 @@ public class DbColuna extends Objeto {
   private String _sqlSubSelectClnRef;
   private String _strGrupoNome;
   private String _strNomeSql;
+  private String _strTblNomeClnNome;
   private String _strValor;
   private String _strValorDefault;
   private String _strValorExibicao;
   private String _strValorSql;
-
   private DbTabela _tbl;
 
   public DbColuna(String strNome, DbTabela tbl, EnmTipo enmTipo) {
@@ -408,6 +408,30 @@ public class DbColuna extends Objeto {
     }
 
     return _strNomeSql;
+  }
+
+  public String getStrTblNomeClnNome() {
+
+    try {
+
+      if (_strTblNomeClnNome != null) {
+
+        return _strTblNomeClnNome;
+      }
+
+      _strTblNomeClnNome = "_tbl_nome._cln_nome, ";
+
+      _strTblNomeClnNome = _strTblNomeClnNome.replace("_tbl_nome", this.getTbl().getStrNomeSql());
+      _strTblNomeClnNome = _strTblNomeClnNome.replace("_cln_nome", this.getStrNomeSql());
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _strTblNomeClnNome;
   }
 
   public String getStrValor() {

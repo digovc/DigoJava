@@ -141,7 +141,7 @@ public abstract class App extends Objeto {
     return _lstMsgUsrPadrao;
   }
 
-  protected List<DbTabela> getLstTbl() {
+  public List<DbTabela> getLstTbl() {
 
     try {
 
