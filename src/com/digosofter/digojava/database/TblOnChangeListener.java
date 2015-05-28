@@ -2,9 +2,9 @@ package com.digosofter.digojava.database;
 
 public interface TblOnChangeListener {
 
-  void OnAdicionarReg(TblOnChangeArg arg);
+  void onAdicionarReg(TblOnChangeArg arg);
 
-  void OnApagarReg(TblOnChangeArg arg);
+  void onApagarReg(TblOnChangeArg arg);
 
-  void OnAtualizarReg(TblOnChangeArg arg);
+  void onAtualizarReg(TblOnChangeArg arg);
 }

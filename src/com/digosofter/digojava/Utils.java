@@ -957,4 +957,57 @@ public abstract class Utils {
 
     return String.valueOf(dblValor).replace(".", ",");
   }
+
+  /**
+   * Retorna o valor em uma lista no padrão "key=valor,key2=valor2;...".
+   *
+   * @param strLista
+   * @param strKey
+   * @return
+   */
+  public static String getStrValor(String strLista, String strKey) {
+
+    String strKey2;
+    String[] arrStrTermo;
+
+    try {
+
+      if (Utils.getBooStrVazia(strLista)) {
+
+        return Utils.STR_VAZIA;
+      }
+
+      if (Utils.getBooStrVazia(strKey)) {
+
+        return Utils.STR_VAZIA;
+      }
+
+      arrStrTermo = strLista.split(";");
+
+      for (String strTermo : arrStrTermo) {
+
+        if (Utils.getBooStrVazia(strTermo)) {
+
+          continue;
+        }
+
+        strKey2 = strTermo.split("=")[0];
+
+        if (!strKey.equals(strKey2)) {
+
+          continue;
+        }
+
+        return strTermo.split("=")[1];
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return Utils.STR_VAZIA;
+  }
 }

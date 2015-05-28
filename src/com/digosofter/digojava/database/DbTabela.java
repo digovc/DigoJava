@@ -111,7 +111,7 @@ public abstract class DbTabela extends Objeto {
       arg = new TblOnChangeArg();
       arg.setIntRegistroId(intId);
 
-      this.OnApagarRegDispatcher(arg);
+      this.onApagarRegDispatcher(arg);
     }
     catch (Exception ex) {
 
@@ -558,7 +558,7 @@ public abstract class DbTabela extends Objeto {
     }
   }
 
-  protected void OnAdicionarRegDispatcher(TblOnChangeArg arg) {
+  protected void onAdicionarRegDispatcher(TblOnChangeArg arg) {
 
     try {
 
@@ -569,7 +569,7 @@ public abstract class DbTabela extends Objeto {
           continue;
         }
 
-        evt.OnAdicionarReg(arg);
+        evt.onAdicionarReg(arg);
       }
     }
     catch (Exception ex) {
@@ -580,7 +580,7 @@ public abstract class DbTabela extends Objeto {
     }
   }
 
-  protected void OnApagarRegDispatcher(TblOnChangeArg arg) {
+  protected void onApagarRegDispatcher(TblOnChangeArg arg) {
 
     try {
 
@@ -591,7 +591,7 @@ public abstract class DbTabela extends Objeto {
           continue;
         }
 
-        evt.OnApagarReg(arg);
+        evt.onApagarReg(arg);
       }
     }
     catch (Exception ex) {
@@ -602,7 +602,7 @@ public abstract class DbTabela extends Objeto {
     }
   }
 
-  protected void OnAtualizarRegDispatcher(TblOnChangeArg arg) {
+  protected void onAtualizarRegDispatcher(TblOnChangeArg arg) {
 
     try {
 
@@ -613,7 +613,7 @@ public abstract class DbTabela extends Objeto {
           continue;
         }
 
-        evt.OnAtualizarReg(arg);
+        evt.onAtualizarReg(arg);
       }
     }
     catch (Exception ex) {

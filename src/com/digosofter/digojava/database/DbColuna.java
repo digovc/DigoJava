@@ -220,7 +220,7 @@ public class DbColuna extends Objeto {
         return null;
       }
 
-      Utils.strToDtt(this.getStrValor());
+      return Utils.strToDtt(this.getStrValor());
     }
     catch (Exception ex) {
 
@@ -228,8 +228,6 @@ public class DbColuna extends Objeto {
     }
     finally {
     }
-
-    return null;
   }
 
   public EnmTipo getEnmTipo() {
