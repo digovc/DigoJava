@@ -2,7 +2,7 @@ package com.digosofter.digojava.database;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import com.digosofter.digojava.App;
 import com.digosofter.digojava.Objeto;
@@ -65,7 +65,7 @@ public class DbColuna extends Objeto {
   private int _intFrmLinhaPeso = 1;
   private int _intOrdem;
   private int _intTamanhoCampo = 100;
-  private HashMap<Integer, String> _mapOpcao;
+  private LinkedHashMap<Integer, String> _mapOpcao;
   private String _sqlSubSelectClnRef;
   private String _strGrupoNome;
   private String _strNomeSql;
@@ -329,7 +329,7 @@ public class DbColuna extends Objeto {
     }
   }
 
-  public HashMap<Integer, String> getMapOpcao() {
+  public LinkedHashMap<Integer, String> getMapOpcao() {
 
     try {
 
@@ -338,7 +338,7 @@ public class DbColuna extends Objeto {
         return _mapOpcao;
       }
 
-      _mapOpcao = new HashMap<Integer, String>();
+      _mapOpcao = new LinkedHashMap<Integer, String>();
     }
     catch (Exception ex) {
 
