@@ -898,4 +898,27 @@ public class DbColuna extends Objeto {
     finally {
     }
   }
+
+  public String getStrNomeValor() {
+
+    String strResultado;
+
+    try {
+
+      strResultado = "_cln_nome = '_cln_valor'";
+
+      strResultado = strResultado.replace("_cln_nome", this.getStrNomeSql());
+      strResultado = strResultado.replace("_cln_valor", this.getStrValorSql());
+
+      return strResultado;
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
+  }
 }
