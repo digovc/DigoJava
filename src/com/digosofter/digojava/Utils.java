@@ -840,6 +840,11 @@ public abstract class Utils {
 
     try {
 
+      if (Utils.getBooStrVazia(str)) {
+
+        return str;
+      }
+
       str = str.substring(0, str.length() - intQtdCaracter);
     }
     catch (Exception ex) {
