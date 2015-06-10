@@ -246,6 +246,22 @@ public abstract class App extends Objeto {
 
   public String getStrVersao() {
 
+    try {
+
+      if (!Utils.getBooStrVazia(_strVersao)) {
+
+        return _strVersao;
+      }
+
+      _strVersao = "0.0.1 beta";
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
     return _strVersao;
   }
 

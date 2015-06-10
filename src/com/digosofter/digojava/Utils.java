@@ -290,23 +290,7 @@ public abstract class Utils {
 
   public static boolean getBooStrVazia(String str) {
 
-    boolean booResultado = true;
-
-    try {
-
-      if (str != null && !str.isEmpty()) {
-
-        booResultado = false;
-      }
-    }
-    catch (Exception ex) {
-
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
-
-    return booResultado;
+    return !(str != null && !str.isEmpty());
   }
 
   /**
