@@ -2,7 +2,7 @@ package com.digosofter.digojava.service;
 
 import com.digosofter.digojava.erro.Erro;
 
-public abstract class ServiceMain extends Thread {
+public abstract class Service extends Thread {
 
   private boolean _booParar;
 
