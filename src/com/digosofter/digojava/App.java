@@ -9,10 +9,25 @@ import com.digosofter.digojava.erro.Erro;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * Principal classe da aplicação. Esta classe deve ser implementada/estendida
+ * pela classe especializada da sua aplicação. Ela controla todo o ciclo de vida
+ * da aplicação como um todo deste que o usuário a inicia, até a sua conclusão.
+ * Esta classe não pode ser instanciada, pois precisa necessariamente ser
+ * implementada/estendida por outra classe que receberá as especificações da
+ * aplicação que está sendo construída.
+ *
+ * @author r-vieira
+ */
 public abstract class App extends Objeto {
 
   private static App i;
 
+  /**
+   * @return Retorna a única instância desta classe durante o ciclo de vida da
+   *         aplicação. Esta instância é carregada automaticamente quando a
+   *         classe que estende esta é construída.
+   */
   public static App getI() {
 
     return i;
@@ -23,12 +38,20 @@ public abstract class App extends Objeto {
   private long _intSegLigado;
   private long _intStartTime;
   private int _intVersao = 1;
+  private List<MsgUsuario> _lstMsgUsr;
   private List<MsgUsuario> _lstMsgUsrPadrao;
   private List<DbTabela> _lstTbl;
   private Gson _objGson;
   private String _strVersao;
+
   private DbTabela _tblSelec;
 
+  /**
+   * O construtor não é público, pois esta classe não pode ser construída
+   * diretamente. Ela necessariamente precisa ser implementada/estendida por
+   * outra classe que conterá as especificações da aplicação que está sendo
+   * desenvolvida.
+   */
   protected App() {
 
     try {
@@ -44,6 +67,15 @@ public abstract class App extends Objeto {
     }
   }
 
+  /**
+   * Serve para adicionar novas instâncias das tabelas que a aplicação precisa
+   * para funcionar.<br/>
+   * As tabelas adicionadas por este método podem ser acessadas posteriormente
+   * através do método {@link #getLstTbl()}.
+   *
+   * @param tbl
+   *          Tabela que faz parte da aplicação e será adicionada.
+   */
   public void addTbl(DbTabela tbl) {
 
     try {
@@ -69,11 +101,18 @@ public abstract class App extends Objeto {
 
   }
 
+  /**
+   * @return Retorna atributo que indica se a aplicação está em modo de "debug"
+   *         ou não.
+   */
   public boolean getBooDebug() {
 
     return _booDebug;
   }
 
+  /**
+   * @return Retorna a quantidade de milissegundos que a aplicação está rodando.
+   */
   public long getIntMilisegLigado() {
 
     try {
@@ -90,6 +129,9 @@ public abstract class App extends Objeto {
     return _intMilisegLigado;
   }
 
+  /**
+   * @return Retorna a quantidade de segundos que a aplicação está rodando.
+   */
   public long getIntSegLigado() {
 
     try {
@@ -111,13 +153,52 @@ public abstract class App extends Objeto {
     return _intStartTime;
   }
 
+  /**
+   * @return Retorna um inteiro que representa a versão desta aplicação.
+   */
   public int getIntVersao() {
 
     return _intVersao;
   }
 
-  public abstract List<MsgUsuario> getLstMsgUsr();
+  /**
+   * Esta lista tem por objetivo manter centralizada todos os textos que serão
+   * mostrados para o usuário no decorrer do uso da aplicação. A classe
+   * {@link MsgUsuario} dá a oportunidade de se trabalhar com aplicações em
+   * diversas idiomas. Este método precisa ser sobrescrito para ser inicializar
+   * e retornar as mensagens da aplicação.
+   *
+   * @return Retorna lista de objetos do tipo {@link MsgUsuario}, que mantém
+   *         todos os textos que serão apresentados para o usuário num só local.
+   */
+  public List<MsgUsuario> getLstMsgUsr() {
 
+    try {
+
+      if (_lstMsgUsr != null) {
+
+        return _lstMsgUsr;
+      }
+
+      _lstMsgUsr = new ArrayList<MsgUsuario>();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _lstMsgUsr;
+  }
+
+  /**
+   * Esta lista tem o mesmo propósito da outra acessada pelo
+   * {@link #getLstMsgUsr()}, com exceção de que esta guarda as mensagens
+   * internas do framework DigoJava.
+   *
+   * @return
+   */
   protected List<MsgUsuario> getLstMsgUsrPadrao() {
 
     try {
@@ -127,9 +208,7 @@ public abstract class App extends Objeto {
         return _lstMsgUsrPadrao;
       }
 
-      _lstMsgUsrPadrao = new ArrayList<MsgUsuario>();
-
-      _lstMsgUsrPadrao.add(new MsgUsuario("Erro inesperado.", 0));
+      _lstMsgUsrPadrao = this.inicializarLstMsgUsrPadrao();
     }
     catch (Exception ex) {
 
@@ -141,6 +220,12 @@ public abstract class App extends Objeto {
     return _lstMsgUsrPadrao;
   }
 
+  /**
+   * @return Retorna a lista de instâncias das tabelas que a aplicação necessita
+   *         para funcionas. Este objetos foram adicionados através do métodos
+   *         {@link #addTbl(DbTabela)}. Este processo tem por objetivo manter
+   *         concentradas num mesmo local a instância de todos as tabelas.
+   */
   public List<DbTabela> getLstTbl() {
 
     try {
@@ -162,6 +247,13 @@ public abstract class App extends Objeto {
     return _lstTbl;
   }
 
+  /**
+   * @return Retorna uma instância única de um objeto do tipo "Gson", contido na
+   *         biblioteca do Google para tratamento de JSON. É através deste
+   *         objeto é possível transformar os mais variados objetos em JSON e
+   *         vice-versa.
+   *
+   */
   public Gson getObjGson() {
 
     GsonBuilder objGsonBuilder;
@@ -189,9 +281,18 @@ public abstract class App extends Objeto {
     return _objGson;
   }
 
+  /**
+   * @param intId
+   *          Código que indica a mensagem que se espera como retorno.
+   * @return Retorna a primeira mensagem que recebeu o código representado no
+   *         parâmetro "intId". Caso não haja um objeto do tipo
+   *         {@link MsgUsuario} na lista {@link #getLstMsgUsr()} que contenha
+   *         este código, retorna "null". O texto que será estará no idioma
+   *         <i>default</i>, ou seja <b>português do Brasil</b>.
+   */
   public String getStrMsgUsr(int intId) {
 
-    return this.getStrMsgUsr(intId, EnmLingua.PORTUGUES, false);
+    return this.getStrMsgUsr(intId, EnmLingua.PORTUGUES_BRASIL, false);
   }
 
   public String getStrMsgUsr(int intId, EnmLingua enmLingua, boolean booMsgPadrao) {
@@ -231,10 +332,10 @@ public abstract class App extends Objeto {
 
   public String getStrMsgUsrPadrao(int intId) {
 
-    return this.getStrMsgUsr(intId, EnmLingua.PORTUGUES, true);
+    return this.getStrMsgUsr(intId, EnmLingua.PORTUGUES_BRASIL, true);
   }
 
-  public String getStrTexto(int intId) {
+  private String getStrTexto(int intId) {
 
     return this.getStrMsgUsr(intId);
   }
@@ -268,6 +369,27 @@ public abstract class App extends Objeto {
   public DbTabela getTblSelec() {
 
     return _tblSelec;
+  }
+
+  private List<MsgUsuario> inicializarLstMsgUsrPadrao() {
+
+    List<MsgUsuario> lstMsgUsrResultado;
+
+    try {
+
+      lstMsgUsrResultado = new ArrayList<MsgUsuario>();
+
+      lstMsgUsrResultado.add(new MsgUsuario("Erro inesperado.", 0));
+
+      return lstMsgUsrResultado;
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+    return null;
   }
 
   public void setBooDebug(boolean booDebug) {

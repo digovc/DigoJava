@@ -76,6 +76,11 @@ public abstract class Objeto {
     return _strNomeExibicao;
   }
 
+  private void setStrNomeSimplificado(String strNomeSimplificado) {
+
+    _strNomeSimplificado = strNomeSimplificado;
+  }
+
   public String getStrNomeSimplificado() {
 
     try {
@@ -104,7 +109,18 @@ public abstract class Objeto {
 
   public void setStrNome(String strNome) {
 
-    _strNome = strNome;
+    try {
+
+      _strNome = strNome;
+
+      this.setStrNomeSimplificado(null);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
   }
 
   public void setStrNomeExibicao(String strNomeExibicao) {

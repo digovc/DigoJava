@@ -6,10 +6,10 @@ public class MsgUsuario extends Objeto {
 
   public enum EnmLingua {
     INGLES,
-    PORTUGUES
+    PORTUGUES_BRASIL
   }
 
-  private EnmLingua _enmLingua = EnmLingua.PORTUGUES;
+  private EnmLingua _enmLingua = EnmLingua.PORTUGUES_BRASIL;
   private int _intId;
   private String _strTexto;
 

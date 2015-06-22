@@ -95,7 +95,7 @@ public abstract class Utils {
       }
 
       strCep = Utils.simplificar(strCep);
-      strCep = Utils.getStrFixo(strCep, 10);
+      strCep = Utils.getStrFixa(strCep, 10);
 
       return Utils.addMascara(strCep, "**.***-***");
     }
@@ -119,7 +119,7 @@ public abstract class Utils {
       }
 
       strCnpj = Utils.simplificar(strCnpj);
-      strCnpj = Utils.getStrFixo(strCnpj, 14);
+      strCnpj = Utils.getStrFixa(strCnpj, 14);
 
       return Utils.addMascara(strCnpj, "**.***.***/****-**");
     }
@@ -143,7 +143,7 @@ public abstract class Utils {
       }
 
       strCpf = Utils.simplificar(strCpf);
-      strCpf = Utils.getStrFixo(strCpf, 10);
+      strCpf = Utils.getStrFixa(strCpf, 10);
 
       return Utils.addMascara(strCpf, "**.***.***-**");
     }
@@ -157,25 +157,18 @@ public abstract class Utils {
     return null;
   }
 
-  public static double arredondar(double dblValor, int intQtdCasas, int ceilOrFloor) {
+  public static double arredondar(double dblValor, int intQtdCasas) {
 
-    double dblResultado = 0;
+    double dblResultado;
 
     try {
 
       dblResultado = dblValor;
       dblResultado *= Math.pow(10, intQtdCasas);
-
-      if (ceilOrFloor == 0) {
-
-        dblResultado = Math.ceil(dblResultado);
-      }
-      else {
-
-        dblResultado = Math.floor(dblResultado);
-      }
-
+      dblResultado = Math.floor(dblResultado);
       dblResultado /= Math.pow(10, intQtdCasas);
+
+      return dblResultado;
     }
     catch (Exception ex) {
 
@@ -184,26 +177,7 @@ public abstract class Utils {
     finally {
     }
 
-    return dblResultado;
-  }
-
-  public static String calendarToString(Calendar dtt) {
-
-    StringBuilder stbResultado = null;
-
-    try {
-
-      stbResultado = new StringBuilder();
-      stbResultado.append(String.format("%d/%02d/%02d", dtt.get(Calendar.DAY_OF_MONTH), dtt.get(Calendar.MONTH) + 1, dtt.get(Calendar.YEAR)));
-    }
-    catch (Exception ex) {
-
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
-    }
-
-    return stbResultado.toString();
+    return 0;
   }
 
   private static String enmDataFormatoToString(EnmDataFormato enmDataFormato) {
@@ -276,6 +250,8 @@ public abstract class Utils {
         return false;
       }
 
+      str = Utils.simplificar(str);
+
       return str.matches("[-+]?\\d*\\.?\\d+");
     }
     catch (Exception ex) {
@@ -301,6 +277,16 @@ public abstract class Utils {
     boolean booResultado = true;
 
     try {
+
+      if (Utils.getBooStrVazia(url)) {
+
+        return false;
+      }
+
+      if (!url.startsWith("http://")) {
+
+        url = "http://" + url;
+      }
 
       new URL(url);
     }
@@ -592,7 +578,7 @@ public abstract class Utils {
     return null;
   }
 
-  public static String getStrFixo(int intNumero, int intQtd) {
+  public static String getStrFixa(int intNumero, int intQtd) {
 
     String str;
 
@@ -627,7 +613,7 @@ public abstract class Utils {
     return null;
   }
 
-  public static String getStrFixo(String str, int intQtd) {
+  public static String getStrFixa(String str, int intQtd) {
 
     try {
 
@@ -722,7 +708,7 @@ public abstract class Utils {
 
       objNumberFormat = NumberFormat.getCurrencyInstance(LOCAL_BRASIL);
 
-      return objNumberFormat.format(dblValor).replace("R$", "R$ ");
+      return objNumberFormat.format(dblValor);
     }
     catch (Exception ex) {
 
@@ -761,7 +747,7 @@ public abstract class Utils {
 
   public static String getStrValorPercentual(double dblValor) {
 
-    NumberFormat objNumberFormat;
+    String strResultado;
 
     try {
 
@@ -770,9 +756,15 @@ public abstract class Utils {
         return "0,00 %";
       }
 
-      objNumberFormat = NumberFormat.getPercentInstance(LOCAL_BRASIL);
+      strResultado = String.valueOf(dblValor);
 
-      return objNumberFormat.format(dblValor).replace("%", " %");
+      strResultado = strResultado.replace(".", ",");
+
+      strResultado = strResultado.concat(" %");
+
+      strResultado = strResultado.replace(",0 %", " %");
+
+      return strResultado;
     }
     catch (Exception ex) {
 
@@ -794,6 +786,16 @@ public abstract class Utils {
 
     try {
 
+      if (Utils.getBooStrVazia(url)) {
+
+        return false;
+      }
+
+      if (!url.startsWith("http://")) {
+
+        url = "http://".concat(url);
+      }
+
       objHttpURLConnection = (HttpURLConnection) new URL(url).openConnection();
 
       objHttpURLConnection.setRequestMethod("HEAD");
@@ -810,9 +812,25 @@ public abstract class Utils {
     return booResultado;
   }
 
-  public static String removerMascara(String s) {
+  public static String removerMascara(String str) {
 
-    return s.replaceAll("[.]", "").replaceAll("[-]", "").replaceAll("[/]", "").replaceAll("[(]", "").replaceAll("[)]", "");
+    try {
+
+      if (Utils.getBooStrVazia(str)) {
+
+        return null;
+      }
+
+      return str.replaceAll("[.]", "").replaceAll("[-]", "").replaceAll("[/]", "").replaceAll("[(]", "").replaceAll("[)]", "");
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
   }
 
   public static String removerUltimaLetra(String str) {
