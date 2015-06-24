@@ -76,11 +76,6 @@ public abstract class Objeto {
     return _strNomeExibicao;
   }
 
-  private void setStrNomeSimplificado(String strNomeSimplificado) {
-
-    _strNomeSimplificado = strNomeSimplificado;
-  }
-
   public String getStrNomeSimplificado() {
 
     try {
@@ -126,5 +121,10 @@ public abstract class Objeto {
   public void setStrNomeExibicao(String strNomeExibicao) {
 
     _strNomeExibicao = strNomeExibicao;
+  }
+
+  private void setStrNomeSimplificado(String strNomeSimplificado) {
+
+    _strNomeSimplificado = strNomeSimplificado;
   }
 }

@@ -98,7 +98,7 @@ public class UtilsTest {
 
     for (int i = 0; i < 10; i++) {
 
-      lstStr.add(Utils.getStrAleatoria((i + 10), EnmStrTipo.ALPHANUMERICO));
+      lstStr.add(Utils.getStrAleatoria(i + 10, EnmStrTipo.ALPHANUMERICO));
     }
 
     strAll = Utils.STR_VAZIA;
@@ -110,7 +110,7 @@ public class UtilsTest {
         fail();
       }
 
-      assertEquals((i + 10), lstStr.get(i).length());
+      assertEquals(i + 10, lstStr.get(i).length());
 
       strAll = strAll.concat(lstStr.get(i));
     }
@@ -175,7 +175,7 @@ public class UtilsTest {
 
     for (int i = 0; i < 10; i++) {
 
-      assertEquals(("valor" + i), Utils.getStrValor(strLista, "key" + i));
+      assertEquals("valor" + i, Utils.getStrValor(strLista, "key" + i));
     }
   }
 
@@ -243,11 +243,4 @@ public class UtilsTest {
 
     assertEquals(50.12345, Utils.toDouble("50,12345"), 0.0001);
   }
-
-  @Test
-  public void testToStringDouble() {
-
-    assertEquals("10,12345", Utils.toString(10.12345));
-  }
-
 }
