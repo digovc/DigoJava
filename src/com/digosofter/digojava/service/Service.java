@@ -19,7 +19,7 @@ public abstract class Service extends Thread {
 
       lng = 0;
 
-      while ((!this.getBooParar()) && (lng < intMilissegundo)) {
+      while (!this.getBooParar() && lng < intMilissegundo) {
 
         Thread.sleep(100);
         lng += 100;

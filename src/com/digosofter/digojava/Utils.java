@@ -695,9 +695,63 @@ public abstract class Utils {
     return strResultado;
   }
 
+  /**
+   * Retorna o valor em uma lista no padrão "key=valor,key2=valor2;...".
+   *
+   * @param strLista
+   * @param strKey
+   * @return
+   */
+  public static String getStrValor(String strLista, String strKey) {
+
+    String strKey2;
+    String[] arrStrTermo;
+
+    try {
+
+      if (Utils.getBooStrVazia(strLista)) {
+
+        return Utils.STR_VAZIA;
+      }
+
+      if (Utils.getBooStrVazia(strKey)) {
+
+        return Utils.STR_VAZIA;
+      }
+
+      arrStrTermo = strLista.split(";");
+
+      for (String strTermo : arrStrTermo) {
+
+        if (Utils.getBooStrVazia(strTermo)) {
+
+          continue;
+        }
+
+        strKey2 = strTermo.split("=")[0];
+
+        if (!strKey.equals(strKey2)) {
+
+          continue;
+        }
+
+        return strTermo.split("=")[1];
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return Utils.STR_VAZIA;
+  }
+
   public static String getStrValorMonetario(double dblValor) {
 
     NumberFormat objNumberFormat;
+    String strResultado;
 
     try {
 
@@ -708,7 +762,11 @@ public abstract class Utils {
 
       objNumberFormat = NumberFormat.getCurrencyInstance(LOCAL_BRASIL);
 
-      return objNumberFormat.format(dblValor);
+      strResultado = objNumberFormat.format(dblValor);
+      strResultado = strResultado.replace("R$", "R$ ");
+      strResultado = strResultado.replace("R$  ", "R$ ");
+
+      return strResultado;
     }
     catch (Exception ex) {
 
@@ -723,6 +781,7 @@ public abstract class Utils {
   public static String getStrValorNumerico(double dblValor) {
 
     NumberFormat objNumberFormat;
+    String strResultado;
 
     try {
 
@@ -733,7 +792,10 @@ public abstract class Utils {
 
       objNumberFormat = NumberFormat.getNumberInstance(LOCAL_BRASIL);
 
-      return objNumberFormat.format(dblValor);
+      strResultado = objNumberFormat.format(dblValor);
+      strResultado = (!strResultado.endsWith(",0")) ? strResultado : Utils.STR_VAZIA;
+
+      return strResultado;
     }
     catch (Exception ex) {
 
@@ -958,63 +1020,5 @@ public abstract class Utils {
     }
 
     return 0;
-  }
-
-  public static String toString(double dblValor) {
-
-    return String.valueOf(dblValor).replace(".", ",");
-  }
-
-  /**
-   * Retorna o valor em uma lista no padrão "key=valor,key2=valor2;...".
-   *
-   * @param strLista
-   * @param strKey
-   * @return
-   */
-  public static String getStrValor(String strLista, String strKey) {
-
-    String strKey2;
-    String[] arrStrTermo;
-
-    try {
-
-      if (Utils.getBooStrVazia(strLista)) {
-
-        return Utils.STR_VAZIA;
-      }
-
-      if (Utils.getBooStrVazia(strKey)) {
-
-        return Utils.STR_VAZIA;
-      }
-
-      arrStrTermo = strLista.split(";");
-
-      for (String strTermo : arrStrTermo) {
-
-        if (Utils.getBooStrVazia(strTermo)) {
-
-          continue;
-        }
-
-        strKey2 = strTermo.split("=")[0];
-
-        if (!strKey.equals(strKey2)) {
-
-          continue;
-        }
-
-        return strTermo.split("=")[1];
-      }
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
-    return Utils.STR_VAZIA;
   }
 }
