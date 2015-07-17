@@ -10,7 +10,7 @@ import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
 import com.digosofter.digojava.erro.Erro;
 
-public abstract class DbTabela extends Objeto {
+public abstract class DbTabela<T extends Dominio> extends Objeto {
 
   private boolean _booMenuAdicionar;
   private boolean _booMenuAlterar;
@@ -18,6 +18,7 @@ public abstract class DbTabela extends Objeto {
   private DbColuna _clnChavePrimaria;
   private DbColuna _clnNome;
   private DbColuna _clnOrdem;
+  private Class<T> _clsDominio;
   private int _intQtdLinha;
   private List<DbColuna> _lstCln;
   private List<DbColuna> _lstClnCadastro;
@@ -31,13 +32,15 @@ public abstract class DbTabela extends Objeto {
   private String _strNomeSql;
   private String _strPesquisa;
 
-  protected DbTabela(String strNome) {
+  protected DbTabela(String strNome, Class<T> clsDominio) {
 
     try {
 
+      this.setClsDominio(clsDominio);
+      this.setStrNome(strNome);
+
       App.getI().addTbl(this);
 
-      this.setStrNome(strNome);
       this.inicializarColuna(-1);
     }
     catch (Exception ex) {
@@ -200,6 +203,11 @@ public abstract class DbTabela extends Objeto {
     }
 
     return _clnOrdem;
+  }
+
+  protected Class<T> getClsDominio() {
+
+    return _clsDominio;
   }
 
   public int getIntQtdLinha() {
@@ -676,6 +684,11 @@ public abstract class DbTabela extends Objeto {
   public void setClnOrdem(DbColuna clnOrdem) {
 
     _clnOrdem = clnOrdem;
+  }
+
+  private void setClsDominio(Class<T> clsDominio) {
+
+    _clsDominio = clsDominio;
   }
 
   void setLstClnCadastro(List<DbColuna> lstClnCadastro) {

@@ -11,18 +11,19 @@ import org.junit.Test;
 
 import com.digosofter.digojava.MsgUsuario.EnmLingua;
 import com.digosofter.digojava.database.DbTabela;
+import com.digosofter.digojava.database.Dominio;
 
 public class AppTest extends TestMain {
 
   private App _app;
-  private DbTabela _tbl;
+  private DbTabela<?> _tbl;
 
   private App getApp() {
 
     return _app;
   }
 
-  private DbTabela getTbl() {
+  private DbTabela<?> getTbl() {
 
     return _tbl;
   }
@@ -33,7 +34,7 @@ public class AppTest extends TestMain {
     this.setApp(new App() {
     });
 
-    this.setTbl(new DbTabela("tbl_test") {
+    this.setTbl(new DbTabela<Dominio>("tbl_test", Dominio.class) {
     });
   }
 
@@ -42,7 +43,7 @@ public class AppTest extends TestMain {
     _app = app;
   }
 
-  private void setTbl(DbTabela tbl) {
+  private void setTbl(DbTabela<?> tbl) {
 
     _tbl = tbl;
   }

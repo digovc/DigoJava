@@ -67,6 +67,7 @@ public class DbColuna extends Objeto {
   private int _intTamanhoCampo = 100;
   private LinkedHashMap<Integer, String> _mapOpcao;
   private String _sqlSubSelectClnRef;
+  private String _strDominioNome;
   private String _strGrupoNome;
   private String _strNomeSql;
   private String _strTblNomeClnNome;
@@ -74,9 +75,9 @@ public class DbColuna extends Objeto {
   private String _strValorDefault;
   private String _strValorExibicao;
   private String _strValorSql;
-  private DbTabela _tbl;
+  private DbTabela<?> _tbl;
 
-  public DbColuna(String strNome, DbTabela tbl, EnmTipo enmTipo) {
+  public DbColuna(String strNome, DbTabela<?> tbl, EnmTipo enmTipo) {
 
     try {
 
@@ -382,6 +383,28 @@ public class DbColuna extends Objeto {
     return _sqlSubSelectClnRef;
   }
 
+  protected String getStrDominioNome() {
+
+    try {
+
+      if (!Utils.getBooStrVazia(_strDominioNome)) {
+
+        return _strDominioNome;
+      }
+
+      _strDominioNome = this.getStrNomeSimplificado();
+      _strDominioNome = _strDominioNome.replace("_", Utils.STR_VAZIA);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _strDominioNome;
+  }
+
   public String getStrGrupoNome() {
 
     return _strGrupoNome;
@@ -622,7 +645,7 @@ public class DbColuna extends Objeto {
     return null;
   }
 
-  public DbTabela getTbl() {
+  public DbTabela<?> getTbl() {
 
     return _tbl;
   }
@@ -886,6 +909,11 @@ public class DbColuna extends Objeto {
     }
   }
 
+  public void setStrDominioNome(String strDominioNome) {
+
+    _strDominioNome = strDominioNome;
+  }
+
   public void setStrGrupoNome(String strGrupoNome) {
 
     _strGrupoNome = strGrupoNome;
@@ -901,7 +929,7 @@ public class DbColuna extends Objeto {
     _strValorDefault = strValorDefault;
   }
 
-  public void setTbl(DbTabela tbl) {
+  public void setTbl(DbTabela<?> tbl) {
 
     try {
 

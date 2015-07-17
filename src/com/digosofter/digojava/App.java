@@ -40,11 +40,11 @@ public abstract class App extends Objeto {
   private int _intVersao = 1;
   private List<MsgUsuario> _lstMsgUsr;
   private List<MsgUsuario> _lstMsgUsrPadrao;
-  private List<DbTabela> _lstTbl;
+  private List<DbTabela<?>> _lstTbl;
   private Gson _objGson;
   private String _strVersao;
 
-  private DbTabela _tblSelec;
+  private DbTabela<?> _tblSelec;
 
   /**
    * O construtor não é público, pois esta classe não pode ser construída
@@ -76,7 +76,7 @@ public abstract class App extends Objeto {
    * @param tbl
    *          Tabela que faz parte da aplicação e será adicionada.
    */
-  public void addTbl(DbTabela tbl) {
+  public void addTbl(DbTabela<?> tbl) {
 
     try {
 
@@ -226,7 +226,7 @@ public abstract class App extends Objeto {
    *         {@link #addTbl(DbTabela)}. Este processo tem por objetivo manter
    *         concentradas num mesmo local a instância de todos as tabelas.
    */
-  public List<DbTabela> getLstTbl() {
+  public List<DbTabela<?>> getLstTbl() {
 
     try {
 
@@ -235,7 +235,7 @@ public abstract class App extends Objeto {
         return _lstTbl;
       }
 
-      _lstTbl = new ArrayList<DbTabela>();
+      _lstTbl = new ArrayList<DbTabela<?>>();
     }
     catch (Exception ex) {
 
@@ -335,7 +335,7 @@ public abstract class App extends Objeto {
     return this.getStrMsgUsr(intId, EnmLingua.PORTUGUES_BRASIL, true);
   }
 
-  private String getStrTexto(int intId) {
+  public String getStrTexto(int intId) {
 
     return this.getStrMsgUsr(intId);
   }
@@ -366,7 +366,7 @@ public abstract class App extends Objeto {
     return _strVersao;
   }
 
-  public DbTabela getTblSelec() {
+  public DbTabela<?> getTblSelec() {
 
     return _tblSelec;
   }
@@ -431,7 +431,7 @@ public abstract class App extends Objeto {
     _strVersao = strVersao;
   }
 
-  public void setTblSelec(DbTabela tblSelec) {
+  public void setTblSelec(DbTabela<?> tblSelec) {
 
     _tblSelec = tblSelec;
   }
