@@ -1,5 +1,6 @@
 package com.digosofter.digojava.database;
 
+import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
@@ -648,6 +649,92 @@ public class DbColuna extends Objeto {
   public DbTabela<?> getTbl() {
 
     return _tbl;
+  }
+
+  public <T extends Dominio> void lerDominio(T objDominio) {
+
+    try {
+
+      if (objDominio == null) {
+
+        return;
+      }
+
+      for (Field objField : objDominio.getClass().getDeclaredFields()) {
+
+        if (objField == null) {
+
+          continue;
+        }
+
+        if (this.lerDominio(objDominio, objField)) {
+
+          return;
+        }
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
+  private <T extends Dominio> boolean lerDominio(T objDominio, Field objField) {
+
+    try {
+
+      if (objDominio == null) {
+
+        return false;
+      }
+
+      if (objField == null) {
+
+        return false;
+      }
+
+      if (!Utils.simplificar(objField.getName().replace("_", Utils.STR_VAZIA)).equals(this.getStrDominioNome())) {
+
+        return false;
+      }
+
+      objField.setAccessible(true);
+
+      switch (this.getEnmTipo()) {
+
+        case BOOLEAN:
+          this.setBooValor((boolean) objField.get(objDominio));
+          return true;
+
+        case DATE_TIME:
+          this.setDttValor((GregorianCalendar) objField.get(objDominio));
+          return true;
+
+        case DOUBLE:
+          this.setDblValor((double) objField.get(objDominio));
+          return true;
+
+        case INTEGER:
+          this.setIntValor((int) objField.get(objDominio));
+          return true;
+
+        default:
+          this.setStrValor((String) objField.get(objDominio));
+          return true;
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+
+      objField.setAccessible(false);
+    }
+
+    return false;
   }
 
   public void limpar() {
