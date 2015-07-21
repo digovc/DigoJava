@@ -1,8 +1,11 @@
 package com.digosofter.digojava.database;
 
+import java.util.GregorianCalendar;
+
 import com.digosofter.digojava.App;
 import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.Utils.EnmDataFormato;
 import com.digosofter.digojava.erro.Erro;
 
 public class DbFiltro extends Objeto {
@@ -62,6 +65,21 @@ public class DbFiltro extends Objeto {
     catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
+    }
+    finally {
+    }
+  }
+
+  public DbFiltro(DbColuna clnFiltro, GregorianCalendar dttFiltro) {
+
+    try {
+
+      this.setClnFiltro(clnFiltro);
+      this.setStrFiltro(Utils.getStrDataFormatada(dttFiltro, EnmDataFormato.YYYY_MM_DD_HH_MM_SS));
+    }
+    catch (Exception ex) {
+
+      new Erro(App.getI().getStrTextoPadrao(121), ex);
     }
     finally {
     }

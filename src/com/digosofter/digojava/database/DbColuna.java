@@ -52,6 +52,7 @@ public class DbColuna extends Objeto {
   }
 
   private boolean _booChavePrimaria;
+  private boolean _booClnDominioValorCarregado;
   private boolean _booNome;
   private boolean _booNotNull;
   private boolean _booOrdem;
@@ -120,6 +121,11 @@ public class DbColuna extends Objeto {
   public boolean getBooChavePrimaria() {
 
     return _booChavePrimaria;
+  }
+
+  private boolean getBooClnDominioValorCarregado() {
+
+    return _booClnDominioValorCarregado;
   }
 
   public boolean getBooNome() {
@@ -660,7 +666,34 @@ public class DbColuna extends Objeto {
         return;
       }
 
-      for (Field objField : objDominio.getClass().getDeclaredFields()) {
+      this.setBooClnDominioValorCarregado(false);
+      this.lerDominio(objDominio, objDominio.getClass());
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
+  private <T extends Dominio> void lerDominio(T objDominio, Class<?> cls) {
+
+    try {
+
+      if (cls == null) {
+
+        return;
+      }
+
+      this.lerDominio(objDominio, cls.getSuperclass());
+
+      if (this.getBooClnDominioValorCarregado()) {
+
+        return;
+      }
+
+      for (Field objField : cls.getDeclaredFields()) {
 
         if (objField == null) {
 
@@ -669,6 +702,7 @@ public class DbColuna extends Objeto {
 
         if (this.lerDominio(objDominio, objField)) {
 
+          this.setBooClnDominioValorCarregado(true);
           return;
         }
       }
@@ -708,15 +742,30 @@ public class DbColuna extends Objeto {
           this.setBooValor((boolean) objField.get(objDominio));
           return true;
 
+        case DATE:
         case DATE_TIME:
+        case INTERVAL:
+        case TIME_WITH_TIME_ZONE:
+        case TIME_WITHOUT_TIME_ZONE:
+        case TIMESTAMP_WITH_TIME_ZONE:
+        case TIMESTAMP_WITHOUT_TIME_ZONE:
           this.setDttValor((GregorianCalendar) objField.get(objDominio));
           return true;
 
+        case DECIMAL:
         case DOUBLE:
+        case FLOAT:
+        case MONEY:
+        case NUMERIC:
+        case PERCENTUAL:
+        case REAL:
           this.setDblValor((double) objField.get(objDominio));
           return true;
 
+        case BIGINT:
+        case BIGSERIAL:
         case INTEGER:
+        case SMALLINT:
           this.setIntValor((int) objField.get(objDominio));
           return true;
 
@@ -777,6 +826,11 @@ public class DbColuna extends Objeto {
     }
     finally {
     }
+  }
+
+  private void setBooClnDominioValorCarregado(boolean booClnDominioValorCarregado) {
+
+    _booClnDominioValorCarregado = booClnDominioValorCarregado;
   }
 
   public void setBooNome(boolean booNome) {
@@ -847,7 +901,7 @@ public class DbColuna extends Objeto {
     _booSenha = booSenha;
   }
 
-  public void setBooValor(Boolean booValor) {
+  public void setBooValor(boolean booValor) {
 
     try {
 
