@@ -327,7 +327,7 @@ public class DbColuna extends Objeto {
 
     try {
 
-      return Integer.parseInt(this.getStrValor());
+      return (int)this.getDblValor();
     }
     catch (Exception ex) {
 
