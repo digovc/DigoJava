@@ -242,7 +242,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _lstClnOrdenado = null;
 
-      _lstCln = new ArrayList<DbColuna>();
+      _lstCln = new ArrayList<>();
     }
     catch (Exception ex) {
 
@@ -263,7 +263,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
         return _lstClnCadastro;
       }
 
-      _lstClnCadastro = new ArrayList<DbColuna>();
+      _lstClnCadastro = new ArrayList<>();
 
       _lstClnCadastro.add(this.getClnNome());
 
@@ -313,7 +313,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _lstClnConsultaOrdenado = null;
 
-      _lstClnConsulta = new ArrayList<DbColuna>();
+      _lstClnConsulta = new ArrayList<>();
 
       _lstClnConsulta.add(this.getClnChavePrimaria());
       _lstClnConsulta.add(this.getClnNome());
@@ -374,7 +374,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
         @Override
         public int compare(DbColuna cln1, DbColuna cln2) {
 
-          return cln1.getStrNomeExibicao().compareTo(cln2.getStrNomeExibicao());
+          return (cln1.getIntOrdem() - cln2.getIntOrdem());
         }
       });
     }
@@ -427,7 +427,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
         return _lstEvtTblOnChangeListener;
       }
 
-      _lstEvtTblOnChangeListener = new ArrayList<TblOnChangeListener>();
+      _lstEvtTblOnChangeListener = new ArrayList<>();
     }
     catch (Exception ex) {
 
@@ -448,7 +448,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
         return _lstFilCadastro;
       }
 
-      _lstFilCadastro = new ArrayList<DbFiltro>();
+      _lstFilCadastro = new ArrayList<>();
     }
     catch (Exception ex) {
 

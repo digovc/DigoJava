@@ -180,7 +180,7 @@ public abstract class App extends Objeto {
         return _lstMsgUsr;
       }
 
-      _lstMsgUsr = new ArrayList<MsgUsuario>();
+      _lstMsgUsr = new ArrayList<>();
     }
     catch (Exception ex) {
 
@@ -197,7 +197,7 @@ public abstract class App extends Objeto {
    * {@link #getLstMsgUsr()}, com exceção de que esta guarda as mensagens
    * internas do framework DigoJava.
    *
-   * @return
+   * @return Lista de mensagens que podem ser lançadas ao usuário.
    */
   protected List<MsgUsuario> getLstMsgUsrPadrao() {
 
