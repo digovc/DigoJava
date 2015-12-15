@@ -2,7 +2,7 @@ package com.digosofter.digojava.database;
 
 import com.digosofter.digojava.EventArg;
 
-public class TblOnChangeArg extends EventArg {
+public class OnChangeArg extends EventArg {
 
   private int _intRegistroId;
 

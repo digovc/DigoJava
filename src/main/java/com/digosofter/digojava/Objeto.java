@@ -5,6 +5,7 @@ import com.digosofter.digojava.erro.Erro;
 public abstract class Objeto {
 
   private static int _intObjetoIdStatic;
+
   private int _intObjetoId;
   private String _strDescricao;
   private String _strNome;
@@ -21,6 +22,12 @@ public abstract class Objeto {
     _intObjetoIdStatic = intObjetoIdStatic;
   }
 
+  /**
+   * Retorna um número único para cada uma das intâncias dos objetos que decendem desta classe.
+   * O primeiro valor é 1.
+   *
+   * @return Número único que representa a instância deste objeto.
+   */
   public int getIntObjetoId() {
 
     try {
@@ -33,6 +40,7 @@ public abstract class Objeto {
       Objeto.setIntObjetoIdStatic(Objeto.getIntObjetoIdStatic() + 1);
 
       _intObjetoId = Objeto.getIntObjetoIdStatic();
+
     } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
@@ -47,28 +55,9 @@ public abstract class Objeto {
     return _strDescricao;
   }
 
-  public void setStrDescricao(String strDescricao) {
-
-    _strDescricao = strDescricao;
-  }
-
   public String getStrNome() {
 
     return _strNome;
-  }
-
-  public void setStrNome(String strNome) {
-
-    try {
-
-      _strNome = strNome;
-
-      this.setStrNomeSimplificado(null);
-    } catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    } finally {
-    }
   }
 
   public String getStrNomeExibicao() {
@@ -81,6 +70,7 @@ public abstract class Objeto {
       }
 
       _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
+
     } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
@@ -88,11 +78,6 @@ public abstract class Objeto {
     }
 
     return _strNomeExibicao;
-  }
-
-  public void setStrNomeExibicao(String strNomeExibicao) {
-
-    _strNomeExibicao = strNomeExibicao;
   }
 
   public String getStrNomeSimplificado() {
@@ -105,6 +90,7 @@ public abstract class Objeto {
       }
 
       _strNomeSimplificado = Utils.simplificar(this.getStrNome());
+
     } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
@@ -112,6 +98,31 @@ public abstract class Objeto {
     }
 
     return _strNomeSimplificado;
+  }
+
+  public void setStrDescricao(String strDescricao) {
+
+    _strDescricao = strDescricao;
+  }
+
+  public void setStrNome(String strNome) {
+
+    try {
+
+      _strNome = strNome;
+
+      this.setStrNomeSimplificado(null);
+
+    } catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    } finally {
+    }
+  }
+
+  public void setStrNomeExibicao(String strNomeExibicao) {
+
+    _strNomeExibicao = strNomeExibicao;
   }
 
   private void setStrNomeSimplificado(String strNomeSimplificado) {

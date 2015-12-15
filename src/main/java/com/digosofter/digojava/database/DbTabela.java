@@ -1,14 +1,14 @@
 package com.digosofter.digojava.database;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import com.digosofter.digojava.App;
 import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
 import com.digosofter.digojava.erro.Erro;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public abstract class DbTabela<T extends Dominio> extends Objeto {
 
@@ -25,7 +25,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
   private List<DbColuna> _lstClnConsulta;
   private List<DbColuna> _lstClnConsultaOrdenado;
   private List<DbColuna> _lstClnOrdenado;
-  private List<TblOnChangeListener> _lstEvtTblOnChangeListener;
+  private List<OnChangeListener> _lstEvtOnChangeListener;
   private List<DbFiltro> _lstFilCadastro;
   private List<DbFiltro> _lstFilConsulta;
   private DataBase _objDb;
@@ -38,16 +38,26 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       this.setClsDominio(clsDominio);
       this.setStrNome(strNome);
+      this.inicializarColuna(-1);
+      this.addAppLstTbl();
+
+    } catch (Exception ex) {
+
+      new Erro(App.getI().getStrTextoPadrao(122), ex);
+    } finally {
+    }
+  }
+
+  protected void addAppLstTbl() {
+
+    try {
 
       App.getI().addTbl(this);
 
-      this.inicializarColuna(-1);
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
-      new Erro(App.getI().getStrTextoPadrao(122), ex);
-    }
-    finally {
+      new Erro("Erro inesperado.\n", ex);
+    } finally {
     }
   }
 
@@ -71,56 +81,114 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       }
 
       this.getLstCln().add(cln);
-    }
-    catch (Exception ex) {
+
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
 
-    }
-    finally {
+    } finally {
     }
   }
 
-  public void addEvtTblOnChangeListener(TblOnChangeListener evtTblOnChangeListener) {
+  public void addOnChangeListener(OnChangeListener evtOnChangeListener) {
 
     try {
 
-      if (evtTblOnChangeListener == null) {
+      if (evtOnChangeListener == null) {
 
         return;
       }
 
-      if (this.getLstEvtTblOnChangeListener().contains(evtTblOnChangeListener)) {
+      if (this.getLstEvtOnChangeListener().contains(evtOnChangeListener)) {
 
         return;
       }
 
-      this.getLstEvtTblOnChangeListener().add(evtTblOnChangeListener);
-    }
-    catch (Exception ex) {
+      this.getLstEvtOnChangeListener().add(evtOnChangeListener);
+
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
+    } finally {
     }
   }
 
   public void apagar(int intId) {
 
-    TblOnChangeArg arg;
+    OnChangeArg e;
 
     try {
 
-      arg = new TblOnChangeArg();
-      arg.setIntRegistroId(intId);
+      e = new OnChangeArg();
 
-      this.onApagarRegDispatcher(arg);
-    }
-    catch (Exception ex) {
+      e.setIntRegistroId(intId);
+
+      this.dispararOnApagarReg(e);
+
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
+    } finally {
     }
-    finally {
+  }
+
+  protected void dispararOnAdicionarReg(OnChangeArg e) {
+
+    try {
+
+      for (OnChangeListener evt : this.getLstEvtOnChangeListener()) {
+
+        if (evt == null) {
+
+          continue;
+        }
+
+        evt.onAdicionarReg(e);
+      }
+    } catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    } finally {
+    }
+  }
+
+  protected void dispararOnApagarReg(OnChangeArg e) {
+
+    try {
+
+      for (OnChangeListener evt : this.getLstEvtOnChangeListener()) {
+
+        if (evt == null) {
+
+          continue;
+        }
+
+        evt.onApagarReg(e);
+      }
+    } catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    } finally {
+    }
+  }
+
+  protected void dispararOnAtualizarReg(OnChangeArg e) {
+
+    try {
+
+      for (OnChangeListener evt : this.getLstEvtOnChangeListener()) {
+
+        if (evt == null) {
+
+          continue;
+        }
+
+        evt.onAtualizarReg(e);
+      }
+    } catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    } finally {
     }
   }
 
@@ -150,12 +218,11 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _clnChavePrimaria = this.getLstCln().get(0);
       _clnChavePrimaria.setBooChavePrimaria(true);
-    }
-    catch (Exception ex) {
+
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
+    } finally {
     }
 
     return _clnChavePrimaria;
@@ -172,12 +239,11 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _clnNome = this.getClnChavePrimaria();
       _clnNome.setBooNome(true);
-    }
-    catch (Exception ex) {
+
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
+    } finally {
     }
 
     return _clnNome;
@@ -194,12 +260,11 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _clnOrdem = this.getClnNome();
       _clnOrdem.setBooOrdem(true);
-    }
-    catch (Exception ex) {
+
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
+    } finally {
     }
 
     return _clnOrdem;
@@ -220,12 +285,11 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       sql = sql.replace("_tbl_nome", this.getStrNomeSql());
 
       _intQtdLinha = this.getObjDb().execSqlGetInt(sql);
-    }
-    catch (Exception ex) {
+
+    } catch (Exception ex) {
 
       _intQtdLinha = 0;
-    }
-    finally {
+    } finally {
     }
 
     return _intQtdLinha;
@@ -242,13 +306,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _lstClnOrdenado = null;
 
-      _lstCln = new ArrayList<DbColuna>();
-    }
-    catch (Exception ex) {
+      _lstCln = new ArrayList<>();
+
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
+    } finally {
     }
 
     return _lstCln;
@@ -263,7 +326,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
         return _lstClnCadastro;
       }
 
-      _lstClnCadastro = new ArrayList<DbColuna>();
+      _lstClnCadastro = new ArrayList<>();
 
       _lstClnCadastro.add(this.getClnNome());
 
@@ -291,12 +354,10 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
         _lstClnCadastro.add(cln);
       }
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
+    } finally {
     }
 
     return _lstClnCadastro;
@@ -313,7 +374,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _lstClnConsultaOrdenado = null;
 
-      _lstClnConsulta = new ArrayList<DbColuna>();
+      _lstClnConsulta = new ArrayList<>();
 
       _lstClnConsulta.add(this.getClnChavePrimaria());
       _lstClnConsulta.add(this.getClnNome());
@@ -347,12 +408,10 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
         _lstClnConsulta.add(cln);
       }
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
+    } finally {
     }
 
     return _lstClnConsulta;
@@ -374,15 +433,13 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
         @Override
         public int compare(DbColuna cln1, DbColuna cln2) {
 
-          return cln1.getStrNomeExibicao().compareTo(cln2.getStrNomeExibicao());
+          return (cln1.getIntOrdem() - cln2.getIntOrdem());
         }
       });
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
+    } finally {
     }
 
     return _lstClnConsultaOrdenado;
@@ -407,36 +464,33 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
           return cln1.getStrNomeExibicao().compareTo(cln2.getStrNomeExibicao());
         }
       });
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
+    } finally {
     }
 
     return _lstClnOrdenado;
   }
 
-  private List<TblOnChangeListener> getLstEvtTblOnChangeListener() {
+  private List<OnChangeListener> getLstEvtOnChangeListener() {
 
     try {
 
-      if (_lstEvtTblOnChangeListener != null) {
+      if (_lstEvtOnChangeListener != null) {
 
-        return _lstEvtTblOnChangeListener;
+        return _lstEvtOnChangeListener;
       }
 
-      _lstEvtTblOnChangeListener = new ArrayList<TblOnChangeListener>();
-    }
-    catch (Exception ex) {
+      _lstEvtOnChangeListener = new ArrayList<>();
+
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
+    } finally {
     }
 
-    return _lstEvtTblOnChangeListener;
+    return _lstEvtOnChangeListener;
   }
 
   public List<DbFiltro> getLstFilCadastro() {
@@ -448,13 +502,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
         return _lstFilCadastro;
       }
 
-      _lstFilCadastro = new ArrayList<DbFiltro>();
-    }
-    catch (Exception ex) {
+      _lstFilCadastro = new ArrayList<>();
+
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
+    } finally {
     }
 
     return _lstFilCadastro;
@@ -470,12 +523,11 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       }
 
       _lstFilConsulta = new ArrayList<>();
-    }
-    catch (Exception ex) {
+
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
+    } finally {
     }
 
     return _lstFilConsulta;
@@ -499,12 +551,10 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
         return cln.getStrNomeExibicao();
       }
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(128), ex);
-    }
-    finally {
+    } finally {
     }
 
     return null;
@@ -520,12 +570,11 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       }
 
       _strNomeSql = this.getStrNomeSimplificado();
-    }
-    catch (Exception ex) {
+
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
+    } finally {
     }
 
     return _strNomeSql;
@@ -557,102 +606,33 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
         cln.limpar();
       }
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(130), ex);
-    }
-    finally {
-    }
-  }
-
-  protected void onAdicionarRegDispatcher(TblOnChangeArg arg) {
-
-    try {
-
-      for (TblOnChangeListener evt : this.getLstEvtTblOnChangeListener()) {
-
-        if (evt == null) {
-
-          continue;
-        }
-
-        evt.onAdicionarReg(arg);
-      }
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
+    } finally {
     }
   }
 
-  protected void onApagarRegDispatcher(TblOnChangeArg arg) {
+  public void removerOnChangeListener(OnChangeListener evtOnChangeListener) {
 
     try {
 
-      for (TblOnChangeListener evt : this.getLstEvtTblOnChangeListener()) {
-
-        if (evt == null) {
-
-          continue;
-        }
-
-        evt.onApagarReg(arg);
-      }
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-  }
-
-  protected void onAtualizarRegDispatcher(TblOnChangeArg arg) {
-
-    try {
-
-      for (TblOnChangeListener evt : this.getLstEvtTblOnChangeListener()) {
-
-        if (evt == null) {
-
-          continue;
-        }
-
-        evt.onAtualizarReg(arg);
-      }
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-  }
-
-  public void removeEvtTblOnChangeListener(TblOnChangeListener evtTblOnChangeListener) {
-
-    try {
-
-      if (evtTblOnChangeListener == null) {
+      if (evtOnChangeListener == null) {
 
         return;
       }
 
-      if (!this.getLstEvtTblOnChangeListener().contains(evtTblOnChangeListener)) {
+      if (!this.getLstEvtOnChangeListener().contains(evtOnChangeListener)) {
 
         return;
       }
 
-      this.getLstEvtTblOnChangeListener().remove(evtTblOnChangeListener);
-    }
-    catch (Exception ex) {
+      this.getLstEvtOnChangeListener().remove(evtOnChangeListener);
+
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
+    } finally {
     }
   }
 

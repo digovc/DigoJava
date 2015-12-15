@@ -45,12 +45,10 @@ public class DbFiltro extends Objeto {
       this.setClnFiltro(clnFiltro);
       this.setEnmOperador(enmOperador);
       this.setStrFiltro(String.valueOf(intFiltro));
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
+    } finally {
     }
   }
 
@@ -61,12 +59,10 @@ public class DbFiltro extends Objeto {
       this.setClnFiltro(clnFiltro);
       this.setEnmOperador(enmOperador);
       this.setStrFiltro(strFiltro);
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
+    } finally {
     }
   }
 
@@ -76,12 +72,10 @@ public class DbFiltro extends Objeto {
 
       this.setClnFiltro(clnFiltro);
       this.setStrFiltro(Utils.getStrDataFormatada(dttFiltro, EnmDataFormato.YYYY_MM_DD_HH_MM_SS));
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(121), ex);
-    }
-    finally {
+    } finally {
     }
   }
 
@@ -91,12 +85,10 @@ public class DbFiltro extends Objeto {
 
       this.setClnFiltro(clnFiltro);
       this.setStrFiltro(String.valueOf(intFiltro));
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(121), ex);
-    }
-    finally {
+    } finally {
     }
   }
 
@@ -106,12 +98,10 @@ public class DbFiltro extends Objeto {
 
       this.setClnFiltro(clnFiltro);
       this.setStrFiltro(strFiltro);
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(121), ex);
-    }
-    finally {
+    } finally {
     }
   }
 
@@ -121,12 +111,23 @@ public class DbFiltro extends Objeto {
 
       this.setBooSelect(true);
       this.setStrFiltro(strSubSelect);
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(121), ex);
+    } finally {
     }
-    finally {
+  }
+
+  public DbFiltro(DbColuna clnFiltro, boolean booFiltro) {
+
+    try {
+
+      this.setClnFiltro(clnFiltro);
+      this.setStrFiltro(booFiltro ? "1" : "0");
+    } catch (Exception ex) {
+
+      new Erro(App.getI().getStrTextoPadrao(121), ex);
+    } finally {
     }
   }
 
@@ -172,12 +173,10 @@ public class DbFiltro extends Objeto {
       _sqlFiltro = this.getSqlFiltroNaoSelect(booPrimeiroTermo);
 
       return _sqlFiltro;
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
+    } finally {
     }
 
     return null;
@@ -199,13 +198,11 @@ public class DbFiltro extends Objeto {
       strResultado = booPrimeiroTermo ? strResultado.substring(1) : strResultado;
 
       return strResultado;
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
 
-    }
-    finally {
+    } finally {
     }
 
     return null;
@@ -223,13 +220,11 @@ public class DbFiltro extends Objeto {
       strResultado = booPrimeiroTermo ? strResultado.substring(1) : strResultado;
 
       return strResultado;
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
 
-    }
-    finally {
+    } finally {
     }
 
     return null;
@@ -253,12 +248,10 @@ public class DbFiltro extends Objeto {
         default:
           return "and";
       }
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
+    } finally {
     }
 
     return null;
@@ -312,12 +305,10 @@ public class DbFiltro extends Objeto {
           _strOperador = "=";
           return _strOperador;
       }
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally {
+    } finally {
     }
 
     return _strOperador;
