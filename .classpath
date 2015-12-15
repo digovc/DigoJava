@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="lib" path="build/libs/digoJava.jar"/>
 	<classpathentry kind="lib" path="libs/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="libs/commons-net-3.3.jar"/>
 	<classpathentry kind="lib" path="libs/gson-2.2.4.jar"/>

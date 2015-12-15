@@ -71,7 +71,7 @@ public abstract class App extends Objeto {
    *
    * @param tbl Tabela que faz parte da aplicação e será adicionada.
    */
-  public void addTbl(DbTabela tbl) {
+  public void addTbl(DbTabela<?> tbl) {
 
     try {
 
