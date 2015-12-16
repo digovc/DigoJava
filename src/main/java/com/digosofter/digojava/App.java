@@ -1,13 +1,13 @@
 package com.digosofter.digojava;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.digosofter.digojava.MsgUsuario.EnmLingua;
 import com.digosofter.digojava.database.DbTabela;
 import com.digosofter.digojava.erro.Erro;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Principal classe da aplicação. Esta classe deve ser implementada/estendida
@@ -22,6 +22,17 @@ import java.util.List;
 public abstract class App extends Objeto {
 
   private static App i;
+
+  /**
+   * @return Retorna a única instância desta classe durante o ciclo de vida da
+   *         aplicação. Esta instância é carregada automaticamente quando a
+   *         classe que estende esta é construída.
+   */
+  public static App getI() {
+
+    return i;
+  }
+
   private boolean _booDebug;
   private long _intMilisegLigado;
   private long _intSegLigado;
@@ -31,6 +42,7 @@ public abstract class App extends Objeto {
   private List<MsgUsuario> _lstMsgUsrPadrao;
   private List<DbTabela<?>> _lstTbl;
   private Gson _objGson;
+
   private String _strVersao;
 
   /**
@@ -44,23 +56,14 @@ public abstract class App extends Objeto {
     try {
 
       this.setI(this);
-      this.setIntStartTime(System.currentTimeMillis());
-
-    } catch (Exception ex) {
+      this.inicializar();
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
     }
-  }
-
-  /**
-   * @return Retorna a única instância desta classe durante o ciclo de vida da
-   * aplicação. Esta instância é carregada automaticamente quando a
-   * classe que estende esta é construída.
-   */
-  public static App getI() {
-
-    return i;
+    finally {
+    }
   }
 
   /**
@@ -69,7 +72,8 @@ public abstract class App extends Objeto {
    * As tabelas adicionadas por este método podem ser acessadas posteriormente
    * através do método {@link #getLstTbl()}.
    *
-   * @param tbl Tabela que faz parte da aplicação e será adicionada.
+   * @param tbl
+   *          Tabela que faz parte da aplicação e será adicionada.
    */
   public void addTbl(DbTabela<?> tbl) {
 
@@ -87,17 +91,19 @@ public abstract class App extends Objeto {
 
       this.getLstTbl().add(tbl);
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
   }
 
   /**
    * @return Retorna atributo que indica se a aplicação está em modo de "debug"
-   * ou não.
+   *         ou não.
    */
   public boolean getBooDebug() {
 
@@ -113,10 +119,12 @@ public abstract class App extends Objeto {
 
       _intMilisegLigado = System.currentTimeMillis() - this.getIntStartTime();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _intMilisegLigado;
@@ -131,10 +139,12 @@ public abstract class App extends Objeto {
 
       _intSegLigado = this.getIntMilisegLigado() / 1000;
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _intSegLigado;
@@ -161,7 +171,7 @@ public abstract class App extends Objeto {
    * e retornar as mensagens da aplicação.
    *
    * @return Retorna lista de objetos do tipo {@link MsgUsuario}, que mantém
-   * todos os textos que serão apresentados para o usuário num só local.
+   *         todos os textos que serão apresentados para o usuário num só local.
    */
   public List<MsgUsuario> getLstMsgUsr() {
 
@@ -174,10 +184,12 @@ public abstract class App extends Objeto {
 
       _lstMsgUsr = new ArrayList<>();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _lstMsgUsr;
@@ -201,10 +213,12 @@ public abstract class App extends Objeto {
 
       _lstMsgUsrPadrao = this.inicializarLstMsgUsrPadrao();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(this.getStrMsgUsrPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
 
     return _lstMsgUsrPadrao;
@@ -212,9 +226,9 @@ public abstract class App extends Objeto {
 
   /**
    * @return Retorna a lista de instâncias das tabelas que a aplicação necessita
-   * para funcionas. Este objetos foram adicionados através do métodos
-   * {@link #addTbl(DbTabela)}. Este processo tem por objetivo manter
-   * concentradas num mesmo local a instância de todos as tabelas.
+   *         para funcionas. Este objetos foram adicionados através do métodos
+   *         {@link #addTbl(DbTabela)}. Este processo tem por objetivo manter
+   *         concentradas num mesmo local a instância de todos as tabelas.
    */
   public List<DbTabela<?>> getLstTbl() {
 
@@ -227,10 +241,12 @@ public abstract class App extends Objeto {
 
       _lstTbl = new ArrayList<>();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _lstTbl;
@@ -238,9 +254,9 @@ public abstract class App extends Objeto {
 
   /**
    * @return Retorna uma instância única de um objeto do tipo "Gson", contido na
-   * biblioteca do Google para tratamento de JSON. É através deste
-   * objeto é possível transformar os mais variados objetos em JSON e
-   * vice-versa.
+   *         biblioteca do Google para tratamento de JSON. É através deste
+   *         objeto é possível transformar os mais variados objetos em JSON e
+   *         vice-versa.
    */
   public Gson getObjGson() {
 
@@ -259,22 +275,25 @@ public abstract class App extends Objeto {
 
       _objGson = objGsonBuilder.create();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _objGson;
   }
 
   /**
-   * @param intId Código que indica a mensagem que se espera como retorno.
+   * @param intId
+   *          Código que indica a mensagem que se espera como retorno.
    * @return Retorna a primeira mensagem que recebeu o código representado no
-   * parâmetro "intId". Caso não haja um objeto do tipo
-   * {@link MsgUsuario} na lista {@link #getLstMsgUsr()} que contenha
-   * este código, retorna "null". O texto que será estará no idioma
-   * <i>default</i>, ou seja <b>português do Brasil</b>.
+   *         parâmetro "intId". Caso não haja um objeto do tipo
+   *         {@link MsgUsuario} na lista {@link #getLstMsgUsr()} que contenha
+   *         este código, retorna "null". O texto que será estará no idioma
+   *         <i>default</i>, ou seja <b>português do Brasil</b>.
    */
   public String getStrMsgUsr(int intId) {
 
@@ -290,7 +309,8 @@ public abstract class App extends Objeto {
       if (booMsgPadrao) {
 
         lstMsgUsrTemp = this.getLstMsgUsrPadrao();
-      } else {
+      }
+      else {
 
         lstMsgUsrTemp = this.getLstMsgUsr();
       }
@@ -304,10 +324,12 @@ public abstract class App extends Objeto {
 
         return msgUsuario.getStrTexto();
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(this.getStrTextoPadrao(103), ex);
-    } finally {
+    }
+    finally {
     }
 
     return null;
@@ -338,11 +360,12 @@ public abstract class App extends Objeto {
       }
 
       _strVersao = "0.0.1 beta";
-
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _strVersao;
@@ -350,6 +373,16 @@ public abstract class App extends Objeto {
 
   public void inicializar() {
 
+    try {
+
+      this.setIntStartTime(System.currentTimeMillis());
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
   }
 
   private List<MsgUsuario> inicializarLstMsgUsrPadrao() {
@@ -363,12 +396,14 @@ public abstract class App extends Objeto {
       lstMsgUsrResultado.add(new MsgUsuario("Erro inesperado.", 0));
 
       return lstMsgUsrResultado;
-
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
     }
+    finally {
+    }
+
     return null;
   }
 
@@ -388,10 +423,12 @@ public abstract class App extends Objeto {
 
       i = app;
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 

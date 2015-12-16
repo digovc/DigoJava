@@ -1,8 +1,12 @@
 package com.digosofter.digojava.database;
 
+import java.lang.reflect.Field;
+import java.sql.ResultSet;
 import java.util.GregorianCalendar;
 
 import com.digosofter.digojava.Objeto;
+import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.erro.Erro;
 
 public abstract class Dominio extends Objeto {
 
@@ -10,6 +14,153 @@ public abstract class Dominio extends Objeto {
   private GregorianCalendar _dttAlteracao;
   private GregorianCalendar _dttCadastro;
   private int _intId;
+
+  /**
+   * Carrega os dados contidos na posição atual do ResultSet nos atributos desta
+   * instância.
+   */
+  public void carregarDados(ResultSet rst) {
+
+    try {
+
+      if (rst == null) {
+
+        return;
+      }
+
+      this.carregarDados(rst, this.getClass());
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
+  private void carregarDados(ResultSet rst, Class<?> cls) {
+
+    try {
+
+      if (cls == null) {
+
+        return;
+      }
+
+      this.carregarDados(rst, cls.getSuperclass());
+
+      for (Field objField : cls.getDeclaredFields()) {
+
+        this.carregarDados(rst, objField);
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
+  private void carregarDados(ResultSet rst, Field objField) {
+
+    try {
+
+      if (objField == null) {
+
+        return;
+      }
+
+      for (int i = 1; i <= rst.getMetaData().getColumnCount(); i++) {
+
+        this.carregarDados(rst, objField, i);
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+
+      objField.setAccessible(false);
+    }
+  }
+
+  private void carregarDados(ResultSet rst, Field objField, int intClnIndex) {
+
+    String strClnNomeSimplificado;
+    String strFieldNomeSimplificado;
+
+    try {
+
+      strClnNomeSimplificado = rst.getMetaData().getColumnName(intClnIndex);
+      strClnNomeSimplificado = Utils.simplificar(strClnNomeSimplificado);
+      strClnNomeSimplificado = strClnNomeSimplificado.replace("_", "");
+
+      strFieldNomeSimplificado = objField.getName();
+      strFieldNomeSimplificado = Utils.simplificar(strFieldNomeSimplificado);
+      strFieldNomeSimplificado = strFieldNomeSimplificado.replace("_", "");
+
+      if (!strClnNomeSimplificado.equals(strFieldNomeSimplificado)) {
+
+        return;
+      }
+
+      this.carregarDadosValor(rst, objField, intClnIndex);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
+  private void carregarDadosValor(ResultSet rst, Field objField, int intClnIndex) {
+
+    try {
+
+      objField.setAccessible(true);
+      
+      if (boolean.class.equals(objField.getType())) {
+
+        objField.set(this, DbUtils.getBoo(rst, rst.getMetaData().getColumnName(intClnIndex)));
+        return;
+      }
+
+      if (double.class.equals(objField.getType())) {
+
+        objField.set(this, DbUtils.getDbl(rst, rst.getMetaData().getColumnName(intClnIndex)));
+        return;
+      }
+
+      if (GregorianCalendar.class.equals(objField.getType())) {
+
+        objField.set(this, DbUtils.getDtt(rst, rst.getMetaData().getColumnName(intClnIndex)));
+        return;
+      }
+
+      if (int.class.equals(objField.getType())) {
+
+        objField.set(this, DbUtils.getInt(rst, rst.getMetaData().getColumnName(intClnIndex)));
+        return;
+      }
+
+      if (String.class.equals(objField.getType())) {
+
+        objField.set(this, DbUtils.getStr(rst, rst.getMetaData().getColumnName(intClnIndex)));
+        return;
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+      
+      objField.setAccessible(false);
+    }
+  }
 
   public boolean getBooAtivo() {
 

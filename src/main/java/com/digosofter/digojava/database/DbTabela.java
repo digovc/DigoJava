@@ -1,14 +1,14 @@
 package com.digosofter.digojava.database;
 
-import com.digosofter.digojava.App;
-import com.digosofter.digojava.Objeto;
-import com.digosofter.digojava.Utils;
-import com.digosofter.digojava.erro.Erro;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import com.digosofter.digojava.App;
+import com.digosofter.digojava.Objeto;
+import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.erro.Erro;
 
 public abstract class DbTabela<T extends Dominio> extends Objeto {
 
@@ -41,10 +41,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       this.inicializarColuna(-1);
       this.addAppLstTbl();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(122), ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -54,10 +56,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       App.getI().addTbl(this);
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -82,11 +86,13 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       this.getLstCln().add(cln);
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
 
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -106,10 +112,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       this.getLstEvtOnChangeListener().add(evtOnChangeListener);
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -125,10 +133,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       this.dispararOnApagarReg(e);
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -145,10 +155,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
         evt.onAdicionarReg(e);
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -165,10 +177,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
         evt.onApagarReg(e);
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -185,10 +199,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
         evt.onAtualizarReg(e);
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -219,10 +235,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       _clnChavePrimaria = this.getLstCln().get(0);
       _clnChavePrimaria.setBooChavePrimaria(true);
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
 
     return _clnChavePrimaria;
@@ -240,10 +258,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       _clnNome = this.getClnChavePrimaria();
       _clnNome.setBooNome(true);
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
 
     return _clnNome;
@@ -261,10 +281,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       _clnOrdem = this.getClnNome();
       _clnOrdem.setBooOrdem(true);
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
 
     return _clnOrdem;
@@ -286,10 +308,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _intQtdLinha = this.getObjDb().execSqlGetInt(sql);
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       _intQtdLinha = 0;
-    } finally {
+    }
+    finally {
     }
 
     return _intQtdLinha;
@@ -308,10 +332,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _lstCln = new ArrayList<>();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
 
     return _lstCln;
@@ -354,10 +380,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
         _lstClnCadastro.add(cln);
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _lstClnCadastro;
@@ -408,10 +436,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
         _lstClnConsulta.add(cln);
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _lstClnConsulta;
@@ -436,10 +466,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
           return (cln1.getIntOrdem() - cln2.getIntOrdem());
         }
       });
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
 
     return _lstClnConsultaOrdenado;
@@ -464,10 +496,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
           return cln1.getStrNomeExibicao().compareTo(cln2.getStrNomeExibicao());
         }
       });
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
 
     return _lstClnOrdenado;
@@ -484,10 +518,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _lstEvtOnChangeListener = new ArrayList<>();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _lstEvtOnChangeListener;
@@ -504,10 +540,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _lstFilCadastro = new ArrayList<>();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
 
     return _lstFilCadastro;
@@ -524,10 +562,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _lstFilConsulta = new ArrayList<>();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _lstFilConsulta;
@@ -551,10 +591,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
         return cln.getStrNomeExibicao();
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(128), ex);
-    } finally {
+    }
+    finally {
     }
 
     return null;
@@ -571,10 +613,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _strNomeSql = this.getStrNomeSimplificado();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _strNomeSql;
@@ -606,10 +650,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
         cln.limpar();
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(130), ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -629,10 +675,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       this.getLstEvtOnChangeListener().remove(evtOnChangeListener);
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -666,7 +714,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     _clnOrdem = clnOrdem;
   }
 
-  private void setClsDominio(Class<T> clsDominio) {
+  protected void setClsDominio(Class<T> clsDominio) {
 
     _clsDominio = clsDominio;
   }
