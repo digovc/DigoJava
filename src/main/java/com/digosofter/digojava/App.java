@@ -56,7 +56,7 @@ public abstract class App extends Objeto {
     try {
 
       this.setI(this);
-      this.inicializar();
+      this.setIntStartTime(System.currentTimeMillis());
     }
     catch (Exception ex) {
 
@@ -372,17 +372,6 @@ public abstract class App extends Objeto {
   }
 
   public void inicializar() {
-
-    try {
-
-      this.setIntStartTime(System.currentTimeMillis());
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
   }
 
   private List<MsgUsuario> inicializarLstMsgUsrPadrao() {

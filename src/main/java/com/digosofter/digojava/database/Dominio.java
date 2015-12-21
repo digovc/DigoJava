@@ -2,7 +2,9 @@ package com.digosofter.digojava.database;
 
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
@@ -21,6 +23,8 @@ public abstract class Dominio extends Objeto {
    */
   public void carregarDados(ResultSet rst) {
 
+    List<Integer> lstIntClnIndexCarregada;
+
     try {
 
       if (rst == null) {
@@ -28,7 +32,14 @@ public abstract class Dominio extends Objeto {
         return;
       }
 
-      this.carregarDados(rst, this.getClass());
+      if (rst.getMetaData().getColumnCount() < 1) {
+
+        return;
+      }
+
+      lstIntClnIndexCarregada = new ArrayList<>();
+
+      this.carregarDados(rst, this.getClass(), lstIntClnIndexCarregada);
     }
     catch (Exception ex) {
 
@@ -38,7 +49,7 @@ public abstract class Dominio extends Objeto {
     }
   }
 
-  private void carregarDados(ResultSet rst, Class<?> cls) {
+  private void carregarDados(ResultSet rst, Class<?> cls, List<Integer> lstIntClnIndexCarregada) {
 
     try {
 
@@ -47,11 +58,11 @@ public abstract class Dominio extends Objeto {
         return;
       }
 
-      this.carregarDados(rst, cls.getSuperclass());
+      this.carregarDados(rst, cls.getSuperclass(), lstIntClnIndexCarregada);
 
       for (Field objField : cls.getDeclaredFields()) {
 
-        this.carregarDados(rst, objField);
+        this.carregarDados(rst, objField, lstIntClnIndexCarregada);
       }
     }
     catch (Exception ex) {
@@ -59,69 +70,15 @@ public abstract class Dominio extends Objeto {
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
-    }
-  }
-
-  private void carregarDados(ResultSet rst, Field objField) {
-
-    try {
-
-      if (objField == null) {
-
-        return;
-      }
-
-      for (int i = 1; i <= rst.getMetaData().getColumnCount(); i++) {
-
-        this.carregarDados(rst, objField, i);
-      }
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-
-      objField.setAccessible(false);
     }
   }
 
   private void carregarDados(ResultSet rst, Field objField, int intClnIndex) {
 
-    String strClnNomeSimplificado;
-    String strFieldNomeSimplificado;
-
-    try {
-
-      strClnNomeSimplificado = rst.getMetaData().getColumnName(intClnIndex);
-      strClnNomeSimplificado = Utils.simplificar(strClnNomeSimplificado);
-      strClnNomeSimplificado = strClnNomeSimplificado.replace("_", "");
-
-      strFieldNomeSimplificado = objField.getName();
-      strFieldNomeSimplificado = Utils.simplificar(strFieldNomeSimplificado);
-      strFieldNomeSimplificado = strFieldNomeSimplificado.replace("_", "");
-
-      if (!strClnNomeSimplificado.equals(strFieldNomeSimplificado)) {
-
-        return;
-      }
-
-      this.carregarDadosValor(rst, objField, intClnIndex);
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-  }
-
-  private void carregarDadosValor(ResultSet rst, Field objField, int intClnIndex) {
-
     try {
 
       objField.setAccessible(true);
-      
+
       if (boolean.class.equals(objField.getType())) {
 
         objField.set(this, DbUtils.getBoo(rst, rst.getMetaData().getColumnName(intClnIndex)));
@@ -157,7 +114,68 @@ public abstract class Dominio extends Objeto {
       new Erro("Erro inesperado.\n", ex);
     }
     finally {
-      
+
+      objField.setAccessible(false);
+    }
+  }
+
+  private void carregarDados(ResultSet rst, Field objField, int intClnIndex, List<Integer> lstIntClnIndexCarregada) {
+
+    String strClnNomeSimplificado;
+    String strFieldNomeSimplificado;
+
+    try {
+
+      strClnNomeSimplificado = rst.getMetaData().getColumnName(intClnIndex);
+      strClnNomeSimplificado = Utils.simplificar(strClnNomeSimplificado);
+      strClnNomeSimplificado = strClnNomeSimplificado.replace("_", "");
+
+      strFieldNomeSimplificado = objField.getName();
+      strFieldNomeSimplificado = Utils.simplificar(strFieldNomeSimplificado);
+      strFieldNomeSimplificado = strFieldNomeSimplificado.replace("_", "");
+
+      if (!strClnNomeSimplificado.equals(strFieldNomeSimplificado)) {
+
+        return;
+      }
+
+      this.carregarDados(rst, objField, intClnIndex);
+
+      lstIntClnIndexCarregada.add(intClnIndex);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
+  private void carregarDados(ResultSet rst, Field objField, List<Integer> lstIntClnIndexCarregada) {
+
+    try {
+
+      if (objField == null) {
+
+        return;
+      }
+
+      for (int intClnIndex = 1; intClnIndex <= rst.getMetaData().getColumnCount(); intClnIndex++) {
+
+        if (lstIntClnIndexCarregada.contains(intClnIndex)) {
+
+          continue;
+        }
+
+        this.carregarDados(rst, objField, intClnIndex, lstIntClnIndexCarregada);
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+
       objField.setAccessible(false);
     }
   }
