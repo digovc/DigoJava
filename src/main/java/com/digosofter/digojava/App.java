@@ -2,7 +2,7 @@
 package com.digosofter.digojava;
 
 import com.digosofter.digojava.MsgUsuario.EnmLingua;
-import com.digosofter.digojava.database.DbTabela;
+import com.digosofter.digojava.database.Tabela;
 import com.digosofter.digojava.erro.Erro;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,7 +38,7 @@ public abstract class App extends Objeto {
   private int _intVersao = 1;
   private List<MsgUsuario> _lstMsgUsr;
   private List<MsgUsuario> _lstMsgUsrPadrao;
-  private List<DbTabela<?>> _lstTbl;
+  private List<Tabela<?>> _lstTbl;
   private Gson _objGson;
 
   private String _strVersao;
@@ -68,7 +68,7 @@ public abstract class App extends Objeto {
    *
    * @param tbl Tabela que faz parte da aplicação e será adicionada.
    */
-  public void addTbl(DbTabela<?> tbl) {
+  public void addTbl(Tabela<?> tbl) {
 
     try {
 
@@ -210,10 +210,10 @@ public abstract class App extends Objeto {
 
   /**
    * @return Retorna a lista de instâncias das tabelas que a aplicação necessita para funcionas. Este objetos foram
-   * adicionados através do métodos {@link #addTbl(DbTabela)}. Este processo tem por objetivo manter concentradas num
+   * adicionados através do métodos {@link #addTbl(Tabela)}. Este processo tem por objetivo manter concentradas num
    * mesmo local a instância de todos as tabelas.
    */
-  public List<DbTabela<?>> getLstTbl() {
+  public List<Tabela<?>> getLstTbl() {
 
     try {
 
@@ -379,7 +379,7 @@ public abstract class App extends Objeto {
    *
    * @param lstTbl Lista de tabela da aplicação.
    */
-  protected void inicializarLstTbl(final List<DbTabela<?>> lstTbl) {
+  protected void inicializarLstTbl(final List<Tabela<?>> lstTbl) {
 
   }
 

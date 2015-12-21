@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 
-public class DbColuna extends Objeto {
+public class Coluna extends Objeto {
 
   public static enum EnmTipo {
 
@@ -60,7 +60,7 @@ public class DbColuna extends Objeto {
   private boolean _booSenha;
   private boolean _booVisivelCadastro = true;
   private boolean _booVisivelConsulta;
-  private DbColuna _clnRef;
+  private Coluna _clnRef;
   private EnmTipo _enmTipo;
   private EnmTipoGrupo _enmTipoGrupo;
   private int _intFrmLinha = 1;
@@ -76,9 +76,9 @@ public class DbColuna extends Objeto {
   private String _strValorDefault;
   private String _strValorExibicao;
   private String _strValorSql;
-  private DbTabela<?> _tbl;
+  private Tabela<?> _tbl;
 
-  public DbColuna(String strNome, DbTabela<?> tbl, EnmTipo enmTipo) {
+  public Coluna(String strNome, Tabela<?> tbl, EnmTipo enmTipo) {
 
     try {
 
@@ -216,7 +216,7 @@ public class DbColuna extends Objeto {
     }
   }
 
-  public DbColuna getClnRef() {
+  public Coluna getClnRef() {
 
     return _clnRef;
   }
@@ -668,7 +668,7 @@ public class DbColuna extends Objeto {
     return null;
   }
 
-  public DbTabela<?> getTbl() {
+  public Tabela<?> getTbl() {
 
     return _tbl;
   }
@@ -988,7 +988,7 @@ public class DbColuna extends Objeto {
     }
   }
 
-  public void setClnRef(DbColuna clnRef) {
+  public void setClnRef(Coluna clnRef) {
 
     _clnRef = clnRef;
   }
@@ -1098,7 +1098,7 @@ public class DbColuna extends Objeto {
     _strValorExibicao = strValorExibicao;
   }
 
-  public void setTbl(DbTabela<?> tbl) {
+  public void setTbl(Tabela<?> tbl) {
 
     try {
 

@@ -1,7 +1,7 @@
 package com.digosofter.digojava;
 
 import com.digosofter.digojava.MsgUsuario.EnmLingua;
-import com.digosofter.digojava.database.DbTabela;
+import com.digosofter.digojava.database.Tabela;
 import com.digosofter.digojava.database.Dominio;
 
 import org.junit.Test;
@@ -16,14 +16,14 @@ import static org.junit.Assert.assertTrue;
 public class AppTest extends TestMain {
 
   private App _app;
-  private DbTabela<?> _tbl;
+  private Tabela<?> _tbl;
 
   private App getApp() {
 
     return _app;
   }
 
-  private DbTabela<?> getTbl() {
+  private Tabela<?> getTbl() {
 
     return _tbl;
   }
@@ -33,7 +33,7 @@ public class AppTest extends TestMain {
 
     this.setApp(new App() {});
 
-    this.setTbl(new DbTabela<Dominio>("tbl_test", Dominio.class) {});
+    this.setTbl(new Tabela<Dominio>("tbl_test", Dominio.class) {});
   }
 
   private void setApp(App app) {
@@ -41,7 +41,7 @@ public class AppTest extends TestMain {
     _app = app;
   }
 
-  private void setTbl(DbTabela<?> tbl) {
+  private void setTbl(Tabela<?> tbl) {
 
     _tbl = tbl;
   }

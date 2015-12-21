@@ -10,29 +10,29 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class DbTabela<T extends Dominio> extends Objeto {
+public abstract class Tabela<T extends Dominio> extends Objeto {
 
   private boolean _booMenuAdicionar;
   private boolean _booMenuAlterar;
   private boolean _booMenuApagar;
-  private DbColuna _clnChavePrimaria;
-  private DbColuna _clnNome;
-  private DbColuna _clnOrdem;
+  private Coluna _clnChavePrimaria;
+  private Coluna _clnNome;
+  private Coluna _clnOrdem;
   private Class<T> _clsDominio;
   private int _intQtdLinha;
-  private List<DbColuna> _lstCln;
-  private List<DbColuna> _lstClnCadastro;
-  private List<DbColuna> _lstClnConsulta;
-  private List<DbColuna> _lstClnConsultaOrdenado;
-  private List<DbColuna> _lstClnOrdenado;
+  private List<Coluna> _lstCln;
+  private List<Coluna> _lstClnCadastro;
+  private List<Coluna> _lstClnConsulta;
+  private List<Coluna> _lstClnConsultaOrdenado;
+  private List<Coluna> _lstClnOrdenado;
   private List<OnChangeListener> _lstEvtOnChangeListener;
-  private List<DbFiltro> _lstFilCadastro;
-  private List<DbFiltro> _lstFilConsulta;
+  private List<Filtro> _lstFilCadastro;
+  private List<Filtro> _lstFilConsulta;
   private DataBase _objDb;
   private String _strNomeSql;
   private String _strPesquisa;
 
-  protected DbTabela(String strNome, Class<T> clsDominio) {
+  protected Tabela(String strNome, Class<T> clsDominio) {
 
     try {
 
@@ -64,7 +64,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     }
   }
 
-  public void addCln(DbColuna cln) {
+  public void addCln(Coluna cln) {
 
     try {
 
@@ -219,7 +219,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _booMenuApagar;
   }
 
-  public DbColuna getClnChavePrimaria() {
+  public Coluna getClnChavePrimaria() {
 
     try {
 
@@ -241,7 +241,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _clnChavePrimaria;
   }
 
-  public DbColuna getClnNome() {
+  public Coluna getClnNome() {
 
     try {
 
@@ -263,7 +263,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _clnNome;
   }
 
-  public DbColuna getClnOrdem() {
+  public Coluna getClnOrdem() {
 
     try {
 
@@ -311,7 +311,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _intQtdLinha;
   }
 
-  public List<DbColuna> getLstCln() {
+  public List<Coluna> getLstCln() {
 
     try {
 
@@ -334,7 +334,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _lstCln;
   }
 
-  public List<DbColuna> getLstClnCadastro() {
+  public List<Coluna> getLstClnCadastro() {
 
     try {
 
@@ -347,7 +347,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _lstClnCadastro.add(this.getClnNome());
 
-      for (DbColuna cln : this.getLstCln()) {
+      for (Coluna cln : this.getLstCln()) {
 
         if (cln.getBooChavePrimaria()) {
 
@@ -382,7 +382,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _lstClnCadastro;
   }
 
-  public List<DbColuna> getLstClnConsulta() {
+  public List<Coluna> getLstClnConsulta() {
 
     try {
 
@@ -398,7 +398,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       _lstClnConsulta.add(this.getClnChavePrimaria());
       _lstClnConsulta.add(this.getClnNome());
 
-      for (DbColuna cln : this.getLstCln()) {
+      for (Coluna cln : this.getLstCln()) {
 
         if (cln == null) {
 
@@ -438,7 +438,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _lstClnConsulta;
   }
 
-  public List<DbColuna> getLstClnConsultaOrdenado() {
+  public List<Coluna> getLstClnConsultaOrdenado() {
 
     try {
 
@@ -449,10 +449,10 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _lstClnConsultaOrdenado = this.getLstClnConsulta();
 
-      Collections.sort(_lstClnConsultaOrdenado, new Comparator<DbColuna>() {
+      Collections.sort(_lstClnConsultaOrdenado, new Comparator<Coluna>() {
 
         @Override
-        public int compare(DbColuna cln1, DbColuna cln2) {
+        public int compare(Coluna cln1, Coluna cln2) {
 
           return (cln1.getIntOrdem() - cln2.getIntOrdem());
         }
@@ -468,7 +468,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _lstClnConsultaOrdenado;
   }
 
-  public List<DbColuna> getLstClnOrdenado() {
+  public List<Coluna> getLstClnOrdenado() {
 
     try {
 
@@ -479,10 +479,10 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _lstClnOrdenado = this.getLstCln();
 
-      Collections.sort(_lstClnOrdenado, new Comparator<DbColuna>() {
+      Collections.sort(_lstClnOrdenado, new Comparator<Coluna>() {
 
         @Override
-        public int compare(DbColuna cln1, DbColuna cln2) {
+        public int compare(Coluna cln1, Coluna cln2) {
 
           return cln1.getStrNomeExibicao().compareTo(cln2.getStrNomeExibicao());
         }
@@ -519,7 +519,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _lstEvtOnChangeListener;
   }
 
-  public List<DbFiltro> getLstFilCadastro() {
+  public List<Filtro> getLstFilCadastro() {
 
     try {
 
@@ -540,7 +540,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _lstFilCadastro;
   }
 
-  public List<DbFiltro> getLstFilConsulta() {
+  public List<Filtro> getLstFilConsulta() {
 
     try {
 
@@ -570,7 +570,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
     try {
 
-      for (DbColuna cln : this.getLstCln()) {
+      for (Coluna cln : this.getLstCln()) {
 
         if (!cln.getStrNomeSql().equals(strNomeSql)) {
 
@@ -628,7 +628,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
     try {
 
-      for (DbColuna cln : this.getLstCln()) {
+      for (Coluna cln : this.getLstCln()) {
 
         if (cln == null) {
 
@@ -685,17 +685,17 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     _booMenuApagar = booMenuApagar;
   }
 
-  public void setClnChavePrimaria(DbColuna clnChavePrimaria) {
+  public void setClnChavePrimaria(Coluna clnChavePrimaria) {
 
     _clnChavePrimaria = clnChavePrimaria;
   }
 
-  public void setClnNome(DbColuna clnNome) {
+  public void setClnNome(Coluna clnNome) {
 
     _clnNome = clnNome;
   }
 
-  public void setClnOrdem(DbColuna clnOrdem) {
+  public void setClnOrdem(Coluna clnOrdem) {
 
     _clnOrdem = clnOrdem;
   }
@@ -705,12 +705,12 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     _clsDominio = clsDominio;
   }
 
-  void setLstClnCadastro(List<DbColuna> lstClnCadastro) {
+  void setLstClnCadastro(List<Coluna> lstClnCadastro) {
 
     _lstClnCadastro = lstClnCadastro;
   }
 
-  void setLstClnConsulta(List<DbColuna> lstClnConsulta) {
+  void setLstClnConsulta(List<Coluna> lstClnConsulta) {
 
     _lstClnConsulta = lstClnConsulta;
   }

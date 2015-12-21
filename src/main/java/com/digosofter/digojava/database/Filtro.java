@@ -8,7 +8,7 @@ import com.digosofter.digojava.erro.Erro;
 
 import java.util.GregorianCalendar;
 
-public class DbFiltro extends Objeto {
+public class Filtro extends Objeto {
 
   public enum EnmCondicao {
 
@@ -31,14 +31,14 @@ public class DbFiltro extends Objeto {
   }
 
   private boolean _booSelect;
-  private DbColuna _clnFiltro;
+  private Coluna _clnFiltro;
   private EnmCondicao _enmCondicao = EnmCondicao.AND;
   private EnmOperador _enmOperador = EnmOperador.IGUAL;
   private String _sqlFiltro;
   private String _strFiltro;
   private String _strOperador;
 
-  public DbFiltro(DbColuna clnFiltro, EnmOperador enmOperador, int intFiltro) {
+  public Filtro(Coluna clnFiltro, EnmOperador enmOperador, int intFiltro) {
 
     try {
 
@@ -54,7 +54,7 @@ public class DbFiltro extends Objeto {
     }
   }
 
-  public DbFiltro(DbColuna clnFiltro, EnmOperador enmOperador, String strFiltro) {
+  public Filtro(Coluna clnFiltro, EnmOperador enmOperador, String strFiltro) {
 
     try {
 
@@ -70,7 +70,7 @@ public class DbFiltro extends Objeto {
     }
   }
 
-  public DbFiltro(DbColuna clnFiltro, GregorianCalendar dttFiltro) {
+  public Filtro(Coluna clnFiltro, GregorianCalendar dttFiltro) {
 
     try {
 
@@ -85,7 +85,7 @@ public class DbFiltro extends Objeto {
     }
   }
 
-  public DbFiltro(DbColuna clnFiltro, int intFiltro) {
+  public Filtro(Coluna clnFiltro, int intFiltro) {
 
     try {
 
@@ -100,7 +100,7 @@ public class DbFiltro extends Objeto {
     }
   }
 
-  public DbFiltro(DbColuna clnFiltro, String strFiltro) {
+  public Filtro(Coluna clnFiltro, String strFiltro) {
 
     try {
 
@@ -115,7 +115,7 @@ public class DbFiltro extends Objeto {
     }
   }
 
-  public DbFiltro(String strSubSelect) {
+  public Filtro(String strSubSelect) {
 
     try {
 
@@ -130,7 +130,7 @@ public class DbFiltro extends Objeto {
     }
   }
 
-  public DbFiltro(DbColuna clnFiltro, boolean booFiltro) {
+  public Filtro(Coluna clnFiltro, boolean booFiltro) {
 
     try {
 
@@ -150,7 +150,7 @@ public class DbFiltro extends Objeto {
     return _booSelect;
   }
 
-  private DbColuna getClnFiltro() {
+  private Coluna getClnFiltro() {
 
     return _clnFiltro;
   }
@@ -343,7 +343,7 @@ public class DbFiltro extends Objeto {
     _booSelect = booSelect;
   }
 
-  private void setClnFiltro(DbColuna clnFiltro) {
+  private void setClnFiltro(Coluna clnFiltro) {
 
     _clnFiltro = clnFiltro;
   }

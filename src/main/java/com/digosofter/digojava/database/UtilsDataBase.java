@@ -6,7 +6,7 @@ import com.digosofter.digojava.erro.Erro;
 import java.sql.ResultSet;
 import java.util.GregorianCalendar;
 
-public abstract class DbUtils {
+public abstract class UtilsDataBase {
 
   public static boolean getBoo(ResultSet rst, String strClnNome) {
 

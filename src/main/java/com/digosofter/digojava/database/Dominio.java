@@ -80,31 +80,31 @@ public abstract class Dominio extends Objeto {
 
       if (boolean.class.equals(objField.getType())) {
 
-        objField.set(this, DbUtils.getBoo(rst, rst.getMetaData().getColumnName(intClnIndex)));
+        objField.set(this, UtilsDataBase.getBoo(rst, rst.getMetaData().getColumnName(intClnIndex)));
         return;
       }
 
       if (double.class.equals(objField.getType())) {
 
-        objField.set(this, DbUtils.getDbl(rst, rst.getMetaData().getColumnName(intClnIndex)));
+        objField.set(this, UtilsDataBase.getDbl(rst, rst.getMetaData().getColumnName(intClnIndex)));
         return;
       }
 
       if (GregorianCalendar.class.equals(objField.getType())) {
 
-        objField.set(this, DbUtils.getDtt(rst, rst.getMetaData().getColumnName(intClnIndex)));
+        objField.set(this, UtilsDataBase.getDtt(rst, rst.getMetaData().getColumnName(intClnIndex)));
         return;
       }
 
       if (int.class.equals(objField.getType())) {
 
-        objField.set(this, DbUtils.getInt(rst, rst.getMetaData().getColumnName(intClnIndex)));
+        objField.set(this, UtilsDataBase.getInt(rst, rst.getMetaData().getColumnName(intClnIndex)));
         return;
       }
 
       if (String.class.equals(objField.getType())) {
 
-        objField.set(this, DbUtils.getStr(rst, rst.getMetaData().getColumnName(intClnIndex)));
+        objField.set(this, UtilsDataBase.getStr(rst, rst.getMetaData().getColumnName(intClnIndex)));
         return;
       }
     }
