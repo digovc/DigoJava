@@ -85,16 +85,17 @@ public class DbColuna extends Objeto {
       this.setStrNome(strNome);
       this.setTbl(tbl);
       this.setEnmTipo(enmTipo);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(120), ex);
-    } finally {
+    }
+    finally {
     }
   }
 
   /**
-   * Adiciona uma opção para lista, tornando o campo selecionável por
-   * "Combobox".
+   * Adiciona uma opção para lista, tornando o campo selecionável por "Combobox".
    */
   public void addOpcao(int intValor, String strNome) {
 
@@ -106,10 +107,12 @@ public class DbColuna extends Objeto {
       }
 
       this.getMapOpcao().put(intValor, strNome);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -119,10 +122,12 @@ public class DbColuna extends Objeto {
 
       this.setStrValorExibicao(null);
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
   }
@@ -178,10 +183,12 @@ public class DbColuna extends Objeto {
         default:
           return false;
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       return false;
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -200,10 +207,12 @@ public class DbColuna extends Objeto {
     try {
 
       return this.getStrValor().charAt(0);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       return 0;
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -217,10 +226,12 @@ public class DbColuna extends Objeto {
     try {
 
       return Double.parseDouble(this.getStrValor());
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       return 0;
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -234,10 +245,12 @@ public class DbColuna extends Objeto {
       }
 
       return Utils.strToDtt(this.getStrValor());
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       return null;
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -251,10 +264,12 @@ public class DbColuna extends Objeto {
       }
 
       _enmTipo = EnmTipo.TEXT;
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
 
     return _enmTipo;
@@ -293,10 +308,12 @@ public class DbColuna extends Objeto {
           _enmTipoGrupo = EnmTipoGrupo.ALPHANUMERICO;
           return _enmTipoGrupo;
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _enmTipoGrupo;
@@ -327,10 +344,12 @@ public class DbColuna extends Objeto {
     try {
 
       return (int) this.getDblValor();
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       return 0;
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -344,10 +363,12 @@ public class DbColuna extends Objeto {
       }
 
       _mapOpcao = new LinkedHashMap<Integer, String>();
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _mapOpcao;
@@ -374,10 +395,12 @@ public class DbColuna extends Objeto {
       _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnChavePrimaria().getStrNomeSql());
       _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_nome", this.getTbl().getStrNomeSql());
       _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_nome", this.getStrNomeSql());
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _sqlSubSelectClnRef;
@@ -394,10 +417,12 @@ public class DbColuna extends Objeto {
 
       _strDominioNome = this.getStrNomeSimplificado();
       _strDominioNome = _strDominioNome.replace("_", Utils.STR_VAZIA);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _strDominioNome;
@@ -413,10 +438,12 @@ public class DbColuna extends Objeto {
       }
 
       _strNomeSql = this.getStrNomeSimplificado();
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _strNomeSql;
@@ -434,10 +461,12 @@ public class DbColuna extends Objeto {
       strResultado = strResultado.replace("_cln_valor", this.getStrValorSql());
 
       return strResultado;
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return null;
@@ -456,10 +485,12 @@ public class DbColuna extends Objeto {
 
       _strTblNomeClnNome = _strTblNomeClnNome.replace("_tbl_nome", this.getTbl().getStrNomeSql());
       _strTblNomeClnNome = _strTblNomeClnNome.replace("_cln_nome", this.getStrNomeSql());
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _strTblNomeClnNome;
@@ -534,10 +565,12 @@ public class DbColuna extends Objeto {
           _strValorExibicao = this.getStrValor();
           break;
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
 
     return _strValorExibicao;
@@ -553,10 +586,12 @@ public class DbColuna extends Objeto {
       }
 
       return Utils.getStrValorMonetario(Double.parseDouble(this.getStrValor()));
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       return "R$ 0,00";
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -595,10 +630,12 @@ public class DbColuna extends Objeto {
           _strValorSql = getStrValorSqlText();
           break;
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _strValorSql;
@@ -620,10 +657,12 @@ public class DbColuna extends Objeto {
       str = str.replace("'", "''");
 
       return str;
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return null;
@@ -645,10 +684,12 @@ public class DbColuna extends Objeto {
 
       this.setBooClnDominioValorCarregado(false);
       this.lerDominio(objDominio, objDominio.getClass());
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -681,10 +722,12 @@ public class DbColuna extends Objeto {
           return;
         }
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -746,10 +789,12 @@ public class DbColuna extends Objeto {
           this.setStrValor((String) objField.get(objDominio));
           return true;
       }
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
 
       objField.setAccessible(false);
     }
@@ -762,11 +807,13 @@ public class DbColuna extends Objeto {
     try {
 
       this.setStrValor(null);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
 
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -788,10 +835,12 @@ public class DbColuna extends Objeto {
       }
 
       this.getTbl().setClnChavePrimaria(this);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -818,10 +867,12 @@ public class DbColuna extends Objeto {
       }
 
       this.getTbl().setClnNome(this);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -848,9 +899,11 @@ public class DbColuna extends Objeto {
       }
 
       this.getTbl().setClnOrdem(this);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -869,10 +922,12 @@ public class DbColuna extends Objeto {
     try {
 
       this.setStrValor(String.valueOf(booValor));
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -888,10 +943,12 @@ public class DbColuna extends Objeto {
       }
 
       this.getTbl().setLstClnCadastro(null);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
   }
@@ -908,10 +965,12 @@ public class DbColuna extends Objeto {
       }
 
       this.getTbl().setLstClnConsulta(null);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -920,10 +979,12 @@ public class DbColuna extends Objeto {
     try {
 
       this.setStrValor(String.valueOf(chrValor));
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -937,10 +998,12 @@ public class DbColuna extends Objeto {
     try {
 
       this.setStrValor(String.valueOf(dblValor));
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -955,10 +1018,12 @@ public class DbColuna extends Objeto {
       }
 
       this.setStrValor(Utils.getStrDataFormatada(dttValor, Utils.EnmDataFormato.YYYY_MM_DD_HH_MM_SS));
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -992,10 +1057,12 @@ public class DbColuna extends Objeto {
     try {
 
       this.setStrValor(String.valueOf(intValor));
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -1012,10 +1079,12 @@ public class DbColuna extends Objeto {
 
       this.atualizarStrValor();
 
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
@@ -1041,10 +1110,12 @@ public class DbColuna extends Objeto {
       }
 
       _tbl.addCln(this);
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    } finally {
+    }
+    finally {
     }
   }
 }

@@ -1,8 +1,8 @@
 package com.digosofter.digojava.erro;
 
-import java.io.Serializable;
-
 import com.digosofter.digojava.Utils;
+
+import java.io.Serializable;
 
 public class Erro extends Exception implements Serializable {
 

@@ -1,18 +1,18 @@
 package com.digosofter.digojava;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import com.digosofter.digojava.Utils.EnmDataFormato;
+import com.digosofter.digojava.Utils.EnmStrTipo;
+
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.junit.Test;
-
-import com.digosofter.digojava.Utils.EnmDataFormato;
-import com.digosofter.digojava.Utils.EnmStrTipo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class UtilsTest {
 
@@ -132,7 +132,7 @@ public class UtilsTest {
   @Test
   public void testGetStrConcatenarLstStringArrayStringBoolean() {
 
-    String[] arrStr = new String[] { "laranja", "manga", "morango", "laranja" };
+    String[] arrStr = new String[]{"laranja", "manga", "morango", "laranja"};
 
     assertEquals("laranja;manga;morango;laranja", Utils.getStrConcatenarLst(arrStr, ";", false));
     assertEquals("laranja;manga;morango", Utils.getStrConcatenarLst(arrStr, ";", true));

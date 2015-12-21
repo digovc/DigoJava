@@ -12,19 +12,8 @@ public abstract class Objeto {
   private String _strNomeExibicao;
   private String _strNomeSimplificado;
 
-  private static int getIntObjetoIdStatic() {
-
-    return _intObjetoIdStatic;
-  }
-
-  private static void setIntObjetoIdStatic(int intObjetoIdStatic) {
-
-    _intObjetoIdStatic = intObjetoIdStatic;
-  }
-
   /**
-   * Retorna um número único para cada uma das intâncias dos objetos que decendem desta classe.
-   * O primeiro valor é 1.
+   * Retorna um número único para cada uma das intâncias dos objetos que decendem desta classe. O primeiro valor é 1.
    *
    * @return Número único que representa a instância deste objeto.
    */
@@ -40,14 +29,20 @@ public abstract class Objeto {
       Objeto.setIntObjetoIdStatic(Objeto.getIntObjetoIdStatic() + 1);
 
       _intObjetoId = Objeto.getIntObjetoIdStatic();
-
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _intObjetoId;
+  }
+
+  private static int getIntObjetoIdStatic() {
+
+    return _intObjetoIdStatic;
   }
 
   public String getStrDescricao() {
@@ -70,11 +65,12 @@ public abstract class Objeto {
       }
 
       _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
-
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _strNomeExibicao;
@@ -90,14 +86,20 @@ public abstract class Objeto {
       }
 
       _strNomeSimplificado = Utils.simplificar(this.getStrNome());
-
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
 
     return _strNomeSimplificado;
+  }
+
+  private static void setIntObjetoIdStatic(int intObjetoIdStatic) {
+
+    _intObjetoIdStatic = intObjetoIdStatic;
   }
 
   public void setStrDescricao(String strDescricao) {
@@ -112,17 +114,34 @@ public abstract class Objeto {
       _strNome = strNome;
 
       this.setStrNomeSimplificado(null);
-
-    } catch (Exception ex) {
+    }
+    catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
-    } finally {
+    }
+    finally {
     }
   }
 
   public void setStrNomeExibicao(String strNomeExibicao) {
 
-    _strNomeExibicao = strNomeExibicao;
+    try {
+
+      _strNomeExibicao = strNomeExibicao;
+
+      if (Utils.getBooStrVazia(_strNomeExibicao)) {
+
+        return;
+      }
+
+      _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNomeExibicao);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
   }
 
   private void setStrNomeSimplificado(String strNomeSimplificado) {

@@ -38,57 +38,404 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 /**
- * A simple, tiny, nicely embeddable HTTP server in Java
+ * A simple, tiny, nicely embeddable HTTP server in Java <p/> <p/> NanoHTTPD <p> </p> Copyright (c) 2012-2013 by Paul S.
+ * Hawke, 2001,2005-2013 by Jarno Elonen, 2010 by Konstantinos Togias</p>
  * <p/>
  * <p/>
- * NanoHTTPD
- * <p>
- * </p>
- * Copyright (c) 2012-2013 by Paul S. Hawke, 2001,2005-2013 by Jarno Elonen,
- * 2010 by Konstantinos Togias</p>
+ * <b>Features + limitations: </b> <ul>
  * <p/>
- * <p/>
- * <b>Features + limitations: </b>
- * <ul>
- * <p/>
- * <li>Only one Java file</li>
- * <li>Java 5 compatible</li>
- * <li>Released as open source, Modified BSD licence</li>
- * <li>No fixed config files, logging, authorization etc. (Implement yourself if
- * you need them.)</li>
- * <li>Supports parameter parsing of GET and POST methods (+ rudimentary PUT
- * support in 1.25)</li>
- * <li>Supports both dynamic content and file serving</li>
- * <li>Supports file upload (since version 1.2, 2010)</li>
- * <li>Supports partial content (streaming)</li>
- * <li>Supports ETags</li>
- * <li>Never caches anything</li>
- * <li>Doesn't limit bandwidth, request time or simultaneous connections</li>
- * <li>Default code serves files and shows all HTTP parameters and headers</li>
- * <li>File server supports directory listing, index.html and index.htm</li>
- * <li>File server supports partial content (streaming)</li>
- * <li>File server supports ETags</li>
- * <li>File server does the 301 redirection trick for directories without '/'</li>
- * <li>File server supports simple skipping for files (continue download)</li>
- * <li>File server serves also very long files without memory overhead</li>
- * <li>Contains a built-in list of most common mime types</li>
- * <li>All header names are converted lowercase so they don't vary between
- * browsers/clients</li>
+ * <li>Only one Java file</li> <li>Java 5 compatible</li> <li>Released as open source, Modified BSD licence</li> <li>No
+ * fixed config files, logging, authorization etc. (Implement yourself if you need them.)</li> <li>Supports parameter
+ * parsing of GET and POST methods (+ rudimentary PUT support in 1.25)</li> <li>Supports both dynamic content and file
+ * serving</li> <li>Supports file upload (since version 1.2, 2010)</li> <li>Supports partial content (streaming)</li>
+ * <li>Supports ETags</li> <li>Never caches anything</li> <li>Doesn't limit bandwidth, request time or simultaneous
+ * connections</li> <li>Default code serves files and shows all HTTP parameters and headers</li> <li>File server
+ * supports directory listing, index.html and index.htm</li> <li>File server supports partial content (streaming)</li>
+ * <li>File server supports ETags</li> <li>File server does the 301 redirection trick for directories without '/'</li>
+ * <li>File server supports simple skipping for files (continue download)</li> <li>File server serves also very long
+ * files without memory overhead</li> <li>Contains a built-in list of most common mime types</li> <li>All header names
+ * are converted lowercase so they don't vary between browsers/clients</li>
  * <p/>
  * </ul>
  * <p/>
  * <p/>
- * <b>How to use: </b>
- * <ul>
+ * <b>How to use: </b> <ul>
  * <p/>
  * <li>Subclass and implement serve() and embed to your own program</li>
  * <p/>
  * </ul>
  * <p/>
- * See the separate "LICENSE.md" file for the distribution license (Modified BSD
- * licence)
+ * See the separate "LICENSE.md" file for the distribution license (Modified BSD licence)
  */
 public abstract class NanoHTTPD {
+
+  /**
+   * HTTP Request methods, with the ability to decode a <code>String</code> back to its enum value.
+   */
+  public enum Method {
+    DELETE,
+    GET,
+    HEAD,
+    OPTIONS,
+    POST,
+    PUT;
+
+    static Method lookup(String method) {
+
+      for (Method m : Method.values()) {
+        if (m.toString().equalsIgnoreCase(method)) {
+          return m;
+        }
+      }
+      return null;
+    }
+  }
+  /**
+   * Common mime type for dynamic content: html
+   */
+  public static final String MIME_HTML = "text/html";
+  /**
+   * Common mime type for dynamic content: plain text
+   */
+  public static final String MIME_PLAINTEXT = "text/plain";
+  /**
+   * Maximum time to wait on Socket.getInputStream().read() (in milliseconds) This is required as the Keep-Alive HTTP
+   * connections would otherwise block the socket reading thread forever (or as long the browser is open).
+   */
+  public static final int SOCKET_READ_TIMEOUT = 5000;
+  /**
+   * Pseudo-Parameter to use to store the actual query string in the parameters map for later re-processing.
+   */
+  private static final String QUERY_STRING_PARAMETER = "NanoHttpd.QUERY_STRING";
+  private final String hostname;
+  private final int myPort;
+  /**
+   * Pluggable strategy for asynchronously executing requests.
+   */
+  private AsyncRunner asyncRunner;
+  private ServerSocket myServerSocket;
+  private Thread myThread;
+  private Set<Socket> openConnections = new HashSet<Socket>();
+  /**
+   * Pluggable strategy for creating and cleaning up temporary files.
+   */
+  private TempFileManagerFactory tempFileManagerFactory;
+
+  /**
+   * Constructs an HTTP server on given port.
+   */
+  public NanoHTTPD(int port) {
+
+    this(null, port);
+  }
+
+  /**
+   * Constructs an HTTP server on given hostname and port.
+   */
+  public NanoHTTPD(String hostname, int port) {
+
+    this.hostname = hostname;
+    this.myPort = port;
+    setTempFileManagerFactory(new DefaultTempFileManagerFactory());
+    setAsyncRunner(new DefaultAsyncRunner());
+  }
+
+  /**
+   * Forcibly closes all connections that are open.
+   */
+  public synchronized void closeAllConnections() {
+
+    for (Socket socket : openConnections) {
+      safeClose(socket);
+    }
+  }
+
+  /**
+   * Decode parameters from a URL, handing the case where a single parameter name might have been supplied several
+   * times, by return lists of values. In general these lists will contain a single element.
+   *
+   * @param parms original <b>NanoHttpd</b> parameters values, as passed to the <code>serve()</code> method.
+   * @return a map of <code>String</code> (parameter name) to <code>List&lt;String&gt;</code> (a list of the values
+   * supplied).
+   */
+  protected Map<String, List<String>> decodeParameters(Map<String, String> parms) {
+
+    return this.decodeParameters(parms.get(QUERY_STRING_PARAMETER));
+  }
+
+  /**
+   * Decode parameters from a URL, handing the case where a single parameter name might have been supplied several
+   * times, by return lists of values. In general these lists will contain a single element.
+   *
+   * @param queryString a query string pulled from the URL.
+   * @return a map of <code>String</code> (parameter name) to <code>List&lt;String&gt;</code> (a list of the values
+   * supplied).
+   */
+  protected Map<String, List<String>> decodeParameters(String queryString) {
+
+    Map<String, List<String>> parms = new HashMap<String, List<String>>();
+    if (queryString != null) {
+      StringTokenizer st = new StringTokenizer(queryString, "&");
+      while (st.hasMoreTokens()) {
+        String e = st.nextToken();
+        int sep = e.indexOf('=');
+        String propertyName = sep >= 0 ? decodePercent(e.substring(0, sep)).trim() : decodePercent(e).trim();
+        if (!parms.containsKey(propertyName)) {
+          parms.put(propertyName, new ArrayList<String>());
+        }
+        String propertyValue = sep >= 0 ? decodePercent(e.substring(sep + 1)) : null;
+        if (propertyValue != null) {
+          parms.get(propertyName).add(propertyValue);
+        }
+      }
+    }
+    return parms;
+  }
+
+  /**
+   * Decode percent encoded <code>String</code> values.
+   *
+   * @param str the percent encoded <code>String</code>
+   * @return expanded form of the input, for example "foo%20bar" becomes "foo bar"
+   */
+  protected String decodePercent(String str) {
+
+    String decoded = null;
+    try {
+      decoded = URLDecoder.decode(str, "UTF8");
+    }
+    catch (UnsupportedEncodingException ignored) {
+    }
+    return decoded;
+  }
+
+  public final int getListeningPort() {
+
+    return myServerSocket == null ? -1 : myServerSocket.getLocalPort();
+  }
+
+  public final boolean isAlive() {
+
+    return wasStarted() && !myServerSocket.isClosed() && myThread.isAlive();
+  }
+
+  /**
+   * Registers that a new connection has been set up.
+   *
+   * @param socket the {@link Socket} for the connection.
+   */
+  public synchronized void registerConnection(Socket socket) {
+
+    openConnections.add(socket);
+  }
+
+  private static final void safeClose(Closeable closeable) {
+
+    if (closeable != null) {
+      try {
+        closeable.close();
+      }
+      catch (IOException e) {
+      }
+    }
+  }
+
+  private static final void safeClose(ServerSocket closeable) {
+
+    if (closeable != null) {
+      try {
+        closeable.close();
+      }
+      catch (IOException e) {
+      }
+    }
+  }
+
+  private static final void safeClose(Socket closeable) {
+
+    if (closeable != null) {
+      try {
+        closeable.close();
+      }
+      catch (IOException e) {
+      }
+    }
+  }
+
+  /**
+   * Override this to customize the server.
+   * <p/>
+   * <p/>
+   * (By default, this delegates to serveFile() and allows directory listing.)
+   *
+   * @param session The HTTP session
+   * @return HTTP response, see class Response for details
+   */
+  public Response serve(IHTTPSession session) {
+
+    Map<String, String> files = new HashMap<String, String>();
+    Method method = session.getMethod();
+    if (Method.PUT.equals(method) || Method.POST.equals(method)) {
+      try {
+        session.parseBody(files);
+      }
+      catch (IOException ioe) {
+        return new Response(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
+      }
+      catch (ResponseException re) {
+        return new Response(re.getStatus(), MIME_PLAINTEXT, re.getMessage());
+      }
+    }
+    Map<String, String> parms = session.getParms();
+    parms.put(QUERY_STRING_PARAMETER, session.getQueryParameterString());
+    return serve(session.getUri(), method, session.getHeaders(), parms, files);
+  }
+
+  /**
+   * Override this to customize the server.
+   * <p/>
+   * <p/>
+   * (By default, this delegates to serveFile() and allows directory listing.)
+   *
+   * @param uri     Percent-decoded URI without parameters, for example "/index.cgi"
+   * @param method  "GET", "POST" etc.
+   * @param parms   Parsed, percent decoded parameters from URI and, in case of POST, data.
+   * @param headers Header entries, percent decoded
+   * @return HTTP response, see class Response for details
+   */
+  @Deprecated
+  public Response serve(String uri, Method method, Map<String, String> headers, Map<String, String> parms, Map<String, String> files) {
+
+    return new Response(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not Found");
+  }
+
+  /**
+   * Pluggable strategy for asynchronously executing requests.
+   *
+   * @param asyncRunner new strategy for handling threads.
+   */
+  public void setAsyncRunner(AsyncRunner asyncRunner) {
+
+    this.asyncRunner = asyncRunner;
+  }
+
+  /**
+   * Pluggable strategy for creating and cleaning up temporary files.
+   *
+   * @param tempFileManagerFactory new strategy for handling temp files.
+   */
+  public void setTempFileManagerFactory(TempFileManagerFactory tempFileManagerFactory) {
+
+    this.tempFileManagerFactory = tempFileManagerFactory;
+  }
+
+  /**
+   * Start the server.
+   *
+   * @throws IOException if the socket is in use.
+   */
+  public void start() throws IOException {
+
+    myServerSocket = new ServerSocket();
+    myServerSocket.bind(hostname != null ? new InetSocketAddress(hostname, myPort) : new InetSocketAddress(myPort));
+    myThread = new Thread(new Runnable() {
+
+      @Override
+      public void run() {
+
+        do {
+          try {
+            final Socket finalAccept = myServerSocket.accept();
+            registerConnection(finalAccept);
+            finalAccept.setSoTimeout(SOCKET_READ_TIMEOUT);
+            final InputStream inputStream = finalAccept.getInputStream();
+            asyncRunner.exec(new Runnable() {
+
+              @Override
+              public void run() {
+
+                OutputStream outputStream = null;
+                try {
+                  outputStream = finalAccept.getOutputStream();
+                  TempFileManager tempFileManager = tempFileManagerFactory.create();
+                  HTTPSession session = new HTTPSession(tempFileManager, inputStream, outputStream, finalAccept.getInetAddress());
+                  while (!finalAccept.isClosed()) {
+                    session.execute();
+                  }
+                }
+                catch (Exception e) {
+                  // When the socket is closed by the client,
+                  // we throw our own SocketException
+                  // to break the "keep alive" loop above.
+                  if (!(e instanceof SocketException && "NanoHttpd Shutdown".equals(e.getMessage()))) {
+                    e.printStackTrace();
+                  }
+                }
+                finally {
+                  safeClose(outputStream);
+                  safeClose(inputStream);
+                  safeClose(finalAccept);
+                  unRegisterConnection(finalAccept);
+                }
+              }
+            });
+          }
+          catch (IOException e) {
+          }
+        }
+        while (!myServerSocket.isClosed());
+      }
+    });
+    myThread.setDaemon(true);
+    myThread.setName("NanoHttpd Main Listener");
+    myThread.start();
+  }
+
+  // -------------------------------------------------------------------------------
+  // //
+  //
+  // Threading Strategy.
+  //
+  // -------------------------------------------------------------------------------
+  // //
+
+  /**
+   * Stop the server.
+   */
+  public void stop() {
+
+    try {
+      safeClose(myServerSocket);
+      closeAllConnections();
+      myThread.join();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  // -------------------------------------------------------------------------------
+  // //
+  //
+  // Temp file handling strategy.
+  //
+  // -------------------------------------------------------------------------------
+  // //
+
+  /**
+   * Registers that a connection has been closed
+   *
+   * @param socket the {@link Socket} for the connection.
+   */
+  public synchronized void unRegisterConnection(Socket socket) {
+
+    openConnections.remove(socket);
+  }
+
+  public final boolean wasStarted() {
+
+    return myServerSocket != null && myThread != null;
+  }
 
   /**
    * Pluggable strategy for asynchronously executing requests.
@@ -96,6 +443,73 @@ public abstract class NanoHTTPD {
   public interface AsyncRunner {
 
     void exec(Runnable code);
+  }
+
+  /**
+   * Handles one session, i.e. parses the HTTP request and returns the response.
+   */
+  public interface IHTTPSession {
+
+    void execute() throws IOException;
+
+    CookieHandler getCookies();
+
+    Map<String, String> getHeaders();
+
+    InputStream getInputStream();
+
+    Method getMethod();
+
+    Map<String, String> getParms();
+
+    String getQueryParameterString();
+
+    /**
+     * @return the path part of the URL.
+     */
+    String getUri();
+
+    /**
+     * Adds the files in the request body to the files map.
+     *
+     * @arg files - map to modify
+     */
+    void parseBody(Map<String, String> files) throws IOException, ResponseException;
+  }
+
+  // -------------------------------------------------------------------------------
+  // //
+
+  /**
+   * A temp file. <p/> <p> Temp files are responsible for managing the actual temporary storage and cleaning themselves
+   * up when no longer needed. </p>
+   */
+  public interface TempFile {
+
+    void delete() throws Exception;
+
+    String getName();
+
+    OutputStream open() throws Exception;
+  }
+
+  /**
+   * Temp file manager. <p/> <p> Temp file managers are created 1-to-1 with incoming requests, to create and cleanup
+   * temporary files created as a result of handling the request. </p>
+   */
+  public interface TempFileManager {
+
+    void clear();
+
+    TempFile createTempFile() throws Exception;
+  }
+
+  /**
+   * Factory to create temp file managers.
+   */
+  public interface TempFileManagerFactory {
+
+    TempFileManager create();
   }
 
   public static class Cookie {
@@ -138,104 +552,9 @@ public abstract class NanoHTTPD {
   }
 
   /**
-   * Provides rudimentary support for cookies. Doesn't support 'path', 'secure'
-   * nor 'httpOnly'. Feel free to improve it and/or add unsupported features.
-   *
-   * @author LordFokas
-   */
-  public class CookieHandler implements Iterable<String> {
-
-    private HashMap<String, String> cookies = new HashMap<String, String>();
-    private ArrayList<Cookie> queue = new ArrayList<Cookie>();
-
-    public CookieHandler(Map<String, String> httpHeaders) {
-
-      String raw = httpHeaders.get("cookie");
-      if (raw != null) {
-        String[] tokens = raw.split(";");
-        for (String token : tokens) {
-          String[] data = token.trim().split("=");
-          if (data.length == 2) {
-            cookies.put(data[0], data[1]);
-          }
-        }
-      }
-    }
-
-    /**
-     * Set a cookie with an expiration date from a month ago, effectively
-     * deleting it on the client side.
-     *
-     * @param name
-     *          The cookie name.
-     */
-    public void delete(String name) {
-
-      set(name, "-delete-", -30);
-    }
-
-    @Override
-    public Iterator<String> iterator() {
-
-      return cookies.keySet().iterator();
-    }
-
-    /**
-     * Read a cookie from the HTTP Headers.
-     *
-     * @param name
-     *          The cookie's name.
-     * @return The cookie's value if it exists, null otherwise.
-     */
-    public String read(String name) {
-
-      return cookies.get(name);
-    }
-
-    public void set(Cookie cookie) {
-
-      queue.add(cookie);
-    }
-
-    /**
-     * Sets a cookie.
-     *
-     * @param name
-     *          The cookie's name.
-     * @param value
-     *          The cookie's value.
-     * @param expires
-     *          How many days until the cookie expires.
-     */
-    public void set(String name, String value, int expires) {
-
-      queue.add(new Cookie(name, value, Cookie.getHTTPTime(expires)));
-    }
-
-    /**
-     * Internally used by the webserver to add all queued cookies into the
-     * Response's HTTP Headers.
-     *
-     * @param response
-     *          The Response object to which headers the queued cookies will be
-     *          added.
-     */
-    public void unloadQueue(Response response) {
-
-      for (Cookie cookie : queue) {
-        response.addHeader("Set-Cookie", cookie.getHTTPHeader());
-      }
-    }
-  }
-
-  /**
-   * Default threading strategy for NanoHttpd.
-   * <p/>
-   * <p>
-   * By default, the server spawns a new Thread for every incoming request.
-   * These are set to <i>daemon</i> status, and named according to the request
-   * number. The name is useful when profiling the application.
-   * </p>
+   * Default threading strategy for NanoHttpd. <p/> <p> By default, the server spawns a new Thread for every incoming
+   * request. These are set to <i>daemon</i> status, and named according to the request number. The name is useful when
+   * profiling the application. </p>
    */
   public static class DefaultAsyncRunner implements AsyncRunner {
 
@@ -253,12 +572,8 @@ public abstract class NanoHTTPD {
   }
 
   /**
-   * Default strategy for creating and cleaning up temporary files.
-   * <p/>
-   * <p>
-   * </p>
-   * </[>By default, files are created by <code>File.createTempFile()</code> in
-   * the directory specified.</p>
+   * Default strategy for creating and cleaning up temporary files. <p/> <p> </p> </[>By default, files are created by
+   * <code>File.createTempFile()</code> in the directory specified.</p>
    */
   public static class DefaultTempFile implements TempFile {
 
@@ -292,14 +607,10 @@ public abstract class NanoHTTPD {
   }
 
   /**
-   * Default strategy for creating and cleaning up temporary files.
-   * <p/>
-   * <p>
-   * </p>
-   * This class stores its files in the standard location (that is, wherever
-   * <code>java.io.tmpdir</code> points to). Files are added to an internal
-   * list, and deleted when no longer needed (that is, when <code>clear()</code>
-   * is invoked at the end of processing a request).</p>
+   * Default strategy for creating and cleaning up temporary files. <p/> <p> </p> This class stores its files in the
+   * standard location (that is, wherever <code>java.io.tmpdir</code> points to). Files are added to an internal list,
+   * and deleted when no longer needed (that is, when <code>clear()</code> is invoked at the end of processing a
+   * request).</p>
    */
   public static class DefaultTempFileManager implements TempFileManager {
 
@@ -335,6 +646,349 @@ public abstract class NanoHTTPD {
   }
 
   /**
+   * HTTP response. Return one of these from serve().
+   */
+  public static class Response {
+
+    /**
+     * Some HTTP response status codes
+     */
+    public enum Status {
+      ACCEPTED(202, "Accepted"),
+      BAD_REQUEST(400, "Bad Request"),
+      CREATED(201, "Created"),
+      FORBIDDEN(403, "Forbidden"),
+      INTERNAL_ERROR(500, "Internal Server Error"),
+      METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
+      NO_CONTENT(204, "No Content"),
+      NOT_FOUND(404, "Not Found"),
+      NOT_MODIFIED(304, "Not Modified"),
+      OK(200, "OK"),
+      PARTIAL_CONTENT(206, "Partial Content"),
+      RANGE_NOT_SATISFIABLE(416, "Requested Range Not Satisfiable"),
+      REDIRECT(301, "Moved Permanently"),
+      UNAUTHORIZED(401, "Unauthorized");
+
+      private final String description;
+      private final int requestStatus;
+
+      Status(int requestStatus, String description) {
+
+        this.requestStatus = requestStatus;
+        this.description = description;
+      }
+
+      public String getDescription() {
+
+        return "" + this.requestStatus + " " + description;
+      }
+
+      public int getRequestStatus() {
+
+        return this.requestStatus;
+      }
+    }
+
+    /**
+     * Use chunkedTransfer
+     */
+    private boolean chunkedTransfer;
+    /**
+     * Data of the response, may be null.
+     */
+    private InputStream data;
+    /**
+     * Headers for the HTTP response. Use addHeader() to add lines.
+     */
+    private Map<String, String> header = new HashMap<String, String>();
+    /**
+     * MIME type of content, e.g. "text/html"
+     */
+    private String mimeType;
+    /**
+     * The request method that spawned this response.
+     */
+    private Method requestMethod;
+    /**
+     * HTTP status code after processing, e.g. "200 OK", HTTP_OK
+     */
+    private Status status;
+
+    /**
+     * Basic constructor.
+     */
+    public Response(Status status, String mimeType, InputStream data) {
+
+      this.status = status;
+      this.mimeType = mimeType;
+      this.data = data;
+    }
+
+    /**
+     * Convenience method that makes an InputStream out of given text.
+     */
+    public Response(Status status, String mimeType, String txt) {
+
+      this.status = status;
+      this.mimeType = mimeType;
+      try {
+        this.data = txt != null ? new ByteArrayInputStream(txt.getBytes("UTF-8")) : null;
+      }
+      catch (java.io.UnsupportedEncodingException uee) {
+        uee.printStackTrace();
+      }
+    }
+
+    /**
+     * Default constructor: response = HTTP_OK, mime = MIME_HTML and your supplied message
+     */
+    public Response(String msg) {
+
+      this(Status.OK, MIME_HTML, msg);
+    }
+
+    /**
+     * Adds given line to the header.
+     */
+    public void addHeader(String name, String value) {
+
+      header.put(name, value);
+    }
+
+    public InputStream getData() {
+
+      return data;
+    }
+
+    public String getMimeType() {
+
+      return mimeType;
+    }
+
+    public Method getRequestMethod() {
+
+      return requestMethod;
+    }
+
+    public Status getStatus() {
+
+      return status;
+    }
+
+    /**
+     * Sends given response to the socket.
+     */
+    private void send(OutputStream outputStream) {
+
+      String mime = mimeType;
+      SimpleDateFormat gmtFrmt = new SimpleDateFormat("E, d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+      gmtFrmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+      try {
+        if (status == null) {
+          throw new Error("sendResponse(): Status can't be null.");
+        }
+        PrintWriter pw = new PrintWriter(outputStream);
+        pw.print("HTTP/1.1 " + status.getDescription() + " \r\n");
+        if (mime != null) {
+          pw.print("Content-Type: " + mime + "\r\n");
+        }
+        if (header == null || header.get("Date") == null) {
+          pw.print("Date: " + gmtFrmt.format(new Date()) + "\r\n");
+        }
+        if (header != null) {
+          for (String key : header.keySet()) {
+            String value = header.get(key);
+            pw.print(key + ": " + value + "\r\n");
+          }
+        }
+        pw.print("Connection: keep-alive\r\n");
+        if (requestMethod != Method.HEAD && chunkedTransfer) {
+          sendAsChunked(outputStream, pw);
+        }
+        else {
+          sendAsFixedLength(outputStream, pw);
+        }
+        outputStream.flush();
+        safeClose(data);
+      }
+      catch (IOException ioe) {
+        // Couldn't write? No can do.
+      }
+    }
+
+    private void sendAsChunked(OutputStream outputStream, PrintWriter pw) throws IOException {
+
+      pw.print("Transfer-Encoding: chunked\r\n");
+      pw.print("\r\n");
+      pw.flush();
+      int BUFFER_SIZE = 16 * 1024;
+      byte[] CRLF = "\r\n".getBytes();
+      byte[] buff = new byte[BUFFER_SIZE];
+      int read;
+      while ((read = data.read(buff)) > 0) {
+        outputStream.write(String.format("%x\r\n", read).getBytes());
+        outputStream.write(buff, 0, read);
+        outputStream.write(CRLF);
+      }
+      outputStream.write(String.format("0\r\n\r\n").getBytes());
+    }
+
+    private void sendAsFixedLength(OutputStream outputStream, PrintWriter pw) throws IOException {
+
+      int pending = data != null ? data.available() : 0; // This is to
+      // support
+      // partial
+      // sends, see
+      // serveFile()
+      pw.print("Content-Length: " + pending + "\r\n");
+      pw.print("\r\n");
+      pw.flush();
+      if (requestMethod != Method.HEAD && data != null) {
+        int BUFFER_SIZE = 16 * 1024;
+        byte[] buff = new byte[BUFFER_SIZE];
+        while (pending > 0) {
+          int read = data.read(buff, 0, pending > BUFFER_SIZE ? BUFFER_SIZE : pending);
+          if (read <= 0) {
+            break;
+          }
+          outputStream.write(buff, 0, read);
+          pending -= read;
+        }
+      }
+    }
+
+    public void setChunkedTransfer(boolean chunkedTransfer) {
+
+      this.chunkedTransfer = chunkedTransfer;
+    }
+
+    public void setData(InputStream data) {
+
+      this.data = data;
+    }
+
+    public void setMimeType(String mimeType) {
+
+      this.mimeType = mimeType;
+    }
+
+    public void setRequestMethod(Method requestMethod) {
+
+      this.requestMethod = requestMethod;
+    }
+
+    public void setStatus(Status status) {
+
+      this.status = status;
+    }
+  }
+
+  public static final class ResponseException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+    private final Response.Status status;
+
+    public ResponseException(Response.Status status, String message) {
+
+      super(message);
+      this.status = status;
+    }
+
+    public ResponseException(Response.Status status, String message, Exception e) {
+
+      super(message, e);
+      this.status = status;
+    }
+
+    public Response.Status getStatus() {
+
+      return status;
+    }
+  }
+
+  /**
+   * Provides rudimentary support for cookies. Doesn't support 'path', 'secure' nor 'httpOnly'. Feel free to improve it
+   * and/or add unsupported features.
+   *
+   * @author LordFokas
+   */
+  public class CookieHandler implements Iterable<String> {
+
+    private HashMap<String, String> cookies = new HashMap<String, String>();
+    private ArrayList<Cookie> queue = new ArrayList<Cookie>();
+
+    public CookieHandler(Map<String, String> httpHeaders) {
+
+      String raw = httpHeaders.get("cookie");
+      if (raw != null) {
+        String[] tokens = raw.split(";");
+        for (String token : tokens) {
+          String[] data = token.trim().split("=");
+          if (data.length == 2) {
+            cookies.put(data[0], data[1]);
+          }
+        }
+      }
+    }
+
+    /**
+     * Set a cookie with an expiration date from a month ago, effectively deleting it on the client side.
+     *
+     * @param name The cookie name.
+     */
+    public void delete(String name) {
+
+      set(name, "-delete-", -30);
+    }
+
+    @Override
+    public Iterator<String> iterator() {
+
+      return cookies.keySet().iterator();
+    }
+
+    /**
+     * Read a cookie from the HTTP Headers.
+     *
+     * @param name The cookie's name.
+     * @return The cookie's value if it exists, null otherwise.
+     */
+    public String read(String name) {
+
+      return cookies.get(name);
+    }
+
+    public void set(Cookie cookie) {
+
+      queue.add(cookie);
+    }
+
+    /**
+     * Sets a cookie.
+     *
+     * @param name    The cookie's name.
+     * @param value   The cookie's value.
+     * @param expires How many days until the cookie expires.
+     */
+    public void set(String name, String value, int expires) {
+
+      queue.add(new Cookie(name, value, Cookie.getHTTPTime(expires)));
+    }
+
+    /**
+     * Internally used by the webserver to add all queued cookies into the Response's HTTP Headers.
+     *
+     * @param response The Response object to which headers the queued cookies will be added.
+     */
+    public void unloadQueue(Response response) {
+
+      for (Cookie cookie : queue) {
+        response.addHeader("Set-Cookie", cookie.getHTTPHeader());
+      }
+    }
+  }
+
+  /**
    * Default strategy for creating and cleaning up temporary files.
    */
   private class DefaultTempFileManagerFactory implements TempFileManagerFactory {
@@ -349,16 +1003,16 @@ public abstract class NanoHTTPD {
   protected class HTTPSession implements IHTTPSession {
 
     public static final int BUFSIZE = 8192;
+    private final OutputStream outputStream;
+    private final TempFileManager tempFileManager;
     private CookieHandler cookies;
     private Map<String, String> headers;
     private PushbackInputStream inputStream;
     private Method method;
-    private final OutputStream outputStream;
     private Map<String, String> parms;
     private String queryParameterString;
     private int rlen;
     private int splitbyte;
-    private final TempFileManager tempFileManager;
     private String uri;
 
     public HTTPSession(TempFileManager tempFileManager, InputStream inputStream, OutputStream outputStream) {
@@ -507,10 +1161,8 @@ public abstract class NanoHTTPD {
     }
 
     /**
-     * Decodes parameters in percent-encoded URI-format ( e.g.
-     * "name=Jack%20Daniels&pass=Single%20Malt" ) and adds them to given Map.
-     * NOTE: this doesn't support multiple identical keys due to the simplicity
-     * of Map.
+     * Decodes parameters in percent-encoded URI-format ( e.g. "name=Jack%20Daniels&pass=Single%20Malt" ) and adds them
+     * to given Map. NOTE: this doesn't support multiple identical keys due to the simplicity of Map.
      */
     private void decodeParms(String parms, Map<String, String> p) {
 
@@ -621,8 +1273,7 @@ public abstract class NanoHTTPD {
     }
 
     /**
-     * Find byte index separating header from body. It must be the last byte of
-     * the first two sequential new lines.
+     * Find byte index separating header from body. It must be the last byte of the first two sequential new lines.
      */
     private int findHeaderEnd(final byte[] buf, int rlen) {
 
@@ -806,8 +1457,8 @@ public abstract class NanoHTTPD {
     }
 
     /**
-     * Retrieves the content of a sent file and saves it to a temporary file.
-     * The full path to the saved file is returned.
+     * Retrieves the content of a sent file and saves it to a temporary file. The full path to the saved file is
+     * returned.
      */
     private String saveTmpFile(ByteBuffer b, int offset, int len) {
 
@@ -834,8 +1485,7 @@ public abstract class NanoHTTPD {
     }
 
     /**
-     * It returns the offset separating multipart file headers from the file's
-     * data.
+     * It returns the offset separating multipart file headers from the file's data.
      */
     private int stripMultipartHeaders(ByteBuffer b, int offset) {
 
@@ -847,730 +1497,5 @@ public abstract class NanoHTTPD {
       }
       return i + 1;
     }
-  }
-
-  /**
-   * Handles one session, i.e. parses the HTTP request and returns the response.
-   */
-  public interface IHTTPSession {
-
-    void execute() throws IOException;
-
-    CookieHandler getCookies();
-
-    Map<String, String> getHeaders();
-
-    InputStream getInputStream();
-
-    Method getMethod();
-
-    Map<String, String> getParms();
-
-    String getQueryParameterString();
-
-    /**
-     * @return the path part of the URL.
-     */
-    String getUri();
-
-    /**
-     * Adds the files in the request body to the files map.
-     *
-     * @arg files - map to modify
-     */
-    void parseBody(Map<String, String> files) throws IOException, ResponseException;
-  }
-
-  /**
-   * HTTP Request methods, with the ability to decode a <code>String</code> back
-   * to its enum value.
-   */
-  public enum Method {
-    DELETE,
-    GET,
-    HEAD,
-    OPTIONS,
-    POST,
-    PUT;
-
-    static Method lookup(String method) {
-
-      for (Method m : Method.values()) {
-        if (m.toString().equalsIgnoreCase(method)) {
-          return m;
-        }
-      }
-      return null;
-    }
-  }
-
-  /**
-   * HTTP response. Return one of these from serve().
-   */
-  public static class Response {
-
-    /**
-     * Some HTTP response status codes
-     */
-    public enum Status {
-      ACCEPTED(202, "Accepted"),
-      BAD_REQUEST(400, "Bad Request"),
-      CREATED(201, "Created"),
-      FORBIDDEN(403, "Forbidden"),
-      INTERNAL_ERROR(500, "Internal Server Error"),
-      METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
-      NO_CONTENT(204, "No Content"),
-      NOT_FOUND(404, "Not Found"),
-      NOT_MODIFIED(304, "Not Modified"),
-      OK(200, "OK"),
-      PARTIAL_CONTENT(206, "Partial Content"),
-      RANGE_NOT_SATISFIABLE(416, "Requested Range Not Satisfiable"),
-      REDIRECT(301, "Moved Permanently"),
-      UNAUTHORIZED(401, "Unauthorized");
-
-      private final String description;
-      private final int requestStatus;
-
-      Status(int requestStatus, String description) {
-
-        this.requestStatus = requestStatus;
-        this.description = description;
-      }
-
-      public String getDescription() {
-
-        return "" + this.requestStatus + " " + description;
-      }
-
-      public int getRequestStatus() {
-
-        return this.requestStatus;
-      }
-    }
-
-    /**
-     * Use chunkedTransfer
-     */
-    private boolean chunkedTransfer;
-    /**
-     * Data of the response, may be null.
-     */
-    private InputStream data;
-    /**
-     * Headers for the HTTP response. Use addHeader() to add lines.
-     */
-    private Map<String, String> header = new HashMap<String, String>();
-    /**
-     * MIME type of content, e.g. "text/html"
-     */
-    private String mimeType;
-    /**
-     * The request method that spawned this response.
-     */
-    private Method requestMethod;
-    /**
-     * HTTP status code after processing, e.g. "200 OK", HTTP_OK
-     */
-    private Status status;
-
-    /**
-     * Basic constructor.
-     */
-    public Response(Status status, String mimeType, InputStream data) {
-
-      this.status = status;
-      this.mimeType = mimeType;
-      this.data = data;
-    }
-
-    /**
-     * Convenience method that makes an InputStream out of given text.
-     */
-    public Response(Status status, String mimeType, String txt) {
-
-      this.status = status;
-      this.mimeType = mimeType;
-      try {
-        this.data = txt != null ? new ByteArrayInputStream(txt.getBytes("UTF-8")) : null;
-      }
-      catch (java.io.UnsupportedEncodingException uee) {
-        uee.printStackTrace();
-      }
-    }
-
-    /**
-     * Default constructor: response = HTTP_OK, mime = MIME_HTML and your
-     * supplied message
-     */
-    public Response(String msg) {
-
-      this(Status.OK, MIME_HTML, msg);
-    }
-
-    /**
-     * Adds given line to the header.
-     */
-    public void addHeader(String name, String value) {
-
-      header.put(name, value);
-    }
-
-    public InputStream getData() {
-
-      return data;
-    }
-
-    public String getMimeType() {
-
-      return mimeType;
-    }
-
-    public Method getRequestMethod() {
-
-      return requestMethod;
-    }
-
-    public Status getStatus() {
-
-      return status;
-    }
-
-    /**
-     * Sends given response to the socket.
-     */
-    private void send(OutputStream outputStream) {
-
-      String mime = mimeType;
-      SimpleDateFormat gmtFrmt = new SimpleDateFormat("E, d MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-      gmtFrmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-      try {
-        if (status == null) {
-          throw new Error("sendResponse(): Status can't be null.");
-        }
-        PrintWriter pw = new PrintWriter(outputStream);
-        pw.print("HTTP/1.1 " + status.getDescription() + " \r\n");
-        if (mime != null) {
-          pw.print("Content-Type: " + mime + "\r\n");
-        }
-        if (header == null || header.get("Date") == null) {
-          pw.print("Date: " + gmtFrmt.format(new Date()) + "\r\n");
-        }
-        if (header != null) {
-          for (String key : header.keySet()) {
-            String value = header.get(key);
-            pw.print(key + ": " + value + "\r\n");
-          }
-        }
-        pw.print("Connection: keep-alive\r\n");
-        if (requestMethod != Method.HEAD && chunkedTransfer) {
-          sendAsChunked(outputStream, pw);
-        }
-        else {
-          sendAsFixedLength(outputStream, pw);
-        }
-        outputStream.flush();
-        safeClose(data);
-      }
-      catch (IOException ioe) {
-        // Couldn't write? No can do.
-      }
-    }
-
-    private void sendAsChunked(OutputStream outputStream, PrintWriter pw) throws IOException {
-
-      pw.print("Transfer-Encoding: chunked\r\n");
-      pw.print("\r\n");
-      pw.flush();
-      int BUFFER_SIZE = 16 * 1024;
-      byte[] CRLF = "\r\n".getBytes();
-      byte[] buff = new byte[BUFFER_SIZE];
-      int read;
-      while ((read = data.read(buff)) > 0) {
-        outputStream.write(String.format("%x\r\n", read).getBytes());
-        outputStream.write(buff, 0, read);
-        outputStream.write(CRLF);
-      }
-      outputStream.write(String.format("0\r\n\r\n").getBytes());
-    }
-
-    private void sendAsFixedLength(OutputStream outputStream, PrintWriter pw) throws IOException {
-
-      int pending = data != null ? data.available() : 0; // This is to
-      // support
-      // partial
-      // sends, see
-      // serveFile()
-      pw.print("Content-Length: " + pending + "\r\n");
-      pw.print("\r\n");
-      pw.flush();
-      if (requestMethod != Method.HEAD && data != null) {
-        int BUFFER_SIZE = 16 * 1024;
-        byte[] buff = new byte[BUFFER_SIZE];
-        while (pending > 0) {
-          int read = data.read(buff, 0, pending > BUFFER_SIZE ? BUFFER_SIZE : pending);
-          if (read <= 0) {
-            break;
-          }
-          outputStream.write(buff, 0, read);
-          pending -= read;
-        }
-      }
-    }
-
-    public void setChunkedTransfer(boolean chunkedTransfer) {
-
-      this.chunkedTransfer = chunkedTransfer;
-    }
-
-    public void setData(InputStream data) {
-
-      this.data = data;
-    }
-
-    public void setMimeType(String mimeType) {
-
-      this.mimeType = mimeType;
-    }
-
-    public void setRequestMethod(Method requestMethod) {
-
-      this.requestMethod = requestMethod;
-    }
-
-    public void setStatus(Status status) {
-
-      this.status = status;
-    }
-  }
-
-  public static final class ResponseException extends Exception {
-
-    private static final long serialVersionUID = 1L;
-    private final Response.Status status;
-
-    public ResponseException(Response.Status status, String message) {
-
-      super(message);
-      this.status = status;
-    }
-
-    public ResponseException(Response.Status status, String message, Exception e) {
-
-      super(message, e);
-      this.status = status;
-    }
-
-    public Response.Status getStatus() {
-
-      return status;
-    }
-  }
-
-  /**
-   * A temp file.
-   * <p/>
-   * <p>
-   * Temp files are responsible for managing the actual temporary storage and
-   * cleaning themselves up when no longer needed.
-   * </p>
-   */
-  public interface TempFile {
-
-    void delete() throws Exception;
-
-    String getName();
-
-    OutputStream open() throws Exception;
-  }
-
-  /**
-   * Temp file manager.
-   * <p/>
-   * <p>
-   * Temp file managers are created 1-to-1 with incoming requests, to create and
-   * cleanup temporary files created as a result of handling the request.
-   * </p>
-   */
-  public interface TempFileManager {
-
-    void clear();
-
-    TempFile createTempFile() throws Exception;
-  }
-
-  /**
-   * Factory to create temp file managers.
-   */
-  public interface TempFileManagerFactory {
-
-    TempFileManager create();
-  }
-
-  /**
-   * Common mime type for dynamic content: html
-   */
-  public static final String MIME_HTML = "text/html";
-  /**
-   * Common mime type for dynamic content: plain text
-   */
-  public static final String MIME_PLAINTEXT = "text/plain";
-  /**
-   * Pseudo-Parameter to use to store the actual query string in the parameters
-   * map for later re-processing.
-   */
-  private static final String QUERY_STRING_PARAMETER = "NanoHttpd.QUERY_STRING";
-  /**
-   * Maximum time to wait on Socket.getInputStream().read() (in milliseconds)
-   * This is required as the Keep-Alive HTTP connections would otherwise block
-   * the socket reading thread forever (or as long the browser is open).
-   */
-  public static final int SOCKET_READ_TIMEOUT = 5000;
-
-  private static final void safeClose(Closeable closeable) {
-
-    if (closeable != null) {
-      try {
-        closeable.close();
-      }
-      catch (IOException e) {
-      }
-    }
-  }
-
-  private static final void safeClose(ServerSocket closeable) {
-
-    if (closeable != null) {
-      try {
-        closeable.close();
-      }
-      catch (IOException e) {
-      }
-    }
-  }
-
-  private static final void safeClose(Socket closeable) {
-
-    if (closeable != null) {
-      try {
-        closeable.close();
-      }
-      catch (IOException e) {
-      }
-    }
-  }
-
-  /**
-   * Pluggable strategy for asynchronously executing requests.
-   */
-  private AsyncRunner asyncRunner;
-  private final String hostname;
-  private final int myPort;
-  private ServerSocket myServerSocket;
-  private Thread myThread;
-  private Set<Socket> openConnections = new HashSet<Socket>();
-  /**
-   * Pluggable strategy for creating and cleaning up temporary files.
-   */
-  private TempFileManagerFactory tempFileManagerFactory;
-
-  // -------------------------------------------------------------------------------
-  // //
-  //
-  // Threading Strategy.
-  //
-  // -------------------------------------------------------------------------------
-  // //
-  /**
-   * Constructs an HTTP server on given port.
-   */
-  public NanoHTTPD(int port) {
-
-    this(null, port);
-  }
-
-  // -------------------------------------------------------------------------------
-  // //
-  //
-  // Temp file handling strategy.
-  //
-  // -------------------------------------------------------------------------------
-  // //
-  /**
-   * Constructs an HTTP server on given hostname and port.
-   */
-  public NanoHTTPD(String hostname, int port) {
-
-    this.hostname = hostname;
-    this.myPort = port;
-    setTempFileManagerFactory(new DefaultTempFileManagerFactory());
-    setAsyncRunner(new DefaultAsyncRunner());
-  }
-
-  /**
-   * Forcibly closes all connections that are open.
-   */
-  public synchronized void closeAllConnections() {
-
-    for (Socket socket : openConnections) {
-      safeClose(socket);
-    }
-  }
-
-  /**
-   * Decode parameters from a URL, handing the case where a single parameter
-   * name might have been supplied several times, by return lists of values. In
-   * general these lists will contain a single element.
-   *
-   * @param parms
-   *          original <b>NanoHttpd</b> parameters values, as passed to the
-   *          <code>serve()</code> method.
-   * @return a map of <code>String</code> (parameter name) to
-   *         <code>List&lt;String&gt;</code> (a list of the values supplied).
-   */
-  protected Map<String, List<String>> decodeParameters(Map<String, String> parms) {
-
-    return this.decodeParameters(parms.get(QUERY_STRING_PARAMETER));
-  }
-
-  /**
-   * Decode parameters from a URL, handing the case where a single parameter
-   * name might have been supplied several times, by return lists of values. In
-   * general these lists will contain a single element.
-   *
-   * @param queryString
-   *          a query string pulled from the URL.
-   * @return a map of <code>String</code> (parameter name) to
-   *         <code>List&lt;String&gt;</code> (a list of the values supplied).
-   */
-  protected Map<String, List<String>> decodeParameters(String queryString) {
-
-    Map<String, List<String>> parms = new HashMap<String, List<String>>();
-    if (queryString != null) {
-      StringTokenizer st = new StringTokenizer(queryString, "&");
-      while (st.hasMoreTokens()) {
-        String e = st.nextToken();
-        int sep = e.indexOf('=');
-        String propertyName = sep >= 0 ? decodePercent(e.substring(0, sep)).trim() : decodePercent(e).trim();
-        if (!parms.containsKey(propertyName)) {
-          parms.put(propertyName, new ArrayList<String>());
-        }
-        String propertyValue = sep >= 0 ? decodePercent(e.substring(sep + 1)) : null;
-        if (propertyValue != null) {
-          parms.get(propertyName).add(propertyValue);
-        }
-      }
-    }
-    return parms;
-  }
-
-  // -------------------------------------------------------------------------------
-  // //
-  /**
-   * Decode percent encoded <code>String</code> values.
-   *
-   * @param str
-   *          the percent encoded <code>String</code>
-   * @return expanded form of the input, for example "foo%20bar" becomes
-   *         "foo bar"
-   */
-  protected String decodePercent(String str) {
-
-    String decoded = null;
-    try {
-      decoded = URLDecoder.decode(str, "UTF8");
-    }
-    catch (UnsupportedEncodingException ignored) {
-    }
-    return decoded;
-  }
-
-  public final int getListeningPort() {
-
-    return myServerSocket == null ? -1 : myServerSocket.getLocalPort();
-  }
-
-  public final boolean isAlive() {
-
-    return wasStarted() && !myServerSocket.isClosed() && myThread.isAlive();
-  }
-
-  /**
-   * Registers that a new connection has been set up.
-   *
-   * @param socket
-   *          the {@link Socket} for the connection.
-   */
-  public synchronized void registerConnection(Socket socket) {
-
-    openConnections.add(socket);
-  }
-
-  /**
-   * Override this to customize the server.
-   * <p/>
-   * <p/>
-   * (By default, this delegates to serveFile() and allows directory listing.)
-   *
-   * @param session
-   *          The HTTP session
-   * @return HTTP response, see class Response for details
-   */
-  public Response serve(IHTTPSession session) {
-
-    Map<String, String> files = new HashMap<String, String>();
-    Method method = session.getMethod();
-    if (Method.PUT.equals(method) || Method.POST.equals(method)) {
-      try {
-        session.parseBody(files);
-      }
-      catch (IOException ioe) {
-        return new Response(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
-      }
-      catch (ResponseException re) {
-        return new Response(re.getStatus(), MIME_PLAINTEXT, re.getMessage());
-      }
-    }
-    Map<String, String> parms = session.getParms();
-    parms.put(QUERY_STRING_PARAMETER, session.getQueryParameterString());
-    return serve(session.getUri(), method, session.getHeaders(), parms, files);
-  }
-
-  /**
-   * Override this to customize the server.
-   * <p/>
-   * <p/>
-   * (By default, this delegates to serveFile() and allows directory listing.)
-   *
-   * @param uri
-   *          Percent-decoded URI without parameters, for example "/index.cgi"
-   * @param method
-   *          "GET", "POST" etc.
-   * @param parms
-   *          Parsed, percent decoded parameters from URI and, in case of POST,
-   *          data.
-   * @param headers
-   *          Header entries, percent decoded
-   * @return HTTP response, see class Response for details
-   */
-  @Deprecated
-  public Response serve(String uri, Method method, Map<String, String> headers, Map<String, String> parms, Map<String, String> files) {
-
-    return new Response(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "Not Found");
-  }
-
-  /**
-   * Pluggable strategy for asynchronously executing requests.
-   *
-   * @param asyncRunner
-   *          new strategy for handling threads.
-   */
-  public void setAsyncRunner(AsyncRunner asyncRunner) {
-
-    this.asyncRunner = asyncRunner;
-  }
-
-  /**
-   * Pluggable strategy for creating and cleaning up temporary files.
-   *
-   * @param tempFileManagerFactory
-   *          new strategy for handling temp files.
-   */
-  public void setTempFileManagerFactory(TempFileManagerFactory tempFileManagerFactory) {
-
-    this.tempFileManagerFactory = tempFileManagerFactory;
-  }
-
-  /**
-   * Start the server.
-   *
-   * @throws IOException
-   *           if the socket is in use.
-   */
-  public void start() throws IOException {
-
-    myServerSocket = new ServerSocket();
-    myServerSocket.bind(hostname != null ? new InetSocketAddress(hostname, myPort) : new InetSocketAddress(myPort));
-    myThread = new Thread(new Runnable() {
-
-      @Override
-      public void run() {
-
-        do {
-          try {
-            final Socket finalAccept = myServerSocket.accept();
-            registerConnection(finalAccept);
-            finalAccept.setSoTimeout(SOCKET_READ_TIMEOUT);
-            final InputStream inputStream = finalAccept.getInputStream();
-            asyncRunner.exec(new Runnable() {
-
-              @Override
-              public void run() {
-
-                OutputStream outputStream = null;
-                try {
-                  outputStream = finalAccept.getOutputStream();
-                  TempFileManager tempFileManager = tempFileManagerFactory.create();
-                  HTTPSession session = new HTTPSession(tempFileManager, inputStream, outputStream, finalAccept.getInetAddress());
-                  while (!finalAccept.isClosed()) {
-                    session.execute();
-                  }
-                }
-                catch (Exception e) {
-                  // When the socket is closed by the client,
-                  // we throw our own SocketException
-                  // to break the "keep alive" loop above.
-                  if (!(e instanceof SocketException && "NanoHttpd Shutdown".equals(e.getMessage()))) {
-                    e.printStackTrace();
-                  }
-                }
-                finally {
-                  safeClose(outputStream);
-                  safeClose(inputStream);
-                  safeClose(finalAccept);
-                  unRegisterConnection(finalAccept);
-                }
-              }
-            });
-          }
-          catch (IOException e) {
-          }
-        }
-        while (!myServerSocket.isClosed());
-      }
-    });
-    myThread.setDaemon(true);
-    myThread.setName("NanoHttpd Main Listener");
-    myThread.start();
-  }
-
-  /**
-   * Stop the server.
-   */
-  public void stop() {
-
-    try {
-      safeClose(myServerSocket);
-      closeAllConnections();
-      myThread.join();
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * Registers that a connection has been closed
-   *
-   * @param socket
-   *          the {@link Socket} for the connection.
-   */
-  public synchronized void unRegisterConnection(Socket socket) {
-
-    openConnections.remove(socket);
-  }
-
-  public final boolean wasStarted() {
-
-    return myServerSocket != null && myThread != null;
   }
 }
