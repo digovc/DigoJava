@@ -1,14 +1,14 @@
 package com.digosofter.digojava.database;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import com.digosofter.digojava.App;
 import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
 import com.digosofter.digojava.erro.Erro;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public abstract class DbTabela<T extends Dominio> extends Objeto {
 
@@ -38,9 +38,9 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       this.setClsDominio(clsDominio);
       this.setStrNome(strNome);
-      this.inicializarColuna(-1);
       this.addAppLstTbl();
 
+      this.inicializarLstCln(-1);
     }
     catch (Exception ex) {
 
@@ -55,7 +55,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     try {
 
       App.getI().addTbl(this);
-
     }
     catch (Exception ex) {
 
@@ -85,7 +84,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       }
 
       this.getLstCln().add(cln);
-
     }
     catch (Exception ex) {
 
@@ -111,7 +109,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       }
 
       this.getLstEvtOnChangeListener().add(evtOnChangeListener);
-
     }
     catch (Exception ex) {
 
@@ -132,7 +129,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       e.setIntRegistroId(intId);
 
       this.dispararOnApagarReg(e);
-
     }
     catch (Exception ex) {
 
@@ -234,7 +230,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _clnChavePrimaria = this.getLstCln().get(0);
       _clnChavePrimaria.setBooChavePrimaria(true);
-
     }
     catch (Exception ex) {
 
@@ -257,7 +252,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _clnNome = this.getClnChavePrimaria();
       _clnNome.setBooNome(true);
-
     }
     catch (Exception ex) {
 
@@ -280,7 +274,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
 
       _clnOrdem = this.getClnNome();
       _clnOrdem.setBooOrdem(true);
-
     }
     catch (Exception ex) {
 
@@ -292,7 +285,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _clnOrdem;
   }
 
-  protected Class<T> getClsDominio() {
+  public Class<T> getClsDominio() {
 
     return _clsDominio;
   }
@@ -307,7 +300,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       sql = sql.replace("_tbl_nome", this.getStrNomeSql());
 
       _intQtdLinha = this.getObjDb().execSqlGetInt(sql);
-
     }
     catch (Exception ex) {
 
@@ -331,7 +323,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       _lstClnOrdenado = null;
 
       _lstCln = new ArrayList<>();
-
     }
     catch (Exception ex) {
 
@@ -517,7 +508,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       }
 
       _lstEvtOnChangeListener = new ArrayList<>();
-
     }
     catch (Exception ex) {
 
@@ -539,7 +529,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       }
 
       _lstFilCadastro = new ArrayList<>();
-
     }
     catch (Exception ex) {
 
@@ -561,7 +550,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       }
 
       _lstFilConsulta = new ArrayList<>();
-
     }
     catch (Exception ex) {
 
@@ -612,7 +600,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       }
 
       _strNomeSql = this.getStrNomeSimplificado();
-
     }
     catch (Exception ex) {
 
@@ -629,7 +616,7 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
     return _strPesquisa;
   }
 
-  protected int inicializarColuna(int intOrdem) {
+  protected int inicializarLstCln(int intOrdem) {
 
     return intOrdem;
   }
@@ -674,7 +661,6 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
       }
 
       this.getLstEvtOnChangeListener().remove(evtOnChangeListener);
-
     }
     catch (Exception ex) {
 
@@ -732,6 +718,28 @@ public abstract class DbTabela<T extends Dominio> extends Objeto {
   public void setObjDb(DataBase objDb) {
 
     _objDb = objDb;
+  }
+
+  @Override
+  public void setStrNome(final String strNome) {
+
+    super.setStrNome(strNome);
+
+    try {
+
+      if (Utils.getBooStrVazia(strNome)) {
+
+        return;
+      }
+
+      this.setStrNomeExibicao(strNome.replace("tbl_", ""));
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
   }
 
   public void setStrPesquisa(String strPesquisa) {

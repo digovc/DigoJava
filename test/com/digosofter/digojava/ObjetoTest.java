@@ -1,8 +1,8 @@
 package com.digosofter.digojava;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ObjetoTest extends TestMain {
 
@@ -16,8 +16,7 @@ public class ObjetoTest extends TestMain {
   @Override
   protected void inicializar() {
 
-    this.setObj(new Objeto() {
-    });
+    this.setObj(new Objeto() {});
   }
 
   private void setObj(Objeto obj) {
@@ -32,8 +31,7 @@ public class ObjetoTest extends TestMain {
 
     for (int i = 0; i < 100; i++) {
 
-      obj = new Objeto() {
-      };
+      obj = new Objeto() {};
 
       assertEquals(i + 1, obj.getIntObjetoId());
     }
@@ -44,8 +42,8 @@ public class ObjetoTest extends TestMain {
 
     for (int i = 0; i < 10; i++) {
 
-      this.getObj().setStrDescricao("Descrição: " + i);
-      assertEquals("Descrição: " + i, this.getObj().getStrDescricao());
+      this.getObj().setStrDescricao("Descriï¿½ï¿½o: " + i);
+      assertEquals("Descriï¿½ï¿½o: " + i, this.getObj().getStrDescricao());
     }
   }
 
@@ -64,15 +62,15 @@ public class ObjetoTest extends TestMain {
 
     for (int i = 0; i < 10; i++) {
 
-      this.getObj().setStrNomeExibicao("Nome de exibição: " + i);
-      assertEquals("Nome de exibição: " + i, this.getObj().getStrNomeExibicao());
+      this.getObj().setStrNomeExibicao("Nome de exibiï¿½ï¿½o: " + i);
+      assertEquals("Nome de exibiï¿½ï¿½o: " + i, this.getObj().getStrNomeExibicao());
     }
   }
 
   @Test
   public void testGetStrNomeSimplificado() {
 
-    this.getObj().setStrNome("NOME EM CAIXA ALTA COM ESPAÇOS");
+    this.getObj().setStrNome("NOME EM CAIXA ALTA COM ESPAï¿½OS");
     assertEquals("nome_em_caixa_alta_com_espacos", this.getObj().getStrNomeSimplificado());
   }
 }

@@ -1,14 +1,14 @@
 package com.digosofter.digojava.database;
 
+import com.digosofter.digojava.Objeto;
+import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.erro.Erro;
+
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import com.digosofter.digojava.Objeto;
-import com.digosofter.digojava.Utils;
-import com.digosofter.digojava.erro.Erro;
 
 public abstract class Dominio extends Objeto {
 
@@ -18,8 +18,7 @@ public abstract class Dominio extends Objeto {
   private int _intId;
 
   /**
-   * Carrega os dados contidos na posição atual do ResultSet nos atributos desta
-   * instância.
+   * Carrega os dados contidos na posição atual do ResultSet nos atributos desta instância.
    */
   public void carregarDados(ResultSet rst) {
 

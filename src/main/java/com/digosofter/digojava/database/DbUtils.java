@@ -1,10 +1,10 @@
 package com.digosofter.digojava.database;
 
-import java.sql.ResultSet;
-import java.util.GregorianCalendar;
-
 import com.digosofter.digojava.Utils;
 import com.digosofter.digojava.erro.Erro;
+
+import java.sql.ResultSet;
+import java.util.GregorianCalendar;
 
 public abstract class DbUtils {
 

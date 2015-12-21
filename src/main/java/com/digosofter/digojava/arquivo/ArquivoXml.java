@@ -1,13 +1,13 @@
 package com.digosofter.digojava.arquivo;
 
+import com.digosofter.digojava.erro.Erro;
+
+import org.w3c.dom.Document;
+
 import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-
-import com.digosofter.digojava.erro.Erro;
 
 public class ArquivoXml extends Arquivo {
 

@@ -1,17 +1,17 @@
 package com.digosofter.digojava;
 
+import com.digosofter.digojava.MsgUsuario.EnmLingua;
+import com.digosofter.digojava.database.DbTabela;
+import com.digosofter.digojava.database.Dominio;
+
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
-import com.digosofter.digojava.MsgUsuario.EnmLingua;
-import com.digosofter.digojava.database.DbTabela;
-import com.digosofter.digojava.database.Dominio;
 
 public class AppTest extends TestMain {
 
@@ -31,11 +31,9 @@ public class AppTest extends TestMain {
   @Override
   protected void inicializar() {
 
-    this.setApp(new App() {
-    });
+    this.setApp(new App() {});
 
-    this.setTbl(new DbTabela<Dominio>("tbl_test", Dominio.class) {
-    });
+    this.setTbl(new DbTabela<Dominio>("tbl_test", Dominio.class) {});
   }
 
   private void setApp(App app) {
