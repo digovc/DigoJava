@@ -1071,6 +1071,33 @@ public class Coluna extends Objeto {
     _strDominioNome = strDominioNome;
   }
 
+  @Override
+  public void setStrNome(final String strNome) {
+
+    super.setStrNome(strNome);
+
+    try {
+
+      if (Utils.getBooStrVazia(this.getStrNome())) {
+
+        return;
+      }
+
+      if (this.getStrNome().length() < 5) {
+
+        return;
+      }
+
+      this.setStrNomeExibicao(this.getStrNome().substring(4));
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+  }
+
   public void setStrValor(String strValor) {
 
     try {
