@@ -1072,23 +1072,26 @@ public class Coluna extends Objeto {
   }
 
   @Override
-  public void setStrNome(final String strNome) {
+  public void setStrNome(String strNome) {
 
     super.setStrNome(strNome);
 
     try {
 
-      if (Utils.getBooStrVazia(this.getStrNome())) {
+      if (Utils.getBooStrVazia(strNome)) {
 
         return;
       }
 
-      if (this.getStrNome().length() < 5) {
+      if (strNome.length() < 5) {
 
         return;
       }
 
-      this.setStrNomeExibicao(this.getStrNome().substring(4));
+      strNome = strNome.substring(4);
+      strNome = strNome.replace("_id", "");
+
+      this.setStrNomeExibicao(strNome);
     }
     catch (Exception ex) {
 

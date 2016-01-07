@@ -219,6 +219,57 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     return _booMenuApagar;
   }
 
+  /**
+   * Pesquisa na lista de colunas desta tabela e retorna a coluna que tem o nome passado como parâmetro.
+   *
+   * @param strClnNomeSql Nome da coluna que se deseja encontrar.
+   * @return Retorna a coluna que possui o mesmo nome que foi passado como parâmetro ou null caso não encontre.
+   */
+  public Coluna getCln(final String strClnNomeSql) {
+
+    Coluna clnResultado;
+
+    try {
+
+      clnResultado = null;
+
+      if (Utils.getBooStrVazia(strClnNomeSql)) {
+
+        return null;
+      }
+
+      for (Coluna cln : this.getLstCln()) {
+
+        if (cln == null) {
+
+          continue;
+        }
+
+        if (Utils.getBooStrVazia(cln.getStrNomeSql())) {
+
+          continue;
+        }
+
+        if (!cln.getStrNomeSql().equals(strClnNomeSql)) {
+
+          continue;
+        }
+
+        return cln;
+      }
+
+      return clnResultado;
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
+  }
+
   public Coluna getClnChavePrimaria() {
 
     try {
