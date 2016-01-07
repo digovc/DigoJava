@@ -1,14 +1,14 @@
 /**/
 package com.digosofter.digojava;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.digosofter.digojava.MsgUsuario.EnmLingua;
 import com.digosofter.digojava.database.Tabela;
 import com.digosofter.digojava.erro.Erro;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Principal classe da aplicação. Esta classe deve ser implementada/estendida pela classe especializada da sua
@@ -350,6 +350,17 @@ public abstract class App extends Objeto {
   }
 
   protected void inicializar() {
+    
+    try {
+
+      this.setIntStartTime(System.currentTimeMillis());
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
   }
 
   private List<MsgUsuario> inicializarLstMsgUsrPadrao() {
