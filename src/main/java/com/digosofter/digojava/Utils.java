@@ -143,9 +143,9 @@ public abstract class Utils {
       }
 
       strCpf = Utils.simplificar(strCpf);
-      strCpf = Utils.getStrFixa(strCpf, 10);
+      strCpf = Utils.getStrFixa(strCpf, 11);
 
-      return Utils.addMascara(strCpf, "**.***.***-**");
+      return Utils.addMascara(strCpf, "***.***.***-**");
     }
     catch (Exception ex) {
 

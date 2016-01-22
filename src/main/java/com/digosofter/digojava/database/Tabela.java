@@ -25,11 +25,11 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
   private List<Coluna> _lstClnConsulta;
   private List<Coluna> _lstClnConsultaOrdenado;
   private List<Coluna> _lstClnOrdenado;
-  private List<OnChangeListener> _lstEvtOnChangeListener;
+  private List<OnTblChangeListener> _lstEvtOnTblChangeListener;
   private List<Filtro> _lstFilCadastro;
   private List<Filtro> _lstFilConsulta;
   private DataBase _objDb;
-  private String _strNomeSql;
+  private String _sqlNome;
   private String _strPesquisa;
 
   protected Tabela(String strNome, Class<T> clsDominio) {
@@ -94,21 +94,21 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     }
   }
 
-  public void addOnChangeListener(OnChangeListener evtOnChangeListener) {
+  public void addEvtOnTblChangeListener(OnTblChangeListener evtOnTblChangeListener) {
 
     try {
 
-      if (evtOnChangeListener == null) {
+      if (evtOnTblChangeListener == null) {
 
         return;
       }
 
-      if (this.getLstEvtOnChangeListener().contains(evtOnChangeListener)) {
+      if (this.getLstEvtOnChangeListener().contains(evtOnTblChangeListener)) {
 
         return;
       }
 
-      this.getLstEvtOnChangeListener().add(evtOnChangeListener);
+      this.getLstEvtOnChangeListener().add(evtOnTblChangeListener);
     }
     catch (Exception ex) {
 
@@ -128,7 +128,7 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
 
       e.setIntRegistroId(intId);
 
-      this.dispararOnApagarReg(e);
+      this.dispararEvtOnApagarReg(e);
     }
     catch (Exception ex) {
 
@@ -138,18 +138,18 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     }
   }
 
-  protected void dispararOnAdicionarReg(OnChangeArg e) {
+  protected void dispararEvtOnAdicionarReg(OnChangeArg arg) {
 
     try {
 
-      for (OnChangeListener evt : this.getLstEvtOnChangeListener()) {
+      for (OnTblChangeListener evt : this.getLstEvtOnChangeListener()) {
 
         if (evt == null) {
 
           continue;
         }
 
-        evt.onAdicionarReg(e);
+        evt.onTblAdicionar(arg);
       }
     }
     catch (Exception ex) {
@@ -160,18 +160,18 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     }
   }
 
-  protected void dispararOnApagarReg(OnChangeArg e) {
+  protected void dispararEvtOnApagarReg(OnChangeArg e) {
 
     try {
 
-      for (OnChangeListener evt : this.getLstEvtOnChangeListener()) {
+      for (OnTblChangeListener evt : this.getLstEvtOnChangeListener()) {
 
         if (evt == null) {
 
           continue;
         }
 
-        evt.onApagarReg(e);
+        evt.onTblApagar(e);
       }
     }
     catch (Exception ex) {
@@ -182,18 +182,18 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     }
   }
 
-  protected void dispararOnAtualizarReg(OnChangeArg e) {
+  protected void dispararEvtOnAtualizarReg(OnChangeArg e) {
 
     try {
 
-      for (OnChangeListener evt : this.getLstEvtOnChangeListener()) {
+      for (OnTblChangeListener evt : this.getLstEvtOnChangeListener()) {
 
         if (evt == null) {
 
           continue;
         }
 
-        evt.onAtualizarReg(e);
+        evt.onTblAtualizar(e);
       }
     }
     catch (Exception ex) {
@@ -245,12 +245,12 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
           continue;
         }
 
-        if (Utils.getBooStrVazia(cln.getStrNomeSql())) {
+        if (Utils.getBooStrVazia(cln.getSqlNome())) {
 
           continue;
         }
 
-        if (!cln.getStrNomeSql().equals(strClnNomeSql)) {
+        if (!cln.getSqlNome().equals(strClnNomeSql)) {
 
           continue;
         }
@@ -348,7 +348,7 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     try {
 
       sql = "select count(1) from _tbl_nome;";
-      sql = sql.replace("_tbl_nome", this.getStrNomeSql());
+      sql = sql.replace("_tbl_nome", this.getSqlNome());
 
       _intQtdLinha = this.getObjDb().execSqlGetInt(sql);
     }
@@ -549,16 +549,16 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     return _lstClnOrdenado;
   }
 
-  private List<OnChangeListener> getLstEvtOnChangeListener() {
+  private List<OnTblChangeListener> getLstEvtOnChangeListener() {
 
     try {
 
-      if (_lstEvtOnChangeListener != null) {
+      if (_lstEvtOnTblChangeListener != null) {
 
-        return _lstEvtOnChangeListener;
+        return _lstEvtOnTblChangeListener;
       }
 
-      _lstEvtOnChangeListener = new ArrayList<>();
+      _lstEvtOnTblChangeListener = new ArrayList<>();
     }
     catch (Exception ex) {
 
@@ -567,7 +567,7 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     finally {
     }
 
-    return _lstEvtOnChangeListener;
+    return _lstEvtOnTblChangeListener;
   }
 
   public List<Filtro> getLstFilCadastro() {
@@ -591,7 +591,7 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     return _lstFilCadastro;
   }
 
-  public List<Filtro> getLstFilConsulta() {
+  protected final List<Filtro> getLstFilConsulta() {
 
     try {
 
@@ -617,13 +617,34 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     return _objDb;
   }
 
+  public String getSqlNome() {
+
+    try {
+
+      if (!Utils.getBooStrVazia(_sqlNome)) {
+
+        return _sqlNome;
+      }
+
+      _sqlNome = this.getStrNomeSimplificado();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _sqlNome;
+  }
+
   public String getStrClnNome(String strNomeSql) {
 
     try {
 
       for (Coluna cln : this.getLstCln()) {
 
-        if (!cln.getStrNomeSql().equals(strNomeSql)) {
+        if (!cln.getSqlNome().equals(strNomeSql)) {
 
           continue;
         }
@@ -639,27 +660,6 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     }
 
     return null;
-  }
-
-  public String getStrNomeSql() {
-
-    try {
-
-      if (!Utils.getBooStrVazia(_strNomeSql)) {
-
-        return _strNomeSql;
-      }
-
-      _strNomeSql = this.getStrNomeSimplificado();
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
-    return _strNomeSql;
   }
 
   public String getStrPesquisa() {
@@ -697,21 +697,21 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
     }
   }
 
-  public void removerOnChangeListener(OnChangeListener evtOnChangeListener) {
+  public void removerEvtOnTblChangeListener(OnTblChangeListener evtOnTblChangeListener) {
 
     try {
 
-      if (evtOnChangeListener == null) {
+      if (evtOnTblChangeListener == null) {
 
         return;
       }
 
-      if (!this.getLstEvtOnChangeListener().contains(evtOnChangeListener)) {
+      if (!this.getLstEvtOnChangeListener().contains(evtOnTblChangeListener)) {
 
         return;
       }
 
-      this.getLstEvtOnChangeListener().remove(evtOnChangeListener);
+      this.getLstEvtOnChangeListener().remove(evtOnTblChangeListener);
     }
     catch (Exception ex) {
 

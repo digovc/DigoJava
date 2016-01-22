@@ -35,6 +35,15 @@ public abstract class Arquivo extends Objeto {
       this.criarDiretorio(dirDestino);
 
       arrBte = new byte[1024];
+
+      File fil = new File(dirDestino + "/" + this.getStrNome());
+
+      if (!fil.exists()) {
+
+        fil.mkdirs();
+        fil.createNewFile();
+      }
+
       filCopia = new FileOutputStream(dirDestino + "/" + this.getStrNome());
       filOriginal = new FileInputStream(this.getDirCompleto());
 
@@ -95,7 +104,13 @@ public abstract class Arquivo extends Objeto {
       }
 
       fil = new File(dir);
-      fil.mkdirs();
+
+      if (!fil.exists()) {
+
+        return;
+      }
+
+      fil.mkdir();
     }
     catch (Exception ex) {
 
@@ -202,13 +217,21 @@ public abstract class Arquivo extends Objeto {
    */
   public void salvar() {
 
+    File fil;
     FileWriter filWriter;
 
     try {
 
       this.criarDiretorio();
 
-      filWriter = new FileWriter(new File(this.getDirCompleto()));
+      fil = new File(this.getDirCompleto());
+
+      if (!fil.exists()) {
+
+        fil.createNewFile();
+      }
+
+      filWriter = new FileWriter(fil);
 
       filWriter.write(this.getStrConteudo());
       filWriter.close();

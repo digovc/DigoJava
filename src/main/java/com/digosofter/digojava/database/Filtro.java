@@ -20,6 +20,7 @@ public class Filtro extends Objeto {
 
   public enum EnmOperador {
 
+    CONTEM,
     DIFERENTE,
     IGUAL,
     IS_NOT_NULL,
@@ -28,6 +29,8 @@ public class Filtro extends Objeto {
     MAIOR_IGUAL,
     MENOR,
     MENOR_IGUAL,
+    PREFIXO,
+    SUFIXO,
   }
 
   private boolean _booSelect;
@@ -36,6 +39,7 @@ public class Filtro extends Objeto {
   private EnmOperador _enmOperador = EnmOperador.IGUAL;
   private String _sqlFiltro;
   private String _strFiltro;
+  private String _strFiltroFormatado;
   private String _strOperador;
 
   public Filtro(Coluna clnFiltro, EnmOperador enmOperador, int intFiltro) {
@@ -207,10 +211,11 @@ public class Filtro extends Objeto {
       strResultado = "_condicao _tbl_nome._cln_nome _operador '_filtro'";
 
       strResultado = strResultado.replace("_condicao", !booPrimeiroTermo ? this.getStrCondicao() : Utils.STR_VAZIA);
-      strResultado = strResultado.replace("_tbl_nome", this.getClnFiltro().getTbl().getStrNomeSql());
-      strResultado = strResultado.replace("_cln_nome", this.getClnFiltro().getStrNomeSql());
+      strResultado = strResultado.replace("_tbl_nome", this.getClnFiltro().getTbl().getSqlNome());
+      strResultado = strResultado.replace("_cln_nome", this.getClnFiltro().getSqlNome());
       strResultado = strResultado.replace("_operador", this.getStrOperador());
-      strResultado = strResultado.replace("_filtro", this.getStrFiltro());
+      strResultado = strResultado.replace("_filtro", this.getStrFiltroFormatado());
+
       strResultado = booPrimeiroTermo ? strResultado.substring(1) : strResultado;
 
       return strResultado;
@@ -233,6 +238,7 @@ public class Filtro extends Objeto {
     try {
 
       strResultado = "_condicao (_sub_select)";
+
       strResultado = strResultado.replace("_condicao", !booPrimeiroTermo ? this.getStrCondicao() : Utils.STR_VAZIA);
       strResultado = strResultado.replace("_sub_select", this.getStrFiltro());
       strResultado = booPrimeiroTermo ? strResultado.substring(1) : strResultado;
@@ -284,6 +290,121 @@ public class Filtro extends Objeto {
     return _strFiltro;
   }
 
+  private String getStrFiltroFormatado() {
+
+    try {
+
+      if (_strFiltroFormatado != null) {
+
+        return _strFiltroFormatado;
+      }
+
+      switch (this.getEnmOperador()) {
+
+        case CONTEM:
+          return _strFiltroFormatado = this.getStrFiltroFormatadoContem();
+
+        case PREFIXO:
+          return _strFiltroFormatado = this.getStrFiltroFormatadoPrefixo();
+
+        case SUFIXO:
+          return _strFiltroFormatado = this.getStrFiltroFormatadoSufixo();
+
+        default:
+          return _strFiltroFormatado = this.getStrFiltro();
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _strFiltroFormatado;
+  }
+
+  private String getStrFiltroFormatadoContem() {
+
+    String strResultado;
+
+    try {
+
+      if (Utils.getBooStrVazia(this.getStrFiltro())) {
+
+        return Utils.STR_VAZIA;
+      }
+
+      strResultado = "%_filtro%";
+
+      strResultado = strResultado.replace("_filtro", this.getStrFiltro());
+
+      return strResultado;
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
+  }
+
+  private String getStrFiltroFormatadoPrefixo() {
+
+    String strResultado;
+
+    try {
+
+      if (Utils.getBooStrVazia(this.getStrFiltro())) {
+
+        return Utils.STR_VAZIA;
+      }
+
+      strResultado = "%_filtro";
+
+      strResultado = strResultado.replace("_filtro", this.getStrFiltro());
+
+      return strResultado;
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
+  }
+
+  private String getStrFiltroFormatadoSufixo() {
+
+    String strResultado;
+
+    try {
+
+      if (Utils.getBooStrVazia(this.getStrFiltro())) {
+
+        return Utils.STR_VAZIA;
+      }
+
+      strResultado = "_filtro%";
+
+      strResultado = strResultado.replace("_filtro", this.getStrFiltro());
+
+      return strResultado;
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
+  }
+
   private String getStrOperador() {
 
     try {
@@ -295,37 +416,34 @@ public class Filtro extends Objeto {
 
       switch (this.getEnmOperador()) {
 
+        case CONTEM:
+        case SUFIXO:
+        case PREFIXO:
+          return _strOperador = "LIKE";
+
         case DIFERENTE:
-          _strOperador = "<>";
-          return _strOperador;
+          return _strOperador = "<>";
 
         case IS_NOT_NULL:
-          _strOperador = "is not null";
-          return _strOperador;
+          return _strOperador = "is not null";
 
         case IS_NULL:
-          _strOperador = "is null";
-          return _strOperador;
+          return _strOperador = "is null";
 
         case MAIOR:
-          _strOperador = ">";
-          return _strOperador;
+          return _strOperador = ">";
 
         case MAIOR_IGUAL:
-          _strOperador = ">=";
-          return _strOperador;
+          return _strOperador = ">=";
 
         case MENOR:
-          _strOperador = "<";
-          return _strOperador;
+          return _strOperador = "<";
 
         case MENOR_IGUAL:
-          _strOperador = "<=";
-          return _strOperador;
+          return _strOperador = "<=";
 
         default:
-          _strOperador = "=";
-          return _strOperador;
+          return _strOperador = "=";
       }
     }
     catch (Exception ex) {
