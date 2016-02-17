@@ -55,11 +55,15 @@ public class Coluna extends Objeto {
   private boolean _booClnDominioValorCarregado;
   private boolean _booNome;
   private boolean _booNotNull;
+  private boolean _booObrigatorio;
+  private boolean _booOnDeleteCascade;
+  private boolean _booOnUpdateCascade;
   private boolean _booOrdem;
   private boolean _booOrdemDecrescente;
   private boolean _booSenha;
   private boolean _booVisivelCadastro = true;
   private boolean _booVisivelConsulta;
+  private boolean _booVisivelDetalhe = true;
   private Coluna _clnRef;
   private EnmTipo _enmTipo;
   private EnmTipoGrupo _enmTipoGrupo;
@@ -68,9 +72,9 @@ public class Coluna extends Objeto {
   private int _intOrdem;
   private int _intTamanhoCampo = 100;
   private LinkedHashMap<Integer, String> _mapOpcao;
+  private String _sqlNome;
   private String _sqlSubSelectClnRef;
   private String _strDominioNome;
-  private String _strNomeSql;
   private String _strTblNomeClnNome;
   private String _strValor;
   private String _strValorDefault;
@@ -152,6 +156,21 @@ public class Coluna extends Objeto {
     return _booNotNull;
   }
 
+  protected boolean getBooObrigatorio() {
+
+    return _booObrigatorio;
+  }
+
+  protected boolean getBooOnDeleteCascade() {
+
+    return _booOnDeleteCascade;
+  }
+
+  protected boolean getBooOnUpdateCascade() {
+
+    return _booOnUpdateCascade;
+  }
+
   public boolean getBooOrdem() {
 
     return _booOrdem;
@@ -192,6 +211,16 @@ public class Coluna extends Objeto {
     }
   }
 
+  /**
+   * Retorna booleano indicando se o valor desta coluna está vazia.
+   *
+   * @return Booleano indicando se o valor desta coluna está vazia.
+   */
+  public boolean getBooVazia() {
+
+    return Utils.getBooStrVazia(this.getStrValor());
+  }
+
   public boolean getBooVisivelCadastro() {
 
     return _booVisivelCadastro;
@@ -200,6 +229,11 @@ public class Coluna extends Objeto {
   public boolean getBooVisivelConsulta() {
 
     return _booVisivelConsulta;
+  }
+
+  public boolean getBooVisivelDetalhe() {
+
+    return _booVisivelDetalhe;
   }
 
   public char getChrValor() {
@@ -374,6 +408,27 @@ public class Coluna extends Objeto {
     return _mapOpcao;
   }
 
+  public String getSqlNome() {
+
+    try {
+
+      if (!Utils.getBooStrVazia(_sqlNome)) {
+
+        return _sqlNome;
+      }
+
+      _sqlNome = this.getStrNomeSimplificado();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _sqlNome;
+  }
+
   public String getSqlSubSelectClnRef() {
 
     try {
@@ -390,11 +445,11 @@ public class Coluna extends Objeto {
 
       _sqlSubSelectClnRef = "(select _tbl_ref_nome._cln_ref_nome from _tbl_ref_nome where _tbl_ref_nome._cln_ref_pk = _tbl_nome._cln_nome) _cln_nome, ";
 
-      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_ref_nome", this.getClnRef().getTbl().getStrNomeSql());
-      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getStrNomeSql());
-      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnChavePrimaria().getStrNomeSql());
-      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_nome", this.getTbl().getStrNomeSql());
-      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_nome", this.getStrNomeSql());
+      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_ref_nome", this.getClnRef().getTbl().getSqlNome());
+      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getSqlNome());
+      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnChavePrimaria().getSqlNome());
+      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_nome", this.getTbl().getSqlNome());
+      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_nome", this.getSqlNome());
     }
     catch (Exception ex) {
 
@@ -404,6 +459,33 @@ public class Coluna extends Objeto {
     }
 
     return _sqlSubSelectClnRef;
+  }
+
+  protected String getSqlValorDetault() {
+
+    String sqlResultado;
+
+    try {
+
+      if (Utils.getBooStrVazia(this.getStrValorDefault())) {
+
+        return Utils.STR_VAZIA;
+      }
+
+      sqlResultado = "DEFAULT '_cln_valor_default'";
+
+      sqlResultado = sqlResultado.replace("_cln_valor_default", this.getStrValorDefault());
+
+      return sqlResultado;
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return null;
   }
 
   protected String getStrDominioNome() {
@@ -428,27 +510,6 @@ public class Coluna extends Objeto {
     return _strDominioNome;
   }
 
-  public String getStrNomeSql() {
-
-    try {
-
-      if (!Utils.getBooStrVazia(_strNomeSql)) {
-
-        return _strNomeSql;
-      }
-
-      _strNomeSql = this.getStrNomeSimplificado();
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally {
-    }
-
-    return _strNomeSql;
-  }
-
   public String getStrNomeValor() {
 
     String strResultado;
@@ -457,7 +518,7 @@ public class Coluna extends Objeto {
 
       strResultado = "_cln_nome = '_cln_valor'";
 
-      strResultado = strResultado.replace("_cln_nome", this.getStrNomeSql());
+      strResultado = strResultado.replace("_cln_nome", this.getSqlNome());
       strResultado = strResultado.replace("_cln_valor", this.getStrValorSql());
 
       return strResultado;
@@ -483,8 +544,8 @@ public class Coluna extends Objeto {
 
       _strTblNomeClnNome = "_tbl_nome._cln_nome, ";
 
-      _strTblNomeClnNome = _strTblNomeClnNome.replace("_tbl_nome", this.getTbl().getStrNomeSql());
-      _strTblNomeClnNome = _strTblNomeClnNome.replace("_cln_nome", this.getStrNomeSql());
+      _strTblNomeClnNome = _strTblNomeClnNome.replace("_tbl_nome", this.getTbl().getSqlNome());
+      _strTblNomeClnNome = _strTblNomeClnNome.replace("_cln_nome", this.getSqlNome());
     }
     catch (Exception ex) {
 
@@ -881,6 +942,38 @@ public class Coluna extends Objeto {
     _booNotNull = booNotNull;
   }
 
+  /**
+   * Indica se o valor desta coluna não pode estar vazio quando for salvar um registro.
+   *
+   * @param booObrigatorio Indica se o valor desta coluna não pode estar vazio quando for salvar um registro.
+   */
+  public void setBooObrigatorio(boolean booObrigatorio) {
+
+    _booObrigatorio = booObrigatorio;
+  }
+
+  /**
+   * Se esta coluna for referência para outra coluna, indica se o registro será apagado caso o registro pai também o
+   * seja.
+   *
+   * @param booOnDeleteCascade Indica se o registro será apagado caso o registro pai também o seja.
+   */
+  public void setBooOnDeleteCascade(boolean booOnDeleteCascade) {
+
+    _booOnDeleteCascade = booOnDeleteCascade;
+  }
+
+  /**
+   * Se esta coluna for referência para outra coluna, indica se o valor será atualizado caso o registro pai também o
+   * seja.
+   *
+   * @param booOnUpdateCascade Indica se o valor será atualizado caso o registro pai também o seja.
+   */
+  public void setBooOnUpdateCascade(boolean booOnUpdateCascade) {
+
+    _booOnUpdateCascade = booOnUpdateCascade;
+  }
+
   public void setBooOrdem(boolean booOrdem) {
 
     try {
@@ -972,6 +1065,16 @@ public class Coluna extends Objeto {
     }
     finally {
     }
+  }
+
+  /**
+   * Indica se esta coluna será vista nas telas de detalhes.
+   *
+   * @param booVisivelDetalhe Indica se esta coluna será vista nas telas de detalhes.
+   */
+  public void setBooVisivelDetalhe(boolean booVisivelDetalhe) {
+
+    _booVisivelDetalhe = booVisivelDetalhe;
   }
 
   public void setChrValor(char chrValor) {
