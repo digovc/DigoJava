@@ -26,6 +26,7 @@ public abstract class Arquivo extends Objeto {
   public void copiar(String dirDestino) {
 
     byte[] arrBte;
+    File fil;
     FileInputStream filOriginal;
     FileOutputStream filCopia;
     int i;
@@ -36,15 +37,14 @@ public abstract class Arquivo extends Objeto {
 
       arrBte = new byte[1024];
 
-      File fil = new File(dirDestino + "/" + this.getStrNome());
+      fil = new File(dirDestino + "/" + this.getStrNome());
 
       if (!fil.exists()) {
 
-        fil.mkdirs();
         fil.createNewFile();
       }
 
-      filCopia = new FileOutputStream(dirDestino + "/" + this.getStrNome());
+      filCopia = new FileOutputStream(fil);
       filOriginal = new FileInputStream(this.getDirCompleto());
 
       while ((i = filOriginal.read(arrBte)) > 0) {
@@ -105,7 +105,7 @@ public abstract class Arquivo extends Objeto {
 
       fil = new File(dir);
 
-      if (!fil.exists()) {
+      if (fil.exists()) {
 
         return;
       }
