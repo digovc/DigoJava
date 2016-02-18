@@ -704,7 +704,7 @@ public class Coluna extends Objeto {
 
   private String getStrValorSqlText() {
 
-    String str;
+    String strValorResultado;
 
     try {
 
@@ -713,11 +713,12 @@ public class Coluna extends Objeto {
         return "null";
       }
 
-      str = this.getStrValor();
+      strValorResultado = this.getStrValor();
 
-      str = str.replace("'", "''");
+      strValorResultado = strValorResultado.replace("'", "''");
+      strValorResultado = strValorResultado.trim();
 
-      return str;
+      return strValorResultado;
     }
     catch (Exception ex) {
 

@@ -14,6 +14,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 public abstract class Utils {
 
@@ -35,7 +36,7 @@ public abstract class Utils {
     YYYY_MM_DD_HH_MM_SS,
   }
 
-  public static enum EnmStrTipo {
+  public enum EnmStrTipo {
 
     ALPHA,
     ALPHANUMERICO,
@@ -869,6 +870,146 @@ public abstract class Utils {
     return 0;
   }
 
+  public static boolean validarCnpj(String strCnpj) {
+
+    char[] arrChrCnpj;
+    int intSoma = 0;
+    int intD1;
+    int intD2;
+
+    try {
+
+      if (Utils.getBooStrVazia(strCnpj)) {
+
+        return false;
+      }
+
+      strCnpj = strCnpj.replaceAll(Pattern.compile("\\s").toString(), "");
+      strCnpj = strCnpj.replaceAll(Pattern.compile("\\D").toString(), "");
+
+      if (strCnpj.length() != 14) {
+
+        return false;
+      }
+
+      arrChrCnpj = strCnpj.toCharArray();
+
+      intSoma += (parseCharToInt(arrChrCnpj[0]) * 5);
+      intSoma += (parseCharToInt(arrChrCnpj[1]) * 4);
+      intSoma += (parseCharToInt(arrChrCnpj[2]) * 3);
+      intSoma += (parseCharToInt(arrChrCnpj[3]) * 2);
+      intSoma += (parseCharToInt(arrChrCnpj[4]) * 9);
+      intSoma += (parseCharToInt(arrChrCnpj[5]) * 8);
+      intSoma += (parseCharToInt(arrChrCnpj[6]) * 7);
+      intSoma += (parseCharToInt(arrChrCnpj[7]) * 6);
+      intSoma += (parseCharToInt(arrChrCnpj[8]) * 5);
+      intSoma += (parseCharToInt(arrChrCnpj[9]) * 4);
+      intSoma += (parseCharToInt(arrChrCnpj[10]) * 3);
+      intSoma += (parseCharToInt(arrChrCnpj[11]) * 2);
+
+      intD1 = intSoma % 11;
+      intD1 = intD1 < 2 ? 0 : 11 - intD1;
+
+      intSoma = 0;
+
+      intSoma += (parseCharToInt(arrChrCnpj[0]) * 6);
+      intSoma += (parseCharToInt(arrChrCnpj[1]) * 5);
+      intSoma += (parseCharToInt(arrChrCnpj[2]) * 4);
+      intSoma += (parseCharToInt(arrChrCnpj[3]) * 3);
+      intSoma += (parseCharToInt(arrChrCnpj[4]) * 2);
+      intSoma += (parseCharToInt(arrChrCnpj[5]) * 9);
+      intSoma += (parseCharToInt(arrChrCnpj[6]) * 8);
+      intSoma += (parseCharToInt(arrChrCnpj[7]) * 7);
+      intSoma += (parseCharToInt(arrChrCnpj[8]) * 6);
+      intSoma += (parseCharToInt(arrChrCnpj[9]) * 5);
+      intSoma += (parseCharToInt(arrChrCnpj[10]) * 4);
+      intSoma += (parseCharToInt(arrChrCnpj[11]) * 3);
+      intSoma += (parseCharToInt(arrChrCnpj[12]) * 2);
+
+      intD2 = intSoma % 11;
+      intD2 = intD2 < 2 ? 0 : 11 - intD2;
+
+      if (parseCharToInt(arrChrCnpj[12]) == intD1 && parseCharToInt(arrChrCnpj[13]) == intD2) {
+
+        return true;
+      }
+      else {
+
+        return false;
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return false;
+  }
+
+  public static boolean validarCpf(String strCpf) {
+
+    int intCpfDigito;
+    int intD1;
+    int intD2;
+    int intDigito1;
+    int intDigito2;
+    int intResto;
+    String strDigitoVerificador;
+    String strDigitoResult;
+
+    try {
+
+      intD1 = intD2 = 0;
+
+      for (int nCount = 1; nCount < strCpf.length() - 1; nCount++) {
+
+        intCpfDigito = Integer.valueOf(strCpf.substring(nCount - 1, nCount)).intValue();
+        intD1 = intD1 + (11 - nCount) * intCpfDigito;
+        intD2 = intD2 + (12 - nCount) * intCpfDigito;
+      }
+
+      intResto = (intD1 % 11);
+
+      if (intResto < 2) {
+
+        intDigito1 = 0;
+      }
+      else {
+
+        intDigito1 = 11 - intResto;
+      }
+
+      intD2 += 2 * intDigito1;
+
+      intResto = (intD2 % 11);
+
+      if (intResto < 2) {
+
+        intDigito2 = 0;
+      }
+      else {
+
+        intDigito2 = 11 - intResto;
+      }
+
+      strDigitoVerificador = strCpf.substring(strCpf.length() - 2, strCpf.length());
+
+      strDigitoResult = String.valueOf(intDigito1) + String.valueOf(intDigito2);
+
+      return strDigitoVerificador.equals(strDigitoResult);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return false;
+  }
+
   private static String enmDataFormatoToString(EnmDataFormato enmDataFormato) {
 
     String strResultado = null;
@@ -1008,5 +1149,10 @@ public abstract class Utils {
     }
 
     return null;
+  }
+
+  private static int parseCharToInt(char c) {
+
+    return Integer.parseInt(Character.toString(c));
   }
 }
