@@ -1,19 +1,30 @@
 package com.digosofter.digojava;
 
 import com.digosofter.digojava.erro.Erro;
+import com.google.gson.annotations.Expose;
 
 public abstract class Objeto {
 
   private static int _intObjetoIdStatic;
 
+  @Expose(deserialize = false, serialize = false)
   private int _intObjetoId;
+  
+  @Expose(deserialize = false, serialize = false)
   private String _strDescricao;
+  
+  @Expose(deserialize = false, serialize = false)
   private String _strNome;
+  
+  @Expose(deserialize = false, serialize = false)
   private String _strNomeExibicao;
+
+  @Expose(deserialize = false, serialize = false)
   private String _strNomeSimplificado;
 
   /**
-   * Retorna um número único para cada uma das intâncias dos objetos que decendem desta classe. O primeiro valor é 1.
+   * Retorna um número único para cada uma das intâncias dos objetos que
+   * decendem desta classe. O primeiro valor é 1.
    *
    * @return Número único que representa a instância deste objeto.
    */

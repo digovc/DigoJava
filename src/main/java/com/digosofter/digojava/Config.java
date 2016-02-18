@@ -4,11 +4,15 @@ import com.digosofter.digojava.arquivo.ArquivoTxt;
 import com.digosofter.digojava.erro.Erro;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 
 public abstract class Config extends Objeto {
 
+  @Expose(deserialize = false, serialize = false)
   private ArquivoTxt _arqJson;
-  private Gson _objGson;
+
+  @Expose(deserialize = false, serialize = false)
+  private transient Gson _objGson;
 
   protected ArquivoTxt getArqJson() {
 
@@ -48,8 +52,7 @@ public abstract class Config extends Objeto {
       }
 
       objGsonBuilder = new GsonBuilder();
-      objGsonBuilder.excludeFieldsWithoutExposeAnnotation();
-
+      
       _objGson = objGsonBuilder.create();
     }
     catch (Exception ex) {

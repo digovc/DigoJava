@@ -47,7 +47,7 @@ public abstract class Utils {
 
   public static String addMascara(String str, String strMascara) {
 
-    String strResultado = null;
+    String strResultado;
 
     try {
 
@@ -74,6 +74,8 @@ public abstract class Utils {
 
         strResultado += chr;
       }
+
+      return strResultado;
     }
     catch (Exception ex) {
 
@@ -82,7 +84,7 @@ public abstract class Utils {
     finally {
     }
 
-    return strResultado;
+    return null;
   }
 
   public static String addMascaraCep(String strCep) {
@@ -208,7 +210,7 @@ public abstract class Utils {
 
   public static boolean getBooStrVazia(String str) {
 
-    return !(str != null && !str.isEmpty());
+    return ((str == null) || (str.isEmpty()));
   }
 
   /**
@@ -244,34 +246,20 @@ public abstract class Utils {
 
   public static int getIntNumeroAleatorio(int intMaximo) {
 
-    int intResultado = 0;
-
-    try {
-
-      intResultado = new Random().nextInt(intMaximo);
-    }
-    catch (Exception ex) {
-
-      new Erro("Erro ao gerar cor aleatória.\n", ex);
-    }
-    finally {
-    }
-
-    return intResultado;
+    return new Random().nextInt(intMaximo);
   }
 
   public static String getMd5(String str) {
 
     BigInteger objBigInteger;
     MessageDigest objMessageDigest;
-    String md5Resultado = null;
 
     try {
 
       objMessageDigest = MessageDigest.getInstance("MD5");
       objBigInteger = new BigInteger(1, objMessageDigest.digest(str.getBytes()));
 
-      md5Resultado = String.format("%0" + (objMessageDigest.digest(str.getBytes()).length << 1) + "X", objBigInteger);
+      return String.format("%0" + (objMessageDigest.digest(str.getBytes()).length << 1) + "X", objBigInteger);
     }
     catch (Exception ex) {
 
@@ -280,7 +268,7 @@ public abstract class Utils {
     finally {
     }
 
-    return md5Resultado;
+    return null;
   }
 
   public static String getStrAleatoria(int intTamanho, EnmStrTipo enmStrTipo) {
@@ -288,7 +276,7 @@ public abstract class Utils {
     double dblIndex;
     int intQtd;
     String strConjunto;
-    String strResultado = Utils.STR_VAZIA;
+    String strResultado;
 
     try {
 
@@ -307,12 +295,15 @@ public abstract class Utils {
       }
 
       intQtd = strConjunto.length();
+      strResultado = STR_VAZIA;
 
       for (int i = 0; i < intTamanho; i++) {
 
         dblIndex = Math.random() * intQtd;
         strResultado += strConjunto.charAt((int) dblIndex);
       }
+      
+      return strResultado;
     }
     catch (Exception ex) {
 
@@ -321,7 +312,7 @@ public abstract class Utils {
     finally {
     }
 
-    return strResultado;
+    return null;
   }
 
   public static String getStrConcatenarLst(List<String> lstStr, String strDelimitador, boolean booEliminarDuplicata) {
@@ -388,7 +379,6 @@ public abstract class Utils {
 
         lstStr.add(str);
       }
-
     }
     catch (Exception ex) {
 
@@ -472,7 +462,7 @@ public abstract class Utils {
     return null;
   }
 
-  public static String getStrFixa(String str, int intQtd) {
+  public static String getStrFixa(String str, int intQuantidade) {
 
     try {
 
@@ -481,14 +471,14 @@ public abstract class Utils {
         str = Utils.STR_VAZIA;
       }
 
-      while (str.length() < intQtd) {
+      while (str.length() < intQuantidade) {
 
         str = str.concat(" ");
       }
 
-      if (str.length() > intQtd) {
+      if (str.length() > intQuantidade) {
 
-        str = str.substring(0, intQtd);
+        str = str.substring(0, intQuantidade);
       }
 
       return str;
@@ -680,9 +670,7 @@ public abstract class Utils {
       strResultado = String.valueOf(dblValor);
 
       strResultado = strResultado.replace(".", ",");
-
       strResultado = strResultado.concat(" %");
-
       strResultado = strResultado.replace(",0 %", " %");
 
       return strResultado;
@@ -702,7 +690,7 @@ public abstract class Utils {
    */
   public static boolean ping(String url) {
 
-    boolean booResultado = false;
+    boolean booResultado;
     HttpURLConnection objHttpURLConnection;
 
     try {
@@ -721,7 +709,7 @@ public abstract class Utils {
 
       objHttpURLConnection.setRequestMethod("HEAD");
 
-      booResultado = objHttpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK;
+      return (objHttpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK);
     }
     catch (Exception ex) {
 
@@ -759,7 +747,7 @@ public abstract class Utils {
     return Utils.removerUltimaLetra(str, 1);
   }
 
-  public static String removerUltimaLetra(String str, int intQtdCaracter) {
+  public static String removerUltimaLetra(String str, int intQuantidadeCaracter) {
 
     try {
 
@@ -768,7 +756,7 @@ public abstract class Utils {
         return str;
       }
 
-      str = str.substring(0, str.length() - intQtdCaracter);
+      str = str.substring(0, str.length() - intQuantidadeCaracter);
     }
     catch (Exception ex) {
 
@@ -795,15 +783,15 @@ public abstract class Utils {
 
       strComplexa = strComplexa.toLowerCase(Utils.LOCAL_BRASIL);
 
-      arrChrAcentos = new String[]{"ç", "á", "é", "í", "ó", "ú", "ý", "à", "è", "ì", "ò", "ù", "ã", "õ", "ñ", "ä", "ë", "ï", "ö", "ü", "ÿ", "â", "ê", "î", "ô", "û"};
-      arrChrSemAcento = new String[]{"c", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u", "a", "o", "n", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u"};
+      arrChrAcentos = new String[] { "ç", "á", "é", "í", "ó", "ú", "ý", "à", "è", "ì", "ò", "ù", "ã", "õ", "ñ", "ä", "ë", "ï", "ö", "ü", "ÿ", "â", "ê", "î", "ô", "û" };
+      arrChrSemAcento = new String[] { "c", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u", "a", "o", "n", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u" };
 
       for (int intTemp = 0; intTemp < arrChrAcentos.length; intTemp++) {
 
         strComplexa = strComplexa.replace(arrChrAcentos[intTemp], arrChrSemAcento[intTemp]);
       }
 
-      arrChrCaracteresEspeciais = new String[]{"/", "\\.", ",", "-", ":", "\\(", "\\)", "ª", "\\|", "\\\\", "°", "^\\s+", "\\s+$", "\\s+", ".", "(", ")"};
+      arrChrCaracteresEspeciais = new String[] { "/", "\\.", ",", "-", ":", "\\(", "\\)", "ª", "\\|", "\\\\", "°", "^\\s+", "\\s+$", "\\s+", ".", "(", ")" };
 
       for (String arrChrCaracteresEspeciai : arrChrCaracteresEspeciais) {
 

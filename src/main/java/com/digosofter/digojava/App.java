@@ -108,7 +108,7 @@ public abstract class App extends Objeto {
 
     try {
 
-      _intMilisegLigado = System.currentTimeMillis() - this.getIntStartTime();
+      _intMilisegLigado = (System.currentTimeMillis() - this.getIntStartTime());
     }
     catch (Exception ex) {
 
@@ -127,7 +127,7 @@ public abstract class App extends Objeto {
 
     try {
 
-      _intSegLigado = this.getIntMilisegLigado() / 1000;
+      _intSegLigado = (this.getIntMilisegLigado() / 1000);
     }
     catch (Exception ex) {
 
@@ -278,7 +278,7 @@ public abstract class App extends Objeto {
     return this.getStrMsgUsr(intId, EnmLingua.PORTUGUES_BRASIL, false);
   }
 
-  public String getStrMsgUsr(int intId, EnmLingua enmLingua, boolean booMsgPadrao) {
+  public String getStrMsgUsr(int intMsgId, EnmLingua enmLingua, boolean booMsgPadrao) {
 
     List<MsgUsuario> lstMsgUsrTemp;
 
@@ -295,7 +295,7 @@ public abstract class App extends Objeto {
 
       for (MsgUsuario msgUsuario : lstMsgUsrTemp) {
 
-        if (msgUsuario.getIntId() != intId || msgUsuario.getEnmLingua() != enmLingua) {
+        if (msgUsuario.getIntId() != intMsgId || msgUsuario.getEnmLingua() != enmLingua) {
 
           continue;
         }
