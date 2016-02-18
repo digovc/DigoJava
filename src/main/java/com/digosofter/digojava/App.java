@@ -278,13 +278,13 @@ public abstract class App extends Objeto {
     return this.getStrMsgUsr(intId, EnmLingua.PORTUGUES_BRASIL, false);
   }
 
-  public String getStrMsgUsr(int intMsgId, EnmLingua enmLingua, boolean booMsgPadrao) {
+  public String getStrMsgUsr(int intMensagemId, EnmLingua enmLingua, boolean booMensagemPadrao) {
 
     List<MsgUsuario> lstMsgUsrTemp;
 
     try {
 
-      if (booMsgPadrao) {
+      if (booMensagemPadrao) {
 
         lstMsgUsrTemp = this.getLstMsgUsrPadrao();
       }
@@ -295,7 +295,7 @@ public abstract class App extends Objeto {
 
       for (MsgUsuario msgUsuario : lstMsgUsrTemp) {
 
-        if (msgUsuario.getIntId() != intMsgId || msgUsuario.getEnmLingua() != enmLingua) {
+        if (msgUsuario.getIntId() != intMensagemId || msgUsuario.getEnmLingua() != enmLingua) {
 
           continue;
         }
