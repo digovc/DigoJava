@@ -208,7 +208,7 @@ public class Filtro extends Objeto {
 
     try {
 
-      strResultado = "_condicao _tbl_nome._cln_nome _operador '_filtro'";
+      strResultado = "_condicao _tbl_nome._cln_nome _operador _filtro";
 
       strResultado = strResultado.replace("_condicao", !booPrimeiroTermo ? this.getStrCondicao() : Utils.STR_VAZIA);
       strResultado = strResultado.replace("_tbl_nome", this.getClnFiltro().getTbl().getSqlNome());
@@ -290,6 +290,26 @@ public class Filtro extends Objeto {
     return _strFiltro;
   }
 
+  private String getStrFiltroAspas() {
+
+    try {
+
+      if (Utils.getBooStrVazia(this.getStrFiltro())) {
+
+        return "null";
+      }
+
+      return "'" + this.getStrFiltro() + "'";
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+    return null;
+  }
+
   private String getStrFiltroFormatado() {
 
     try {
@@ -310,8 +330,14 @@ public class Filtro extends Objeto {
         case SUFIXO:
           return _strFiltroFormatado = this.getStrFiltroFormatadoSufixo();
 
-        default:
+        case MAIOR:
+        case MAIOR_IGUAL:
+        case MENOR:
+        case MENOR_IGUAL:
           return _strFiltroFormatado = this.getStrFiltro();
+
+        default:
+          return _strFiltroFormatado = this.getStrFiltroAspas();
       }
     }
     catch (Exception ex) {
@@ -335,7 +361,7 @@ public class Filtro extends Objeto {
         return Utils.STR_VAZIA;
       }
 
-      strResultado = "%_filtro%";
+      strResultado = "'%_filtro%'";
 
       strResultado = strResultado.replace("_filtro", this.getStrFiltro());
 
@@ -362,7 +388,7 @@ public class Filtro extends Objeto {
         return Utils.STR_VAZIA;
       }
 
-      strResultado = "%_filtro";
+      strResultado = "'%_filtro'";
 
       strResultado = strResultado.replace("_filtro", this.getStrFiltro());
 
@@ -389,7 +415,7 @@ public class Filtro extends Objeto {
         return Utils.STR_VAZIA;
       }
 
-      strResultado = "_filtro%";
+      strResultado = "'_filtro%'";
 
       strResultado = strResultado.replace("_filtro", this.getStrFiltro());
 
