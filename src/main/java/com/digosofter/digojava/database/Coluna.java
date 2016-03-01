@@ -2,17 +2,21 @@ package com.digosofter.digojava.database;
 
 import com.digosofter.digojava.App;
 import com.digosofter.digojava.Objeto;
+import com.digosofter.digojava.OnValorAlteradoArg;
+import com.digosofter.digojava.OnValorAlteradoListener;
 import com.digosofter.digojava.Utils;
 import com.digosofter.digojava.erro.Erro;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class Coluna extends Objeto {
 
-  public static enum EnmTipo {
+  public enum EnmTipo {
 
     BIGINT,
     BIGSERIAL,
@@ -44,7 +48,7 @@ public class Coluna extends Objeto {
     XML,
   }
 
-  public static enum EnmTipoGrupo {
+  public enum EnmTipoGrupo {
 
     ALPHANUMERICO,
     NUMERICO,
@@ -71,12 +75,14 @@ public class Coluna extends Objeto {
   private int _intFrmLinhaPeso = 1;
   private int _intOrdem;
   private int _intTamanhoCampo = 100;
+  private List<OnValorAlteradoListener> _lstEvtOnValorAlteradoListener;
   private LinkedHashMap<Integer, String> _mapOpcao;
   private String _sqlNome;
   private String _sqlSubSelectClnRef;
   private String _strDominioNome;
   private String _strTblNomeClnNome;
   private String _strValor;
+  private String _strValorAnterior;
   private String _strValorDefault;
   private String _strValorExibicao;
   private String _strValorSql;
@@ -93,6 +99,30 @@ public class Coluna extends Objeto {
     catch (Exception ex) {
 
       new Erro(App.getI().getStrTextoPadrao(120), ex);
+    }
+    finally {
+    }
+  }
+
+  public void addEvtOnValorAlteradoListener(OnValorAlteradoListener evt) {
+
+    try {
+
+      if (evt == null) {
+
+        return;
+      }
+
+      if (this.getLstEvtOnValorAlteradoListener().contains(evt)) {
+
+        return;
+      }
+
+      this.getLstEvtOnValorAlteradoListener().add(evt);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
     }
     finally {
     }
@@ -125,7 +155,6 @@ public class Coluna extends Objeto {
     try {
 
       this.setStrValorExibicao(null);
-
     }
     catch (Exception ex) {
 
@@ -134,6 +163,45 @@ public class Coluna extends Objeto {
     finally {
     }
 
+  }
+
+  private void dispararEvtOnValorAlteradoListener() {
+
+    OnValorAlteradoArg arg;
+
+    try {
+
+      if (this.getLstEvtOnValorAlteradoListener().isEmpty()) {
+
+        return;
+      }
+
+      if ((this.getStrValor() != null) ? (this.getStrValor().equals(this.getStrValorAnterior())) : (this.getStrValorAnterior() == null)) {
+
+        return;
+      }
+
+      arg = new OnValorAlteradoArg();
+
+      arg.setStrValor(this.getStrValor());
+      arg.setStrValorAnterior(this.getStrValorAnterior());
+
+      for (OnValorAlteradoListener evt : this.getLstEvtOnValorAlteradoListener()) {
+
+        if (evt == null) {
+
+          continue;
+        }
+
+        evt.onValorAlterado(this, arg);
+      }
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
   }
 
   public boolean getBooChavePrimaria() {
@@ -387,6 +455,27 @@ public class Coluna extends Objeto {
     }
   }
 
+  private List<OnValorAlteradoListener> getLstEvtOnValorAlteradoListener() {
+
+    try {
+
+      if (_lstEvtOnValorAlteradoListener != null) {
+
+        return _lstEvtOnValorAlteradoListener;
+      }
+
+      _lstEvtOnValorAlteradoListener = new ArrayList<>();
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally {
+    }
+
+    return _lstEvtOnValorAlteradoListener;
+  }
+
   public LinkedHashMap<Integer, String> getMapOpcao() {
 
     try {
@@ -560,6 +649,11 @@ public class Coluna extends Objeto {
   public String getStrValor() {
 
     return _strValor;
+  }
+
+  private String getStrValorAnterior() {
+
+    return _strValorAnterior;
   }
 
   public String getStrValorDefault() {
@@ -868,12 +962,31 @@ public class Coluna extends Objeto {
 
     try {
 
-      this.setStrValor(null);
+      this.setStrValor(this.getStrValorDefault());
     }
     catch (Exception ex) {
 
       new Erro("Erro inesperado.\n", ex);
 
+    }
+    finally {
+    }
+  }
+
+  public void removerEvtOnValorAlteradoListener(OnValorAlteradoListener evt) {
+
+    try {
+
+      if (evt == null) {
+
+        return;
+      }
+
+      this.getLstEvtOnValorAlteradoListener().remove(evt);
+    }
+    catch (Exception ex) {
+
+      new Erro("Erro inesperado.\n", ex);
     }
     finally {
     }
@@ -1209,10 +1322,11 @@ public class Coluna extends Objeto {
 
     try {
 
+      this.setStrValorAnterior(_strValor);
+
       _strValor = strValor;
 
       this.atualizarStrValor();
-
     }
     catch (Exception ex) {
 
@@ -1220,6 +1334,11 @@ public class Coluna extends Objeto {
     }
     finally {
     }
+  }
+
+  private void setStrValorAnterior(String strValorAnterior) {
+
+    _strValorAnterior = strValorAnterior;
   }
 
   public void setStrValorDefault(String strValorDefault) {
