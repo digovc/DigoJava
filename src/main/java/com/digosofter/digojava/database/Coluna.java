@@ -1,18 +1,18 @@
 package com.digosofter.digojava.database;
 
-import com.digosofter.digojava.App;
-import com.digosofter.digojava.Objeto;
-import com.digosofter.digojava.OnValorAlteradoArg;
-import com.digosofter.digojava.OnValorAlteradoListener;
-import com.digosofter.digojava.Utils;
-import com.digosofter.digojava.erro.Erro;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import com.digosofter.digojava.App;
+import com.digosofter.digojava.Objeto;
+import com.digosofter.digojava.OnValorAlteradoArg;
+import com.digosofter.digojava.OnValorAlteradoListener;
+import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.erro.Erro;
 
 public class Coluna extends Objeto {
 
@@ -129,7 +129,8 @@ public class Coluna extends Objeto {
   }
 
   /**
-   * Adiciona uma opção para lista, tornando o campo selecionável por "Combobox".
+   * Adiciona uma opção para lista, tornando o campo selecionável por
+   * "Combobox".
    */
   public void addOpcao(int intValor, String strNome) {
 
@@ -155,6 +156,7 @@ public class Coluna extends Objeto {
     try {
 
       this.setStrValorExibicao(null);
+      this.dispararEvtOnValorAlteradoListener();
     }
     catch (Exception ex) {
 
@@ -1057,9 +1059,12 @@ public class Coluna extends Objeto {
   }
 
   /**
-   * Indica se o valor desta coluna não pode estar vazio quando for salvar um registro.
+   * Indica se o valor desta coluna não pode estar vazio quando for salvar um
+   * registro.
    *
-   * @param booObrigatorio Indica se o valor desta coluna não pode estar vazio quando for salvar um registro.
+   * @param booObrigatorio
+   *          Indica se o valor desta coluna não pode estar vazio quando for
+   *          salvar um registro.
    */
   public void setBooObrigatorio(boolean booObrigatorio) {
 
@@ -1067,10 +1072,12 @@ public class Coluna extends Objeto {
   }
 
   /**
-   * Se esta coluna for referência para outra coluna, indica se o registro será apagado caso o registro pai também o
-   * seja.
+   * Se esta coluna for referência para outra coluna, indica se o registro será
+   * apagado caso o registro pai também o seja.
    *
-   * @param booOnDeleteCascade Indica se o registro será apagado caso o registro pai também o seja.
+   * @param booOnDeleteCascade
+   *          Indica se o registro será apagado caso o registro pai também o
+   *          seja.
    */
   public void setBooOnDeleteCascade(boolean booOnDeleteCascade) {
 
@@ -1078,10 +1085,12 @@ public class Coluna extends Objeto {
   }
 
   /**
-   * Se esta coluna for referência para outra coluna, indica se o valor será atualizado caso o registro pai também o
-   * seja.
+   * Se esta coluna for referência para outra coluna, indica se o valor será
+   * atualizado caso o registro pai também o seja.
    *
-   * @param booOnUpdateCascade Indica se o valor será atualizado caso o registro pai também o seja.
+   * @param booOnUpdateCascade
+   *          Indica se o valor será atualizado caso o registro pai também o
+   *          seja.
    */
   public void setBooOnUpdateCascade(boolean booOnUpdateCascade) {
 
@@ -1184,7 +1193,8 @@ public class Coluna extends Objeto {
   /**
    * Indica se esta coluna será vista nas telas de detalhes.
    *
-   * @param booVisivelDetalhe Indica se esta coluna será vista nas telas de detalhes.
+   * @param booVisivelDetalhe
+   *          Indica se esta coluna será vista nas telas de detalhes.
    */
   public void setBooVisivelDetalhe(boolean booVisivelDetalhe) {
 
