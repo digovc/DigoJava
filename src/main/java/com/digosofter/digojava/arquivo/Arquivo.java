@@ -110,7 +110,7 @@ public abstract class Arquivo extends Objeto {
         return;
       }
 
-      fil.mkdir();
+      fil.mkdirs();
     }
     catch (Exception ex) {
 
