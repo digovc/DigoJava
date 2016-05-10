@@ -49,38 +49,30 @@ public abstract class Utils
 
   public static String addMascara(String str, String strMascara)
   {
-    String strResultado;
-    try
+    if (Utils.getBooStrVazia(str))
     {
-      if (Utils.getBooStrVazia(str))
-      {
-        return null;
-      }
-      if (Utils.getBooStrVazia(strMascara))
-      {
-        return null;
-      }
-      strResultado = Utils.STR_VAZIA;
-      for (char chr : strMascara.toCharArray())
-      {
-        if (chr == '*' && str.length() > 0)
-        {
-          strResultado += str.charAt(0);
-          str = str.substring(1);
-          continue;
-        }
-        strResultado += chr;
-      }
-      return strResultado;
+      return null;
     }
-    catch (Exception ex)
+
+    if (Utils.getBooStrVazia(strMascara))
     {
-      new Erro("Erro inesperado.\n", ex);
+      return null;
     }
-    finally
+
+    String strResultado = Utils.STR_VAZIA;
+
+    for (char chr : strMascara.toCharArray())
     {
+      if (chr == '*' && str.length() > 0)
+      {
+        strResultado += str.charAt(0);
+        str = str.substring(1);
+        continue;
+      }
+      strResultado += chr;
     }
-    return null;
+
+    return strResultado;
   }
 
   public static String addMascaraCep(String strCep)
