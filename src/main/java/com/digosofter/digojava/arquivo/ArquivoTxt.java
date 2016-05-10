@@ -1,3 +1,5 @@
 package com.digosofter.digojava.arquivo;
 
-public class ArquivoTxt extends Arquivo {}
+public class ArquivoTxt extends Arquivo
+{
+}

@@ -1,16 +1,17 @@
 package com.digosofter.digojava;
 
-public abstract class TestMain extends Objeto {
+public abstract class TestMain extends Objeto
+{
 
-  public TestMain() {
-
+  public TestMain()
+  {
     this.inicializarLocal();
   }
 
   protected abstract void inicializar();
 
-  private void inicializarLocal() {
-
+  private void inicializarLocal()
+  {
     this.inicializar();
   }
 }

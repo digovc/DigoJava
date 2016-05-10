@@ -1,19 +1,20 @@
 package com.digosofter.digojava.arquivo;
 
-import com.digosofter.digojava.App;
-import com.digosofter.digojava.Objeto;
-import com.digosofter.digojava.Utils;
-import com.digosofter.digojava.erro.Erro;
-
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
-public abstract class Arquivo extends Objeto {
+import org.apache.commons.io.IOUtils;
+
+import com.digosofter.digojava.App;
+import com.digosofter.digojava.Objeto;
+import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.erro.Erro;
+
+public abstract class Arquivo extends Objeto
+{
 
   private boolean _booExiste;
   private String _dir;
@@ -23,260 +24,235 @@ public abstract class Arquivo extends Objeto {
   /**
    * Faz uma cópia deste arquivo para outra diretório.
    */
-  public void copiar(String dirDestino) {
-
+  public void copiar(String dirDestino)
+  {
     byte[] arrBte;
     File fil;
     FileInputStream filOriginal;
     FileOutputStream filCopia;
     int i;
-
-    try {
-
+    try
+    {
       this.criarDiretorio(dirDestino);
-
       arrBte = new byte[1024];
-
       fil = new File(dirDestino + "/" + this.getStrNome());
-
-      if (!fil.exists()) {
-
+      if (!fil.exists())
+      {
         fil.createNewFile();
       }
-
       filCopia = new FileOutputStream(fil);
       filOriginal = new FileInputStream(this.getDirCompleto());
-
-      while ((i = filOriginal.read(arrBte)) > 0) {
-
+      while ((i = filOriginal.read(arrBte)) > 0)
+      {
         filCopia.write(arrBte, 0, i);
       }
-
       filCopia.close();
       filOriginal.close();
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  public void criarArquivo() {
-
+  public void criarArquivo()
+  {
     PrintWriter objPrintWriter;
-
-    try {
-
-      if (this.getBooExiste()) {
-
+    try
+    {
+      if (this.getBooExiste())
+      {
         return;
       }
-
       objPrintWriter = new PrintWriter(this.getDirCompleto(), "UTF-8");
-
       objPrintWriter.print(this.getStrConteudo());
       objPrintWriter.close();
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  private void criarDiretorio() {
-
+  private void criarDiretorio()
+  {
     this.criarDiretorio(this.getDir());
   }
 
-  private void criarDiretorio(String dir) {
-
+  private void criarDiretorio(String dir)
+  {
     File fil;
-
-    try {
-
-      if (Utils.getBooStrVazia(dir)) {
-
+    try
+    {
+      if (Utils.getBooStrVazia(dir))
+      {
         return;
       }
-
       fil = new File(dir);
-
-      if (fil.exists()) {
-
+      if (fil.exists())
+      {
         return;
       }
-
       fil.mkdirs();
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  protected boolean getBooExiste() {
-
-    try {
-
-      if (Utils.getBooStrVazia(this.getDirCompleto())) {
-
+  protected boolean getBooExiste()
+  {
+    try
+    {
+      if (Utils.getBooStrVazia(this.getDirCompleto()))
+      {
         return false;
       }
-
       _booExiste = new File(this.getDirCompleto()).exists();
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _booExiste;
   }
 
-  public String getDir() {
-
+  public String getDir()
+  {
     return _dir;
   }
 
-  public String getDirCompleto() {
-
-    try {
-
-      if (!Utils.getBooStrVazia(_dirCompleto)) {
-
+  public String getDirCompleto()
+  {
+    try
+    {
+      if (!Utils.getBooStrVazia(_dirCompleto))
+      {
         return _dirCompleto;
       }
-
-      if (!Utils.getBooStrVazia(this.getDir())) {
-
+      if (!Utils.getBooStrVazia(this.getDir()))
+      {
         _dirCompleto = "_dir/_str_nome";
       }
-      else {
-
+      else
+      {
         _dirCompleto = "../_str_nome";
       }
-
       _dirCompleto = _dirCompleto.replace("_dir", this.getDir() != null ? this.getDir() : Utils.STR_VAZIA);
       _dirCompleto = _dirCompleto.replace("_str_nome", this.getStrNome());
       _dirCompleto = _dirCompleto.replace("//", "/");
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _dirCompleto;
   }
 
-  public String getStrConteudo() {
-
+  public String getStrConteudo()
+  {
     FileInputStream fis;
-
-    try {
-
-      if (!Utils.getBooStrVazia(_strConteudo)) {
-
+    try
+    {
+      if (!Utils.getBooStrVazia(_strConteudo))
+      {
         return _strConteudo;
       }
-
-      if (Utils.getBooStrVazia(this.getDirCompleto())) {
-
+      if (Utils.getBooStrVazia(this.getDirCompleto()))
+      {
         return Utils.STR_VAZIA;
       }
-
-      if (!this.getBooExiste()) {
-
+      if (!this.getBooExiste())
+      {
         return Utils.STR_VAZIA;
       }
-
       fis = new FileInputStream(this.getDirCompleto());
       _strConteudo = IOUtils.toString(fis, "UTF-8");
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _strConteudo;
   }
 
   /**
    * Salva o arquivo no diretório indicado no atributo "dirCompleto".
    */
-  public void salvar() {
-
+  public void salvar()
+  {
     File fil;
     FileWriter filWriter;
-
-    try {
-
+    try
+    {
       this.criarDiretorio();
-
       fil = new File(this.getDirCompleto());
-
-      if (!fil.exists()) {
-
+      if (!fil.exists())
+      {
         fil.createNewFile();
       }
-
       filWriter = new FileWriter(fil);
-
       filWriter.write(this.getStrConteudo());
       filWriter.close();
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  public void setDir(String dir) {
-
+  public void setDir(String dir)
+  {
     _dir = dir;
   }
 
-  public void setDirCompleto(String dirCompleto) {
-
+  public void setDirCompleto(String dirCompleto)
+  {
     File fil;
-
-    try {
-
+    try
+    {
       _dirCompleto = dirCompleto;
-
-      if (Utils.getBooStrVazia(_dirCompleto)) {
-
+      if (Utils.getBooStrVazia(_dirCompleto))
+      {
         return;
       }
-
       fil = new File(_dirCompleto);
-
       this.setStrNome(fil.getName());
       this.setDir(fil.getPath().replace(this.getStrNome(), Utils.STR_VAZIA));
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  public void setStrConteudo(String strConteudo) {
-
+  public void setStrConteudo(String strConteudo)
+  {
     _strConteudo = strConteudo;
   }
 }

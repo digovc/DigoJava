@@ -1,26 +1,27 @@
 package com.digosofter.digojava;
 
 import com.digosofter.digojava.erro.Erro;
-import com.google.gson.annotations.Expose;
 
-public abstract class Objeto {
+public abstract class Objeto
+{
 
   private static int _intObjetoIdStatic;
 
-  @Expose(deserialize = false, serialize = false)
-  private int _intObjetoId;
-  
-  @Expose(deserialize = false, serialize = false)
-  private String _strDescricao;
-  
-  @Expose(deserialize = false, serialize = false)
-  private String _strNome;
-  
-  @Expose(deserialize = false, serialize = false)
-  private String _strNomeExibicao;
+  private static int getIntObjetoIdStatic()
+  {
+    return _intObjetoIdStatic;
+  }
 
-  @Expose(deserialize = false, serialize = false)
-  private String _strNomeSimplificado;
+  private static void setIntObjetoIdStatic(int intObjetoIdStatic)
+  {
+    _intObjetoIdStatic = intObjetoIdStatic;
+  }
+
+  private transient int _intObjetoId;
+  private transient String _strDescricao;
+  private transient String _strNome;
+  private transient String _strNomeExibicao;
+  private transient String _strNomeSimplificado;
 
   /**
    * Retorna um número único para cada uma das intâncias dos objetos que
@@ -28,135 +29,120 @@ public abstract class Objeto {
    *
    * @return Número único que representa a instância deste objeto.
    */
-  public int getIntObjetoId() {
-
-    try {
-
-      if (_intObjetoId > 0) {
-
+  public int getIntObjetoId()
+  {
+    try
+    {
+      if (_intObjetoId > 0)
+      {
         return _intObjetoId;
       }
-
       Objeto.setIntObjetoIdStatic(Objeto.getIntObjetoIdStatic() + 1);
-
       _intObjetoId = Objeto.getIntObjetoIdStatic();
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _intObjetoId;
   }
 
-  private static int getIntObjetoIdStatic() {
-
-    return _intObjetoIdStatic;
-  }
-
-  public String getStrDescricao() {
-
+  public String getStrDescricao()
+  {
     return _strDescricao;
   }
 
-  public String getStrNome() {
-
+  public String getStrNome()
+  {
     return _strNome;
   }
 
-  public String getStrNomeExibicao() {
-
-    try {
-
-      if (!Utils.getBooStrVazia(_strNomeExibicao)) {
-
+  public String getStrNomeExibicao()
+  {
+    try
+    {
+      if (!Utils.getBooStrVazia(_strNomeExibicao))
+      {
         return _strNomeExibicao;
       }
-
       _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _strNomeExibicao;
   }
 
-  public String getStrNomeSimplificado() {
-
-    try {
-
-      if (!Utils.getBooStrVazia(_strNomeSimplificado)) {
-
+  public String getStrNomeSimplificado()
+  {
+    try
+    {
+      if (!Utils.getBooStrVazia(_strNomeSimplificado))
+      {
         return _strNomeSimplificado;
       }
-
       _strNomeSimplificado = Utils.simplificar(this.getStrNome());
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _strNomeSimplificado;
   }
 
-  private static void setIntObjetoIdStatic(int intObjetoIdStatic) {
-
-    _intObjetoIdStatic = intObjetoIdStatic;
-  }
-
-  public void setStrDescricao(String strDescricao) {
-
+  public void setStrDescricao(String strDescricao)
+  {
     _strDescricao = strDescricao;
   }
 
-  public void setStrNome(String strNome) {
-
-    try {
-
+  public void setStrNome(String strNome)
+  {
+    try
+    {
       _strNome = strNome;
-
       this.setStrNomeSimplificado(null);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  public void setStrNomeExibicao(String strNomeExibicao) {
-
-    try {
-
+  public void setStrNomeExibicao(String strNomeExibicao)
+  {
+    try
+    {
       _strNomeExibicao = strNomeExibicao;
-
-      if (Utils.getBooStrVazia(_strNomeExibicao)) {
-
+      if (Utils.getBooStrVazia(_strNomeExibicao))
+      {
         return;
       }
-
       _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNomeExibicao);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  private void setStrNomeSimplificado(String strNomeSimplificado) {
-
+  private void setStrNomeSimplificado(String strNomeSimplificado)
+  {
     _strNomeSimplificado = strNomeSimplificado;
   }
 }

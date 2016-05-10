@@ -1,16 +1,17 @@
 package com.digosofter.digojava.database;
 
-import com.digosofter.digojava.App;
-import com.digosofter.digojava.Objeto;
-import com.digosofter.digojava.Utils;
-import com.digosofter.digojava.erro.Erro;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class Tabela<T extends Dominio> extends Objeto {
+import com.digosofter.digojava.App;
+import com.digosofter.digojava.Objeto;
+import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.erro.Erro;
+
+public abstract class Tabela<T extends Dominio> extends Objeto
+{
 
   private boolean _booMenuAdicionar;
   private boolean _booMenuAlterar;
@@ -32,769 +33,728 @@ public abstract class Tabela<T extends Dominio> extends Objeto {
   private String _sqlNome;
   private String _strPesquisa;
 
-  protected Tabela(String strNome, Class<T> clsDominio) {
-
-    try {
-
+  protected Tabela(String strNome, Class<T> clsDominio)
+  {
+    try
+    {
       this.setClsDominio(clsDominio);
       this.setStrNome(strNome);
       this.addAppLstTbl();
-
       this.inicializarLstCln(-1);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(122), ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  protected void addAppLstTbl() {
-
-    try {
-
+  protected void addAppLstTbl()
+  {
+    try
+    {
       App.getI().addTbl(this);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  public void addCln(Coluna cln) {
-
-    try {
-
-      if (cln == null) {
-
+  public void addCln(Coluna cln)
+  {
+    try
+    {
+      if (cln == null)
+      {
         return;
       }
-
-      if (!this.equals(cln.getTbl())) {
-
+      if (!this.equals(cln.getTbl()))
+      {
         return;
       }
-
-      if (this.getLstCln().contains(cln)) {
-
+      if (this.getLstCln().contains(cln))
+      {
         return;
       }
-
       this.getLstCln().add(cln);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
-
     }
-    finally {
+    finally
+    {
     }
   }
 
-  public void addEvtOnTblChangeListener(OnTblChangeListener evtOnTblChangeListener) {
-
-    try {
-
-      if (evtOnTblChangeListener == null) {
-
+  public void addEvtOnTblChangeListener(OnTblChangeListener evtOnTblChangeListener)
+  {
+    try
+    {
+      if (evtOnTblChangeListener == null)
+      {
         return;
       }
-
-      if (this.getLstEvtOnChangeListener().contains(evtOnTblChangeListener)) {
-
+      if (this.getLstEvtOnChangeListener().contains(evtOnTblChangeListener))
+      {
         return;
       }
-
       this.getLstEvtOnChangeListener().add(evtOnTblChangeListener);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  public void apagar(int intId) {
-
+  public void apagar(int intId)
+  {
     OnChangeArg e;
-
-    try {
-
+    try
+    {
       e = new OnChangeArg();
-
       e.setIntRegistroId(intId);
-
       this.dispararEvtOnApagarReg(e);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  protected void dispararEvtOnAdicionarReg(OnChangeArg arg) {
-
-    try {
-
-      for (OnTblChangeListener evt : this.getLstEvtOnChangeListener()) {
-
-        if (evt == null) {
-
+  protected void dispararEvtOnAdicionarReg(OnChangeArg arg)
+  {
+    try
+    {
+      for (OnTblChangeListener evt : this.getLstEvtOnChangeListener())
+      {
+        if (evt == null)
+        {
           continue;
         }
-
         evt.onTblAdicionar(arg);
       }
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  protected void dispararEvtOnApagarReg(OnChangeArg e) {
-
-    try {
-
-      for (OnTblChangeListener evt : this.getLstEvtOnChangeListener()) {
-
-        if (evt == null) {
-
+  protected void dispararEvtOnApagarReg(OnChangeArg e)
+  {
+    try
+    {
+      for (OnTblChangeListener evt : this.getLstEvtOnChangeListener())
+      {
+        if (evt == null)
+        {
           continue;
         }
-
         evt.onTblApagar(e);
       }
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  protected void dispararEvtOnAtualizarReg(OnChangeArg e) {
-
-    try {
-
-      for (OnTblChangeListener evt : this.getLstEvtOnChangeListener()) {
-
-        if (evt == null) {
-
+  protected void dispararEvtOnAtualizarReg(OnChangeArg e)
+  {
+    try
+    {
+      for (OnTblChangeListener evt : this.getLstEvtOnChangeListener())
+      {
+        if (evt == null)
+        {
           continue;
         }
-
         evt.onTblAtualizar(e);
       }
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  public boolean getBooMenuAdicionar() {
-
+  public boolean getBooMenuAdicionar()
+  {
     return _booMenuAdicionar;
   }
 
-  public boolean getBooMenuAlterar() {
-
+  public boolean getBooMenuAlterar()
+  {
     return _booMenuAlterar;
   }
 
-  public boolean getBooMenuApagar() {
-
+  public boolean getBooMenuApagar()
+  {
     return _booMenuApagar;
   }
 
   /**
-   * Pesquisa na lista de colunas desta tabela e retorna a coluna que tem o nome passado como parâmetro.
+   * Pesquisa na lista de colunas desta tabela e retorna a coluna que tem o nome
+   * passado como parâmetro.
    *
-   * @param strClnNomeSql Nome da coluna que se deseja encontrar.
-   * @return Retorna a coluna que possui o mesmo nome que foi passado como parâmetro ou null caso não encontre.
+   * @param strClnNomeSql
+   *          Nome da coluna que se deseja encontrar.
+   * @return Retorna a coluna que possui o mesmo nome que foi passado como
+   *         parâmetro ou null caso não encontre.
    */
-  public Coluna getCln(final String strClnNomeSql) {
-
+  public Coluna getCln(final String strClnNomeSql)
+  {
     Coluna clnResultado;
-
-    try {
-
+    try
+    {
       clnResultado = null;
-
-      if (Utils.getBooStrVazia(strClnNomeSql)) {
-
+      if (Utils.getBooStrVazia(strClnNomeSql))
+      {
         return null;
       }
-
-      for (Coluna cln : this.getLstCln()) {
-
-        if (cln == null) {
-
+      for (Coluna cln : this.getLstCln())
+      {
+        if (cln == null)
+        {
           continue;
         }
-
-        if (Utils.getBooStrVazia(cln.getSqlNome())) {
-
+        if (Utils.getBooStrVazia(cln.getSqlNome()))
+        {
           continue;
         }
-
-        if (!cln.getSqlNome().equals(strClnNomeSql)) {
-
+        if (!cln.getSqlNome().equals(strClnNomeSql))
+        {
           continue;
         }
-
         return cln;
       }
-
       return clnResultado;
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
-
     return null;
   }
 
-  public Coluna getClnChavePrimaria() {
-
-    try {
-
-      if (_clnChavePrimaria != null) {
-
+  public Coluna getClnChavePrimaria()
+  {
+    try
+    {
+      if (_clnChavePrimaria != null)
+      {
         return _clnChavePrimaria;
       }
-
       _clnChavePrimaria = this.getLstCln().get(0);
       _clnChavePrimaria.setBooChavePrimaria(true);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _clnChavePrimaria;
   }
 
-  public Coluna getClnNome() {
-
-    try {
-
-      if (_clnNome != null) {
-
+  public Coluna getClnNome()
+  {
+    try
+    {
+      if (_clnNome != null)
+      {
         return _clnNome;
       }
-
       _clnNome = this.getClnChavePrimaria();
       _clnNome.setBooNome(true);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _clnNome;
   }
 
-  public Coluna getClnOrdem() {
-
-    try {
-
-      if (_clnOrdem != null) {
-
+  public Coluna getClnOrdem()
+  {
+    try
+    {
+      if (_clnOrdem != null)
+      {
         return _clnOrdem;
       }
-
       _clnOrdem = this.getClnNome();
       _clnOrdem.setBooOrdem(true);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _clnOrdem;
   }
 
-  public Class<T> getClsDominio() {
-
+  public Class<T> getClsDominio()
+  {
     return _clsDominio;
   }
 
-  public int getIntQtdLinha() {
-
+  public int getIntQtdLinha()
+  {
     String sql;
-
-    try {
-
+    try
+    {
       sql = "select count(1) from _tbl_nome;";
       sql = sql.replace("_tbl_nome", this.getSqlNome());
-
       _intQtdLinha = this.getObjDb().execSqlGetInt(sql);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       _intQtdLinha = 0;
     }
-    finally {
+    finally
+    {
     }
-
     return _intQtdLinha;
   }
 
-  public List<Coluna> getLstCln() {
-
-    try {
-
-      if (_lstCln != null) {
-
+  public List<Coluna> getLstCln()
+  {
+    try
+    {
+      if (_lstCln != null)
+      {
         return _lstCln;
       }
-
       _lstClnOrdenado = null;
-
       _lstCln = new ArrayList<>();
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _lstCln;
   }
 
-  public List<Coluna> getLstClnCadastro() {
-
-    try {
-
-      if (_lstClnCadastro != null) {
-
+  public List<Coluna> getLstClnCadastro()
+  {
+    try
+    {
+      if (_lstClnCadastro != null)
+      {
         return _lstClnCadastro;
       }
-
       _lstClnCadastro = new ArrayList<>();
-
       _lstClnCadastro.add(this.getClnNome());
-
-      for (Coluna cln : this.getLstCln()) {
-
-        if (cln.getBooChavePrimaria()) {
-
+      for (Coluna cln : this.getLstCln())
+      {
+        if (cln.getBooChavePrimaria())
+        {
           continue;
         }
-
-        if (cln.getBooNome()) {
-
+        if (cln.getBooNome())
+        {
           continue;
         }
-
-        if (!cln.getBooVisivelCadastro()) {
-
+        if (!cln.getBooVisivelCadastro())
+        {
           continue;
         }
-
-        if (_lstClnCadastro.contains(cln)) {
-
+        if (_lstClnCadastro.contains(cln))
+        {
           continue;
         }
-
         _lstClnCadastro.add(cln);
       }
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _lstClnCadastro;
   }
 
-  public List<Coluna> getLstClnConsulta() {
-
-    try {
-
-      if (_lstClnConsulta != null) {
-
+  public List<Coluna> getLstClnConsulta()
+  {
+    try
+    {
+      if (_lstClnConsulta != null)
+      {
         return _lstClnConsulta;
       }
-
       _lstClnConsultaOrdenado = null;
-
       _lstClnConsulta = new ArrayList<>();
-
       _lstClnConsulta.add(this.getClnChavePrimaria());
       _lstClnConsulta.add(this.getClnNome());
-
-      for (Coluna cln : this.getLstCln()) {
-
-        if (cln == null) {
-
+      for (Coluna cln : this.getLstCln())
+      {
+        if (cln == null)
+        {
           continue;
         }
-
-        if (!cln.getBooVisivelConsulta()) {
-
+        if (!cln.getBooVisivelConsulta())
+        {
           continue;
         }
-
-        if (cln.getBooChavePrimaria()) {
-
+        if (cln.getBooChavePrimaria())
+        {
           continue;
         }
-
-        if (cln.getBooNome()) {
-
+        if (cln.getBooNome())
+        {
           continue;
         }
-
-        if (_lstClnConsulta.contains(cln)) {
-
+        if (_lstClnConsulta.contains(cln))
+        {
           continue;
         }
-
         _lstClnConsulta.add(cln);
       }
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _lstClnConsulta;
   }
 
-  public List<Coluna> getLstClnConsultaOrdenado() {
-
-    try {
-
-      if (_lstClnConsultaOrdenado != null) {
-
+  public List<Coluna> getLstClnConsultaOrdenado()
+  {
+    try
+    {
+      if (_lstClnConsultaOrdenado != null)
+      {
         return _lstClnConsultaOrdenado;
       }
-
       _lstClnConsultaOrdenado = this.getLstClnConsulta();
-
-      Collections.sort(_lstClnConsultaOrdenado, new Comparator<Coluna>() {
+      Collections.sort(_lstClnConsultaOrdenado, new Comparator<Coluna>()
+      {
 
         @Override
-        public int compare(Coluna cln1, Coluna cln2) {
-
+        public int compare(Coluna cln1, Coluna cln2)
+        {
           return (cln1.getIntOrdem() - cln2.getIntOrdem());
         }
       });
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _lstClnConsultaOrdenado;
   }
 
-  public List<Coluna> getLstClnOrdenado() {
-
-    try {
-
-      if (_lstClnOrdenado != null) {
-
+  public List<Coluna> getLstClnOrdenado()
+  {
+    try
+    {
+      if (_lstClnOrdenado != null)
+      {
         return _lstClnOrdenado;
       }
-
       _lstClnOrdenado = this.getLstCln();
-
-      Collections.sort(_lstClnOrdenado, new Comparator<Coluna>() {
+      Collections.sort(_lstClnOrdenado, new Comparator<Coluna>()
+      {
 
         @Override
-        public int compare(Coluna cln1, Coluna cln2) {
-
+        public int compare(Coluna cln1, Coluna cln2)
+        {
           return cln1.getStrNomeExibicao().compareTo(cln2.getStrNomeExibicao());
         }
       });
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _lstClnOrdenado;
   }
 
-  private List<OnTblChangeListener> getLstEvtOnChangeListener() {
-
-    try {
-
-      if (_lstEvtOnTblChangeListener != null) {
-
+  private List<OnTblChangeListener> getLstEvtOnChangeListener()
+  {
+    try
+    {
+      if (_lstEvtOnTblChangeListener != null)
+      {
         return _lstEvtOnTblChangeListener;
       }
-
       _lstEvtOnTblChangeListener = new ArrayList<>();
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _lstEvtOnTblChangeListener;
   }
 
-  public List<Filtro> getLstFilCadastro() {
-
-    try {
-
-      if (_lstFilCadastro != null) {
-
+  public List<Filtro> getLstFilCadastro()
+  {
+    try
+    {
+      if (_lstFilCadastro != null)
+      {
         return _lstFilCadastro;
       }
-
       _lstFilCadastro = new ArrayList<>();
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _lstFilCadastro;
   }
 
-  protected final List<Filtro> getLstFilConsulta() {
-
-    try {
-
-      if (_lstFilConsulta != null) {
-
+  protected final List<Filtro> getLstFilConsulta()
+  {
+    try
+    {
+      if (_lstFilConsulta != null)
+      {
         return _lstFilConsulta;
       }
-
       _lstFilConsulta = new ArrayList<>();
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _lstFilConsulta;
   }
 
-  public DataBase getObjDb() {
-
+  public DataBase getObjDb()
+  {
     return _objDb;
   }
 
-  public String getSqlNome() {
-
-    try {
-
-      if (!Utils.getBooStrVazia(_sqlNome)) {
-
+  public String getSqlNome()
+  {
+    try
+    {
+      if (!Utils.getBooStrVazia(_sqlNome))
+      {
         return _sqlNome;
       }
-
       _sqlNome = this.getStrNomeSimplificado();
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
-
     return _sqlNome;
   }
 
-  public String getStrClnNome(String strNomeSql) {
-
-    try {
-
-      for (Coluna cln : this.getLstCln()) {
-
-        if (!cln.getSqlNome().equals(strNomeSql)) {
-
+  public String getStrClnNome(String strNomeSql)
+  {
+    try
+    {
+      for (Coluna cln : this.getLstCln())
+      {
+        if (!cln.getSqlNome().equals(strNomeSql))
+        {
           continue;
         }
-
         return cln.getStrNomeExibicao();
       }
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(128), ex);
     }
-    finally {
+    finally
+    {
     }
-
     return null;
   }
 
-  public String getStrPesquisa() {
-
+  public String getStrPesquisa()
+  {
     return _strPesquisa;
   }
 
-  protected int inicializarLstCln(int intOrdem) {
-
+  protected int inicializarLstCln(int intOrdem)
+  {
     return intOrdem;
   }
 
   /**
    * Limpa os valores de todas as colunas da tabela.
    */
-  public void limparColunas() {
-
-    try {
-
-      for (Coluna cln : this.getLstCln()) {
-
-        if (cln == null) {
-
+  public void limparColunas()
+  {
+    try
+    {
+      for (Coluna cln : this.getLstCln())
+      {
+        if (cln == null)
+        {
           continue;
         }
-
         cln.limpar();
       }
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro(App.getI().getStrTextoPadrao(130), ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  public void removerEvtOnTblChangeListener(OnTblChangeListener evtOnTblChangeListener) {
-
-    try {
-
-      if (evtOnTblChangeListener == null) {
-
+  public void removerEvtOnTblChangeListener(OnTblChangeListener evtOnTblChangeListener)
+  {
+    try
+    {
+      if (evtOnTblChangeListener == null)
+      {
         return;
       }
-
-      if (!this.getLstEvtOnChangeListener().contains(evtOnTblChangeListener)) {
-
+      if (!this.getLstEvtOnChangeListener().contains(evtOnTblChangeListener))
+      {
         return;
       }
-
       this.getLstEvtOnChangeListener().remove(evtOnTblChangeListener);
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  protected void setBooMenuAdicionar(boolean booMenuAdicionar) {
-
+  protected void setBooMenuAdicionar(boolean booMenuAdicionar)
+  {
     _booMenuAdicionar = booMenuAdicionar;
   }
 
-  protected void setBooMenuAlterar(boolean booMenuAlterar) {
-
+  protected void setBooMenuAlterar(boolean booMenuAlterar)
+  {
     _booMenuAlterar = booMenuAlterar;
   }
 
-  protected void setBooMenuApagar(boolean booMenuApagar) {
-
+  protected void setBooMenuApagar(boolean booMenuApagar)
+  {
     _booMenuApagar = booMenuApagar;
   }
 
-  public void setClnChavePrimaria(Coluna clnChavePrimaria) {
-
+  public void setClnChavePrimaria(Coluna clnChavePrimaria)
+  {
     _clnChavePrimaria = clnChavePrimaria;
   }
 
-  public void setClnNome(Coluna clnNome) {
-
+  public void setClnNome(Coluna clnNome)
+  {
     _clnNome = clnNome;
   }
 
-  public void setClnOrdem(Coluna clnOrdem) {
-
+  public void setClnOrdem(Coluna clnOrdem)
+  {
     _clnOrdem = clnOrdem;
   }
 
-  protected void setClsDominio(Class<T> clsDominio) {
-
+  protected void setClsDominio(Class<T> clsDominio)
+  {
     _clsDominio = clsDominio;
   }
 
-  void setLstClnCadastro(List<Coluna> lstClnCadastro) {
-
+  void setLstClnCadastro(List<Coluna> lstClnCadastro)
+  {
     _lstClnCadastro = lstClnCadastro;
   }
 
-  void setLstClnConsulta(List<Coluna> lstClnConsulta) {
-
+  void setLstClnConsulta(List<Coluna> lstClnConsulta)
+  {
     _lstClnConsulta = lstClnConsulta;
   }
 
-  public void setObjDb(DataBase objDb) {
-
+  public void setObjDb(DataBase objDb)
+  {
     _objDb = objDb;
   }
 
   @Override
-  public void setStrNome(final String strNome) {
-
+  public void setStrNome(final String strNome)
+  {
     super.setStrNome(strNome);
-
-    try {
-
-      if (Utils.getBooStrVazia(strNome)) {
-
+    try
+    {
+      if (Utils.getBooStrVazia(strNome))
+      {
         return;
       }
-
       this.setStrNomeExibicao(strNome.replace("tbl_", ""));
     }
-    catch (Exception ex) {
-
+    catch (Exception ex)
+    {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally {
+    finally
+    {
     }
   }
 
-  public void setStrPesquisa(String strPesquisa) {
-
+  public void setStrPesquisa(String strPesquisa)
+  {
     _strPesquisa = strPesquisa;
   }
 }
