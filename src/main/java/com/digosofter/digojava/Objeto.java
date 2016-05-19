@@ -19,7 +19,7 @@ public abstract class Objeto
 
   private transient int _intObjetoId;
   private transient String _strDescricao;
-  private transient String _strNome;
+  private String _strNome;
   private transient String _strNomeExibicao;
   private transient String _strNomeSimplificado;
 

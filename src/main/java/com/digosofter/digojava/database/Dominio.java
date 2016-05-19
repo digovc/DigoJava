@@ -55,7 +55,9 @@ public abstract class Dominio extends Objeto
       {
         return;
       }
+      
       this.carregarDados(rst, cls.getSuperclass(), lstIntClnIndexCarregada);
+      
       for (Field objField : cls.getDeclaredFields())
       {
         this.carregarDados(rst, objField, lstIntClnIndexCarregada);
