@@ -1,22 +1,20 @@
 /**/
 package com.digosofter.digojava;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.digosofter.digojava.MsgUsuario.EnmLingua;
 import com.digosofter.digojava.database.Tabela;
 import com.digosofter.digojava.erro.Erro;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Principal classe da aplicação. Esta classe deve ser implementada/estendida
- * pela classe especializada da sua aplicação. Ela controla todo o ciclo de vida
- * da aplicação como um todo deste que o usuário a inicia, até a sua conclusão.
- * Esta classe não pode ser instanciada, pois precisa necessariamente ser
- * implementada/estendida por outra classe que receberá as especificações da
- * aplicação que está sendo construída.
+ * Principal classe da aplicação. Esta classe deve ser implementada/estendida pela classe especializada da sua
+ * aplicação. Ela controla todo o ciclo de vida da aplicação como um todo deste que o usuário a inicia, até a sua
+ * conclusão. Esta classe não pode ser instanciada, pois precisa necessariamente ser implementada/estendida por outra
+ * classe que receberá as especificações da aplicação que está sendo construída.
  *
  * @author r-vieira
  */
@@ -26,9 +24,8 @@ public abstract class App extends Objeto
   private static App i;
 
   /**
-   * @return Retorna a única instância desta classe durante o ciclo de vida da
-   *         aplicação. Esta instância é carregada automaticamente quando a
-   *         classe que estende esta é construída.
+   * @return Retorna a única instância desta classe durante o ciclo de vida da aplicação. Esta instância é carregada
+   * automaticamente quando a classe que estende esta é construída.
    */
   public static App getI()
   {
@@ -47,10 +44,8 @@ public abstract class App extends Objeto
   private String _strVersao;
 
   /**
-   * O construtor não é público, pois esta classe não pode ser construída
-   * diretamente. Ela necessariamente precisa ser implementada/estendida por
-   * outra classe que conterá as especificações da aplicação que está sendo
-   * desenvolvida.
+   * O construtor não é público, pois esta classe não pode ser construída diretamente. Ela necessariamente precisa ser
+   * implementada/estendida por outra classe que conterá as especificações da aplicação que está sendo desenvolvida.
    */
   protected App()
   {
@@ -69,13 +64,10 @@ public abstract class App extends Objeto
   }
 
   /**
-   * Serve para adicionar novas instâncias das tabelas que a aplicação precisa
-   * para funcionar.<br/>
-   * As tabelas adicionadas por este método podem ser acessadas posteriormente
-   * através do método {@link #getLstTbl()}.
+   * Serve para adicionar novas instâncias das tabelas que a aplicação precisa para funcionar.<br/> As tabelas
+   * adicionadas por este método podem ser acessadas posteriormente através do método {@link #getLstTbl()}.
    *
-   * @param tbl
-   *          Tabela que faz parte da aplicação e será adicionada.
+   * @param tbl Tabela que faz parte da aplicação e será adicionada.
    */
   public void addTbl(Tabela<?> tbl)
   {
@@ -85,6 +77,7 @@ public abstract class App extends Objeto
       {
         return;
       }
+
       if (this.getLstTbl().contains(tbl))
       {
         return;
@@ -101,8 +94,7 @@ public abstract class App extends Objeto
   }
 
   /**
-   * @return Retorna atributo que indica se a aplicação está em modo de "debug"
-   *         ou não.
+   * @return Retorna atributo que indica se a aplicação está em modo de "debug" ou não.
    */
   public boolean getBooDebug()
   {
@@ -161,14 +153,12 @@ public abstract class App extends Objeto
   }
 
   /**
-   * Esta lista tem por objetivo manter centralizada todos os textos que serão
-   * mostrados para o usuário no decorrer do uso da aplicação. A classe
-   * {@link MsgUsuario} dá a oportunidade de se trabalhar com aplicações em
-   * diversas idiomas. Este método precisa ser sobrescrito para ser inicializar
-   * e retornar as mensagens da aplicação.
+   * Esta lista tem por objetivo manter centralizada todos os textos que serão mostrados para o usuário no decorrer do
+   * uso da aplicação. A classe {@link MsgUsuario} dá a oportunidade de se trabalhar com aplicações em diversas idiomas.
+   * Este método precisa ser sobrescrito para ser inicializar e retornar as mensagens da aplicação.
    *
-   * @return Retorna lista de objetos do tipo {@link MsgUsuario}, que mantém
-   *         todos os textos que serão apresentados para o usuário num só local.
+   * @return Retorna lista de objetos do tipo {@link MsgUsuario}, que mantém todos os textos que serão apresentados para
+   * o usuário num só local.
    */
   public List<MsgUsuario> getLstMsgUsr()
   {
@@ -191,9 +181,8 @@ public abstract class App extends Objeto
   }
 
   /**
-   * Esta lista tem o mesmo propósito da outra acessada pelo
-   * {@link #getLstMsgUsr()}, com exceção de que esta guarda as mensagens
-   * internas do framework DigoJava.
+   * Esta lista tem o mesmo propósito da outra acessada pelo {@link #getLstMsgUsr()}, com exceção de que esta guarda as
+   * mensagens internas do framework DigoJava.
    *
    * @return Lista de mensagens que podem ser lançadas ao usuário.
    */
@@ -218,10 +207,9 @@ public abstract class App extends Objeto
   }
 
   /**
-   * @return Retorna a lista de instâncias das tabelas que a aplicação necessita
-   *         para funcionas. Este objetos foram adicionados através do métodos
-   *         {@link #addTbl(Tabela)}. Este processo tem por objetivo manter
-   *         concentradas num mesmo local a instância de todos as tabelas.
+   * @return Retorna a lista de instâncias das tabelas que a aplicação necessita para funcionas. Este objetos foram
+   * adicionados através do métodos {@link #addTbl(Tabela)}. Este processo tem por objetivo manter concentradas num
+   * mesmo local a instância de todos as tabelas.
    */
   public List<Tabela<?>> getLstTbl()
   {
@@ -245,10 +233,8 @@ public abstract class App extends Objeto
   }
 
   /**
-   * @return Retorna uma instância única de um objeto do tipo "Gson", contido na
-   *         biblioteca do Google para tratamento de JSON. É através deste
-   *         objeto é possível transformar os mais variados objetos em JSON e
-   *         vice-versa.
+   * @return Retorna uma instância única de um objeto do tipo "Gson", contido na biblioteca do Google para tratamento de
+   * JSON. É através deste objeto é possível transformar os mais variados objetos em JSON e vice-versa.
    */
   public Gson getObjGson()
   {
@@ -274,13 +260,10 @@ public abstract class App extends Objeto
   }
 
   /**
-   * @param intId
-   *          Código que indica a mensagem que se espera como retorno.
-   * @return Retorna a primeira mensagem que recebeu o código representado no
-   *         parâmetro "intId". Caso não haja um objeto do tipo
-   *         {@link MsgUsuario} na lista {@link #getLstMsgUsr()} que contenha
-   *         este código, retorna "null". O texto que será estará no idioma
-   *         <i>default</i>, ou seja <b>português do Brasil</b>.
+   * @param intId Código que indica a mensagem que se espera como retorno.
+   * @return Retorna a primeira mensagem que recebeu o código representado no parâmetro "intId". Caso não haja um objeto
+   * do tipo {@link MsgUsuario} na lista {@link #getLstMsgUsr()} que contenha este código, retorna "null". O texto que
+   * será estará no idioma <i>default</i>, ou seja <b>português do Brasil</b>.
    */
   public String getStrMsgUsr(int intId)
   {
@@ -389,11 +372,9 @@ public abstract class App extends Objeto
   }
 
   /**
-   * Este método tem a responsabilidade de inicializar a lista de tabelas da
-   * aplicação.
+   * Este método tem a responsabilidade de inicializar a lista de tabelas da aplicação.
    *
-   * @param lstTbl
-   *          Lista de tabela da aplicação.
+   * @param lstTbl Lista de tabela da aplicação.
    */
   protected void inicializarLstTbl(final List<Tabela<?>> lstTbl)
   {

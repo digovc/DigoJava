@@ -4,19 +4,7 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class Objeto
 {
-
   private static int _intObjetoIdStatic;
-
-  private static int getIntObjetoIdStatic()
-  {
-    return _intObjetoIdStatic;
-  }
-
-  private static void setIntObjetoIdStatic(int intObjetoIdStatic)
-  {
-    _intObjetoIdStatic = intObjetoIdStatic;
-  }
-
   private transient int _intObjetoId;
   private transient String _strDescricao;
   private String _strNome;
@@ -24,8 +12,7 @@ public abstract class Objeto
   private transient String _strNomeSimplificado;
 
   /**
-   * Retorna um número único para cada uma das intâncias dos objetos que
-   * decendem desta classe. O primeiro valor é 1.
+   * Retorna um número único para cada uma das intâncias dos objetos que decendem desta classe. O primeiro valor é 1.
    *
    * @return Número único que representa a instância deste objeto.
    */
@@ -48,6 +35,11 @@ public abstract class Objeto
     {
     }
     return _intObjetoId;
+  }
+
+  private static int getIntObjetoIdStatic()
+  {
+    return _intObjetoIdStatic;
   }
 
   public String getStrDescricao()
@@ -98,6 +90,11 @@ public abstract class Objeto
     {
     }
     return _strNomeSimplificado;
+  }
+
+  private static void setIntObjetoIdStatic(int intObjetoIdStatic)
+  {
+    _intObjetoIdStatic = intObjetoIdStatic;
   }
 
   public void setStrDescricao(String strDescricao)
