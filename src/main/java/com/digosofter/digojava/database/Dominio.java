@@ -12,7 +12,6 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class Dominio extends Objeto
 {
-
   private boolean _booAtivo;
   private GregorianCalendar _dttAlteracao;
   private GregorianCalendar _dttCadastro;
