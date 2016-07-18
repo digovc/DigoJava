@@ -1,5 +1,7 @@
 package com.digosofter.digojava;
 
+import com.digosofter.digojava.erro.Erro;
+
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -13,8 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
-
-import com.digosofter.digojava.erro.Erro;
 
 public abstract class Utils
 {
@@ -160,64 +160,6 @@ public abstract class Utils
     {
     }
     return 0;
-  }
-
-  private static String enmDataFormatoToString(EnmDataFormato enmDataFormato)
-  {
-    String strResultado = null;
-    try
-    {
-      switch (enmDataFormato)
-      {
-        case DD:
-          strResultado = "dd";
-          break;
-        case DD_MM:
-          strResultado = "dd/MM";
-          break;
-        case DD_MM_YYYY_HH_MM:
-          strResultado = "dd/MM/yyyy HH:mm";
-          break;
-        case DD_MM_YYYY_HH_MM_SS:
-          strResultado = "dd/MM/yyyy HH:mm:ss";
-          break;
-        case HH_MM:
-          strResultado = "HH:mm";
-          break;
-        case HH_MM_DD_MM_YY:
-          strResultado = "HH:mm dd/MM/yy";
-          break;
-        case HH_MM_DD_MM_YYYY:
-          strResultado = "HH:mm dd/MM/yyyy";
-          break;
-        case HH_MM_SS_DD_MM_YYYY:
-          strResultado = "HH:mm:ss dd/MM/yyyy";
-          break;
-        case YYYY:
-          strResultado = "yyyy";
-          break;
-        case YYYY_MM_DD:
-          strResultado = "yyyy-MM-dd";
-          break;
-        case YYYY_MM_DD_HH_MM_SS:
-          strResultado = "yyyy-MM-dd HH:mm:ss";
-          break;
-        case MM:
-          strResultado = "MM";
-          break;
-        default:
-          strResultado = "dd/MM/yyyy";
-          break;
-      }
-    }
-    catch (Exception ex)
-    {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
-    }
-    return strResultado;
   }
 
   /**
@@ -433,76 +375,6 @@ public abstract class Utils
     catch (Exception ex)
     {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
-    }
-    return null;
-  }
-
-  private static String getStrDttFormato(String strDtt)
-  {
-    try
-    {
-      if (Utils.getBooStrVazia(strDtt))
-      {
-        return null;
-      }
-      strDtt = strDtt.toLowerCase();
-      strDtt = strDtt.replace("/", "-");
-      strDtt = strDtt.replace("t", " ");
-      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d.\\d\\d\\d"))
-      {
-        return "dd-MM-yyyy HH:mm:ss.SSS";
-      }
-      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d"))
-      {
-        return "dd-MM-yyyy HH:mm:ss";
-      }
-      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d"))
-      {
-        return "dd-MM-yyyy HH:mm";
-      }
-      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d"))
-      {
-        return "dd-MM-yyyy";
-      }
-      if (strDtt.matches("\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d"))
-      {
-        return "HH:mm:ss.SSS dd-MM-yyyy";
-      }
-      if (strDtt.matches("\\d\\d:\\d\\d:\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d"))
-      {
-        return "HH:mm:ss dd-MM-yyyy";
-      }
-      if (strDtt.matches("\\d\\d:\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d"))
-      {
-        return "HH:mm dd-MM-yyyy";
-      }
-      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d"))
-      {
-        return "dd-MM-yyyy";
-      }
-      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d.\\d\\d\\d"))
-      {
-        return "yyyy-MM-dd HH:mm:ss.SSS";
-      }
-      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"))
-      {
-        return "yyyy-MM-dd HH:mm:ss";
-      }
-      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d"))
-      {
-        return "yyyy-MM-dd HH:mm";
-      }
-      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d"))
-      {
-        return "yyyy-MM-dd";
-      }
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
     }
     finally
     {
@@ -738,11 +610,6 @@ public abstract class Utils
     return "0,00 %";
   }
 
-  private static int parseCharToInt(char c)
-  {
-    return Integer.parseInt(Character.toString(c));
-  }
-
   /**
    * "Pinga" um host e retorna true caso haja resposta deste.
    */
@@ -750,18 +617,25 @@ public abstract class Utils
   {
     boolean booResultado;
     HttpURLConnection objHttpURLConnection;
+
     try
     {
       if (Utils.getBooStrVazia(url))
       {
         return false;
       }
+
       if (!url.startsWith("http://"))
       {
         url = "http://".concat(url);
       }
+
       objHttpURLConnection = (HttpURLConnection) new URL(url).openConnection();
+
+      objHttpURLConnection.setConnectTimeout(5000);
+
       objHttpURLConnection.setRequestMethod("HEAD");
+
       return (objHttpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK);
     }
     catch (Exception ex)
@@ -831,16 +705,13 @@ public abstract class Utils
         return Utils.STR_VAZIA;
       }
       strComplexa = strComplexa.toLowerCase(Utils.LOCAL_BRASIL);
-      arrChrAcentos = new String[]
-      { "ç", "á", "é", "í", "ó", "ú", "ý", "à", "è", "ì", "ò", "ù", "ã", "õ", "ñ", "ä", "ë", "ï", "ö", "ü", "ÿ", "â", "ê", "î", "ô", "û" };
-      arrChrSemAcento = new String[]
-      { "c", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u", "a", "o", "n", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u" };
+      arrChrAcentos = new String[]{"ç", "á", "é", "í", "ó", "ú", "ý", "à", "è", "ì", "ò", "ù", "ã", "õ", "ñ", "ä", "ë", "ï", "ö", "ü", "ÿ", "â", "ê", "î", "ô", "û"};
+      arrChrSemAcento = new String[]{"c", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u", "a", "o", "n", "a", "e", "i", "o", "u", "y", "a", "e", "i", "o", "u"};
       for (int intTemp = 0; intTemp < arrChrAcentos.length; intTemp++)
       {
         strComplexa = strComplexa.replace(arrChrAcentos[intTemp], arrChrSemAcento[intTemp]);
       }
-      arrChrCaracteresEspeciais = new String[]
-      { "/", "\\.", ",", "-", ":", "\\(", "\\)", "ª", "\\|", "\\\\", "°", "^\\s+", "\\s+$", "\\s+", ".", "(", ")" };
+      arrChrCaracteresEspeciais = new String[]{"/", "\\.", ",", "-", ":", "\\(", "\\)", "ª", "\\|", "\\\\", "°", "^\\s+", "\\s+$", "\\s+", ".", "(", ")"};
       for (String arrChrCaracteresEspeciai : arrChrCaracteresEspeciais)
       {
         strComplexa = strComplexa.replace(arrChrCaracteresEspeciai, "");
@@ -1026,5 +897,138 @@ public abstract class Utils
     {
     }
     return false;
+  }
+
+  private static String enmDataFormatoToString(EnmDataFormato enmDataFormato)
+  {
+    String strResultado = null;
+    try
+    {
+      switch (enmDataFormato)
+      {
+        case DD:
+          strResultado = "dd";
+          break;
+        case DD_MM:
+          strResultado = "dd/MM";
+          break;
+        case DD_MM_YYYY_HH_MM:
+          strResultado = "dd/MM/yyyy HH:mm";
+          break;
+        case DD_MM_YYYY_HH_MM_SS:
+          strResultado = "dd/MM/yyyy HH:mm:ss";
+          break;
+        case HH_MM:
+          strResultado = "HH:mm";
+          break;
+        case HH_MM_DD_MM_YY:
+          strResultado = "HH:mm dd/MM/yy";
+          break;
+        case HH_MM_DD_MM_YYYY:
+          strResultado = "HH:mm dd/MM/yyyy";
+          break;
+        case HH_MM_SS_DD_MM_YYYY:
+          strResultado = "HH:mm:ss dd/MM/yyyy";
+          break;
+        case YYYY:
+          strResultado = "yyyy";
+          break;
+        case YYYY_MM_DD:
+          strResultado = "yyyy-MM-dd";
+          break;
+        case YYYY_MM_DD_HH_MM_SS:
+          strResultado = "yyyy-MM-dd HH:mm:ss";
+          break;
+        case MM:
+          strResultado = "MM";
+          break;
+        default:
+          strResultado = "dd/MM/yyyy";
+          break;
+      }
+    }
+    catch (Exception ex)
+    {
+      new Erro(App.getI().getStrTextoPadrao(0), ex);
+    }
+    finally
+    {
+    }
+    return strResultado;
+  }
+
+  private static String getStrDttFormato(String strDtt)
+  {
+    try
+    {
+      if (Utils.getBooStrVazia(strDtt))
+      {
+        return null;
+      }
+      strDtt = strDtt.toLowerCase();
+      strDtt = strDtt.replace("/", "-");
+      strDtt = strDtt.replace("t", " ");
+      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d.\\d\\d\\d"))
+      {
+        return "dd-MM-yyyy HH:mm:ss.SSS";
+      }
+      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d"))
+      {
+        return "dd-MM-yyyy HH:mm:ss";
+      }
+      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d"))
+      {
+        return "dd-MM-yyyy HH:mm";
+      }
+      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d"))
+      {
+        return "dd-MM-yyyy";
+      }
+      if (strDtt.matches("\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d"))
+      {
+        return "HH:mm:ss.SSS dd-MM-yyyy";
+      }
+      if (strDtt.matches("\\d\\d:\\d\\d:\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d"))
+      {
+        return "HH:mm:ss dd-MM-yyyy";
+      }
+      if (strDtt.matches("\\d\\d:\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d"))
+      {
+        return "HH:mm dd-MM-yyyy";
+      }
+      if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d"))
+      {
+        return "dd-MM-yyyy";
+      }
+      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d.\\d\\d\\d"))
+      {
+        return "yyyy-MM-dd HH:mm:ss.SSS";
+      }
+      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"))
+      {
+        return "yyyy-MM-dd HH:mm:ss";
+      }
+      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d"))
+      {
+        return "yyyy-MM-dd HH:mm";
+      }
+      if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d"))
+      {
+        return "yyyy-MM-dd";
+      }
+    }
+    catch (Exception ex)
+    {
+      new Erro("Erro inesperado.\n", ex);
+    }
+    finally
+    {
+    }
+    return null;
+  }
+
+  private static int parseCharToInt(char c)
+  {
+    return Integer.parseInt(Character.toString(c));
   }
 }

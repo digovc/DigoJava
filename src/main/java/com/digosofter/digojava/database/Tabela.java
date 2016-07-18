@@ -1,14 +1,14 @@
 package com.digosofter.digojava.database;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import com.digosofter.digojava.App;
 import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
 import com.digosofter.digojava.erro.Erro;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public abstract class Tabela<T extends Dominio> extends Objeto
 {
@@ -40,7 +40,8 @@ public abstract class Tabela<T extends Dominio> extends Objeto
       this.setClsDominio(clsDominio);
       this.setStrNome(strNome);
       this.addAppLstTbl();
-      this.inicializarLstCln(-1);
+
+      this.iniciar();
     }
     catch (Exception ex)
     {
@@ -200,6 +201,10 @@ public abstract class Tabela<T extends Dominio> extends Objeto
     }
   }
 
+  protected void finalizar()
+  {
+  }
+
   public boolean getBooMenuAdicionar()
   {
     return _booMenuAdicionar;
@@ -216,13 +221,10 @@ public abstract class Tabela<T extends Dominio> extends Objeto
   }
 
   /**
-   * Pesquisa na lista de colunas desta tabela e retorna a coluna que tem o nome
-   * passado como parâmetro.
+   * Pesquisa na lista de colunas desta tabela e retorna a coluna que tem o nome passado como parâmetro.
    *
-   * @param strClnNomeSql
-   *          Nome da coluna que se deseja encontrar.
-   * @return Retorna a coluna que possui o mesmo nome que foi passado como
-   *         parâmetro ou null caso não encontre.
+   * @param strClnNomeSql Nome da coluna que se deseja encontrar.
+   * @return Retorna a coluna que possui o mesmo nome que foi passado como parâmetro ou null caso não encontre.
    */
   public Coluna getCln(final String strClnNomeSql)
   {
@@ -629,9 +631,22 @@ public abstract class Tabela<T extends Dominio> extends Objeto
     return _strPesquisa;
   }
 
+  protected void inicializar()
+  {
+    this.inicializarLstCln(-1);
+  }
+
   protected int inicializarLstCln(int intOrdem)
   {
     return intOrdem;
+  }
+
+  private void iniciar()
+  {
+    this.inicializar();
+    this.setEventos();
+    this.finalizar();
+
   }
 
   /**
@@ -715,6 +730,10 @@ public abstract class Tabela<T extends Dominio> extends Objeto
   protected void setClsDominio(Class<T> clsDominio)
   {
     _clsDominio = clsDominio;
+  }
+
+  protected void setEventos()
+  {
   }
 
   void setLstClnCadastro(List<Coluna> lstClnCadastro)

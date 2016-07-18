@@ -729,6 +729,7 @@ public class Coluna extends Objeto
       {
         return null;
       }
+
       switch (this.getEnmTipo())
       {
         case BOOLEAN:
@@ -758,6 +759,7 @@ public class Coluna extends Objeto
     finally
     {
     }
+
     return _strValorSql;
   }
 
@@ -1115,10 +1117,12 @@ public class Coluna extends Objeto
     try
     {
       _booVisivelConsulta = booVisivelConsulta;
+
       if (!_booVisivelConsulta)
       {
         return;
       }
+
       this.getTbl().setLstClnConsulta(null);
     }
     catch (Exception ex)
