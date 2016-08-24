@@ -1,12 +1,11 @@
 package com.digosofter.digojava.erro;
 
-import java.io.Serializable;
-
 import com.digosofter.digojava.Utils;
+
+import java.io.Serializable;
 
 public class Erro extends Exception implements Serializable
 {
-
   private static final long serialVersionUID = 1L;
   private String _strMsg;
   private String _strMsgDetalhe;
@@ -27,51 +26,31 @@ public class Erro extends Exception implements Serializable
         ex.printStackTrace();
       }
     }
-    catch (Exception e)
+    catch (Exception exInterno)
     {
-    }
-    finally
-    {
+      ex.printStackTrace();
     }
   }
 
   public String getStrMsg()
   {
-    try
+    if (!Utils.getBooStrVazia(_strMsg))
     {
-      if (!Utils.getBooStrVazia(_strMsg))
-      {
-        return _strMsg;
-      }
-      _strMsg = "Erro inesperado.";
+      return _strMsg;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _strMsg = "Erro inesperado.";
+
     return _strMsg;
   }
 
   public String getStrMsgDetalhe()
   {
-    try
+    if (!Utils.getBooStrVazia(_strMsgDetalhe))
     {
-      if (!Utils.getBooStrVazia(_strMsgDetalhe))
-      {
-        return _strMsgDetalhe;
-      }
-      _strMsgDetalhe = "Não há detalhes do erro.";
+      return _strMsgDetalhe;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _strMsgDetalhe = "Não há detalhes do erro.";
+
     return _strMsgDetalhe;
   }
 
@@ -82,18 +61,8 @@ public class Erro extends Exception implements Serializable
 
   private void imprimirConsole()
   {
-    try
-    {
-      System.out.println(this.getStrMsg());
-      System.out.println(this.getStrMsgDetalhe());
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    System.out.println(this.getStrMsg());
+    System.out.println(this.getStrMsgDetalhe());
   }
 
   private void setStrMsg(String strMsg)

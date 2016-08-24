@@ -1,14 +1,13 @@
 package com.digosofter.digojava.database;
 
-import java.sql.ResultSet;
-import java.util.GregorianCalendar;
-
 import com.digosofter.digojava.Utils;
 import com.digosofter.digojava.erro.Erro;
 
+import java.sql.ResultSet;
+import java.util.GregorianCalendar;
+
 public abstract class UtilsDataBase
 {
-
   public static boolean getBoo(ResultSet rst, String strClnNome)
   {
     String strValor;
@@ -47,9 +46,7 @@ public abstract class UtilsDataBase
     {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally
-    {
-    }
+
     return false;
   }
 
@@ -75,9 +72,7 @@ public abstract class UtilsDataBase
     {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally
-    {
-    }
+
     return 0;
   }
 
@@ -110,9 +105,7 @@ public abstract class UtilsDataBase
     {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally
-    {
-    }
+
     return null;
   }
 
@@ -138,9 +131,7 @@ public abstract class UtilsDataBase
     {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally
-    {
-    }
+
     return 0;
   }
 
@@ -166,9 +157,7 @@ public abstract class UtilsDataBase
     {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally
-    {
-    }
+
     return null;
   }
 }

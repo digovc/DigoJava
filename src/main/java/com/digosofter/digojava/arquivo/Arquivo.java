@@ -1,21 +1,20 @@
 package com.digosofter.digojava.arquivo;
 
+import com.digosofter.digojava.App;
+import com.digosofter.digojava.Objeto;
+import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.erro.Erro;
+
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
-import org.apache.commons.io.IOUtils;
-
-import com.digosofter.digojava.App;
-import com.digosofter.digojava.Objeto;
-import com.digosofter.digojava.Utils;
-import com.digosofter.digojava.erro.Erro;
-
 public abstract class Arquivo extends Objeto
 {
-
   private boolean _booExiste;
   private String _dir;
   private String _dirCompleto;
@@ -53,9 +52,6 @@ public abstract class Arquivo extends Objeto
     {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally
-    {
-    }
   }
 
   public void criarArquivo()
@@ -75,9 +71,6 @@ public abstract class Arquivo extends Objeto
     {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally
-    {
-    }
   }
 
   private void criarDiretorio()
@@ -88,45 +81,27 @@ public abstract class Arquivo extends Objeto
   private void criarDiretorio(String dir)
   {
     File fil;
-    try
+
+    if (Utils.getBooStrVazia(dir))
     {
-      if (Utils.getBooStrVazia(dir))
-      {
-        return;
-      }
-      fil = new File(dir);
-      if (fil.exists())
-      {
-        return;
-      }
-      fil.mkdirs();
+      return;
     }
-    catch (Exception ex)
+    fil = new File(dir);
+    if (fil.exists())
     {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
+      return;
     }
-    finally
-    {
-    }
+    fil.mkdirs();
   }
 
   protected boolean getBooExiste()
   {
-    try
+    if (Utils.getBooStrVazia(this.getDirCompleto()))
     {
-      if (Utils.getBooStrVazia(this.getDirCompleto()))
-      {
-        return false;
-      }
-      _booExiste = new File(this.getDirCompleto()).exists();
+      return false;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _booExiste = new File(this.getDirCompleto()).exists();
+
     return _booExiste;
   }
 
@@ -137,31 +112,22 @@ public abstract class Arquivo extends Objeto
 
   public String getDirCompleto()
   {
-    try
+    if (!Utils.getBooStrVazia(_dirCompleto))
     {
-      if (!Utils.getBooStrVazia(_dirCompleto))
-      {
-        return _dirCompleto;
-      }
-      if (!Utils.getBooStrVazia(this.getDir()))
-      {
-        _dirCompleto = "_dir/_str_nome";
-      }
-      else
-      {
-        _dirCompleto = "../_str_nome";
-      }
-      _dirCompleto = _dirCompleto.replace("_dir", this.getDir() != null ? this.getDir() : Utils.STR_VAZIA);
-      _dirCompleto = _dirCompleto.replace("_str_nome", this.getStrNome());
-      _dirCompleto = _dirCompleto.replace("//", "/");
+      return _dirCompleto;
     }
-    catch (Exception ex)
+    if (!Utils.getBooStrVazia(this.getDir()))
     {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
+      _dirCompleto = "_dir/_str_nome";
     }
-    finally
+    else
     {
+      _dirCompleto = "../_str_nome";
     }
+    _dirCompleto = _dirCompleto.replace("_dir", this.getDir() != null ? this.getDir() : Utils.STR_VAZIA);
+    _dirCompleto = _dirCompleto.replace("_str_nome", this.getStrNome());
+    _dirCompleto = _dirCompleto.replace("//", "/");
+
     return _dirCompleto;
   }
 
@@ -189,9 +155,7 @@ public abstract class Arquivo extends Objeto
     {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally
-    {
-    }
+
     return _strConteudo;
   }
 
@@ -218,9 +182,6 @@ public abstract class Arquivo extends Objeto
     {
       new Erro(App.getI().getStrTextoPadrao(0), ex);
     }
-    finally
-    {
-    }
   }
 
   public void setDir(String dir)
@@ -231,24 +192,14 @@ public abstract class Arquivo extends Objeto
   public void setDirCompleto(String dirCompleto)
   {
     File fil;
-    try
+    _dirCompleto = dirCompleto;
+    if (Utils.getBooStrVazia(_dirCompleto))
     {
-      _dirCompleto = dirCompleto;
-      if (Utils.getBooStrVazia(_dirCompleto))
-      {
-        return;
-      }
-      fil = new File(_dirCompleto);
-      this.setStrNome(fil.getName());
-      this.setDir(fil.getPath().replace(this.getStrNome(), Utils.STR_VAZIA));
+      return;
     }
-    catch (Exception ex)
-    {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
-    }
+    fil = new File(_dirCompleto);
+    this.setStrNome(fil.getName());
+    this.setDir(fil.getPath().replace(this.getStrNome(), Utils.STR_VAZIA));
   }
 
   public void setStrConteudo(String strConteudo)

@@ -2,7 +2,6 @@ package com.digosofter.digojava.http;
 
 public class HttpServer extends NanoHTTPD
 {
-
   public HttpServer()
   {
     super(8080);

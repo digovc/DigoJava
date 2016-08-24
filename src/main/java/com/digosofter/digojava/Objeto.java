@@ -1,10 +1,9 @@
 package com.digosofter.digojava;
 
-import com.digosofter.digojava.erro.Erro;
-
 public abstract class Objeto
 {
   private static int _intObjetoIdStatic;
+
   private transient int _intObjetoId;
   private transient String _strDescricao;
   private String _strNome;
@@ -18,22 +17,14 @@ public abstract class Objeto
    */
   public int getIntObjetoId()
   {
-    try
+    if (_intObjetoId > 0)
     {
-      if (_intObjetoId > 0)
-      {
-        return _intObjetoId;
-      }
-      Objeto.setIntObjetoIdStatic(Objeto.getIntObjetoIdStatic() + 1);
-      _intObjetoId = Objeto.getIntObjetoIdStatic();
+      return _intObjetoId;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    Objeto.setIntObjetoIdStatic(Objeto.getIntObjetoIdStatic() + 1);
+
+    _intObjetoId = Objeto.getIntObjetoIdStatic();
+
     return _intObjetoId;
   }
 
@@ -54,41 +45,23 @@ public abstract class Objeto
 
   public String getStrNomeExibicao()
   {
-    try
+    if (!Utils.getBooStrVazia(_strNomeExibicao))
     {
-      if (!Utils.getBooStrVazia(_strNomeExibicao))
-      {
-        return _strNomeExibicao;
-      }
-      _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
+      return _strNomeExibicao;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
+
     return _strNomeExibicao;
   }
 
   public String getStrNomeSimplificado()
   {
-    try
+    if (!Utils.getBooStrVazia(_strNomeSimplificado))
     {
-      if (!Utils.getBooStrVazia(_strNomeSimplificado))
-      {
-        return _strNomeSimplificado;
-      }
-      _strNomeSimplificado = Utils.simplificar(this.getStrNome());
+      return _strNomeSimplificado;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _strNomeSimplificado = Utils.simplificar(this.getStrNome());
+
     return _strNomeSimplificado;
   }
 
@@ -104,38 +77,19 @@ public abstract class Objeto
 
   public void setStrNome(String strNome)
   {
-    try
-    {
-      _strNome = strNome;
-      this.setStrNomeSimplificado(null);
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _strNome = strNome;
+    this.setStrNomeSimplificado(null);
   }
 
   public void setStrNomeExibicao(String strNomeExibicao)
   {
-    try
+    _strNomeExibicao = strNomeExibicao;
+    if (Utils.getBooStrVazia(_strNomeExibicao))
     {
-      _strNomeExibicao = strNomeExibicao;
-      if (Utils.getBooStrVazia(_strNomeExibicao))
-      {
-        return;
-      }
-      _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNomeExibicao);
+      return;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+
+    _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNomeExibicao);
   }
 
   private void setStrNomeSimplificado(String strNomeSimplificado)

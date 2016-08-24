@@ -3,7 +3,6 @@ package com.digosofter.digojava;
 
 import com.digosofter.digojava.MsgUsuario.EnmLingua;
 import com.digosofter.digojava.database.Tabela;
-import com.digosofter.digojava.erro.Erro;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -11,10 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Principal classe da aplicação. Esta classe deve ser implementada/estendida pela classe especializada da sua
- * aplicação. Ela controla todo o ciclo de vida da aplicação como um todo deste que o usuário a inicia, até a sua
- * conclusão. Esta classe não pode ser instanciada, pois precisa necessariamente ser implementada/estendida por outra
- * classe que receberá as especificações da aplicação que está sendo construída.
+ * Principal classe da aplicação. Esta classe deve ser implementada/estendida pela classe especializada da sua aplicação. Ela controla todo o ciclo de
+ * vida da aplicação como um todo deste que o usuário a inicia, até a sua conclusão. Esta classe não pode ser instanciada, pois precisa
+ * necessariamente ser implementada/estendida por outra classe que receberá as especificações da aplicação que está sendo construída.
  *
  * @author r-vieira
  */
@@ -24,8 +22,8 @@ public abstract class App extends Objeto
   private static App i;
 
   /**
-   * @return Retorna a única instância desta classe durante o ciclo de vida da aplicação. Esta instância é carregada
-   * automaticamente quando a classe que estende esta é construída.
+   * @return Retorna a única instância desta classe durante o ciclo de vida da aplicação. Esta instância é carregada automaticamente quando a classe
+   * que estende esta é construída.
    */
   public static App getI()
   {
@@ -44,53 +42,33 @@ public abstract class App extends Objeto
   private String _strVersao;
 
   /**
-   * O construtor não é público, pois esta classe não pode ser construída diretamente. Ela necessariamente precisa ser
-   * implementada/estendida por outra classe que conterá as especificações da aplicação que está sendo desenvolvida.
+   * O construtor não é público, pois esta classe não pode ser construída diretamente. Ela necessariamente precisa ser implementada/estendida por
+   * outra classe que conterá as especificações da aplicação que está sendo desenvolvida.
    */
   protected App()
   {
-    try
-    {
-      this.setI(this);
-      this.iniciar();
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    this.setI(this);
+    this.iniciar();
   }
 
   /**
-   * Serve para adicionar novas instâncias das tabelas que a aplicação precisa para funcionar.<br/> As tabelas
-   * adicionadas por este método podem ser acessadas posteriormente através do método {@link #getLstTbl()}.
+   * Serve para adicionar novas instâncias das tabelas que a aplicação precisa para funcionar.<br/> As tabelas adicionadas por este método podem ser
+   * acessadas posteriormente através do método {@link #getLstTbl()}.
    *
    * @param tbl Tabela que faz parte da aplicação e será adicionada.
    */
   public void addTbl(Tabela<?> tbl)
   {
-    try
+    if (tbl == null)
     {
-      if (tbl == null)
-      {
-        return;
-      }
+      return;
+    }
 
-      if (this.getLstTbl().contains(tbl))
-      {
-        return;
-      }
-      this.getLstTbl().add(tbl);
-    }
-    catch (Exception ex)
+    if (this.getLstTbl().contains(tbl))
     {
-      new Erro("Erro inesperado.\n", ex);
+      return;
     }
-    finally
-    {
-    }
+    this.getLstTbl().add(tbl);
   }
 
   /**
@@ -106,17 +84,8 @@ public abstract class App extends Objeto
    */
   public long getIntMilisegLigado()
   {
-    try
-    {
-      _intMilisegLigado = (System.currentTimeMillis() - this.getIntStartTime());
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _intMilisegLigado = (System.currentTimeMillis() - this.getIntStartTime());
+
     return _intMilisegLigado;
   }
 
@@ -125,17 +94,8 @@ public abstract class App extends Objeto
    */
   public long getIntSegLigado()
   {
-    try
-    {
-      _intSegLigado = (this.getIntMilisegLigado() / 1000);
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _intSegLigado = (this.getIntMilisegLigado() / 1000);
+
     return _intSegLigado;
   }
 
@@ -153,117 +113,80 @@ public abstract class App extends Objeto
   }
 
   /**
-   * Esta lista tem por objetivo manter centralizada todos os textos que serão mostrados para o usuário no decorrer do
-   * uso da aplicação. A classe {@link MsgUsuario} dá a oportunidade de se trabalhar com aplicações em diversas idiomas.
-   * Este método precisa ser sobrescrito para ser inicializar e retornar as mensagens da aplicação.
+   * Esta lista tem por objetivo manter centralizada todos os textos que serão mostrados para o usuário no decorrer do uso da aplicação. A classe
+   * {@link MsgUsuario} dá a oportunidade de se trabalhar com aplicações em diversas idiomas. Este método precisa ser sobrescrito para ser inicializar
+   * e retornar as mensagens da aplicação.
    *
-   * @return Retorna lista de objetos do tipo {@link MsgUsuario}, que mantém todos os textos que serão apresentados para
-   * o usuário num só local.
+   * @return Retorna lista de objetos do tipo {@link MsgUsuario}, que mantém todos os textos que serão apresentados para o usuário num só local.
    */
   public List<MsgUsuario> getLstMsgUsr()
   {
-    try
+    if (_lstMsgUsr != null)
     {
-      if (_lstMsgUsr != null)
-      {
-        return _lstMsgUsr;
-      }
-      _lstMsgUsr = new ArrayList<>();
+      return _lstMsgUsr;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _lstMsgUsr = new ArrayList<>();
+
     return _lstMsgUsr;
   }
 
   /**
-   * Esta lista tem o mesmo propósito da outra acessada pelo {@link #getLstMsgUsr()}, com exceção de que esta guarda as
-   * mensagens internas do framework DigoJava.
+   * Esta lista tem o mesmo propósito da outra acessada pelo {@link #getLstMsgUsr()}, com exceção de que esta guarda as mensagens internas do
+   * framework DigoJava.
    *
    * @return Lista de mensagens que podem ser lançadas ao usuário.
    */
   protected List<MsgUsuario> getLstMsgUsrPadrao()
   {
-    try
+    if (_lstMsgUsrPadrao != null)
     {
-      if (_lstMsgUsrPadrao != null)
-      {
-        return _lstMsgUsrPadrao;
-      }
-      _lstMsgUsrPadrao = this.inicializarLstMsgUsrPadrao();
+      return _lstMsgUsrPadrao;
     }
-    catch (Exception ex)
-    {
-      new Erro(this.getStrMsgUsrPadrao(0), ex);
-    }
-    finally
-    {
-    }
+    _lstMsgUsrPadrao = this.inicializarLstMsgUsrPadrao();
+
     return _lstMsgUsrPadrao;
   }
 
   /**
-   * @return Retorna a lista de instâncias das tabelas que a aplicação necessita para funcionas. Este objetos foram
-   * adicionados através do métodos {@link #addTbl(Tabela)}. Este processo tem por objetivo manter concentradas num
-   * mesmo local a instância de todos as tabelas.
+   * @return Retorna a lista de instâncias das tabelas que a aplicação necessita para funcionas. Este objetos foram adicionados através do métodos
+   * {@link #addTbl(Tabela)}. Este processo tem por objetivo manter concentradas num mesmo local a instância de todos as tabelas.
    */
   public List<Tabela<?>> getLstTbl()
   {
-    try
+    if (_lstTbl != null)
     {
-      if (_lstTbl != null)
-      {
-        return _lstTbl;
-      }
-      _lstTbl = new ArrayList<>();
-      this.inicializarLstTbl(_lstTbl);
+      return _lstTbl;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _lstTbl = new ArrayList<>();
+    this.inicializarLstTbl(_lstTbl);
+
     return _lstTbl;
   }
 
   /**
-   * @return Retorna uma instância única de um objeto do tipo "Gson", contido na biblioteca do Google para tratamento de
-   * JSON. É através deste objeto é possível transformar os mais variados objetos em JSON e vice-versa.
+   * @return Retorna uma instância única de um objeto do tipo "Gson", contido na biblioteca do Google para tratamento de JSON. É através deste objeto
+   * é possível transformar os mais variados objetos em JSON e vice-versa.
    */
   public Gson getObjGson()
   {
     GsonBuilder objGsonBuilder;
-    try
+
+    if (_objGson != null)
     {
-      if (_objGson != null)
-      {
-        return _objGson;
-      }
-      objGsonBuilder = new GsonBuilder();
-      objGsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-      _objGson = objGsonBuilder.create();
+      return _objGson;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    objGsonBuilder = new GsonBuilder();
+    objGsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+    _objGson = objGsonBuilder.create();
+
     return _objGson;
   }
 
   /**
    * @param intId Código que indica a mensagem que se espera como retorno.
-   * @return Retorna a primeira mensagem que recebeu o código representado no parâmetro "intId". Caso não haja um objeto
-   * do tipo {@link MsgUsuario} na lista {@link #getLstMsgUsr()} que contenha este código, retorna "null". O texto que
-   * será estará no idioma <i>default</i>, ou seja <b>português do Brasil</b>.
+   * @return Retorna a primeira mensagem que recebeu o código representado no parâmetro "intId". Caso não haja um objeto do tipo {@link MsgUsuario} na
+   * lista {@link #getLstMsgUsr()} que contenha este código, retorna "null". O texto que será estará no idioma <i>default</i>, ou seja <b>português do
+   * Brasil</b>.
    */
   public String getStrMsgUsr(int intId)
   {
@@ -273,32 +196,24 @@ public abstract class App extends Objeto
   public String getStrMsgUsr(int intMensagemId, EnmLingua enmLingua, boolean booMensagemPadrao)
   {
     List<MsgUsuario> lstMsgUsrTemp;
-    try
+
+    if (booMensagemPadrao)
     {
-      if (booMensagemPadrao)
-      {
-        lstMsgUsrTemp = this.getLstMsgUsrPadrao();
-      }
-      else
-      {
-        lstMsgUsrTemp = this.getLstMsgUsr();
-      }
-      for (MsgUsuario msgUsuario : lstMsgUsrTemp)
-      {
-        if (msgUsuario.getIntId() != intMensagemId || msgUsuario.getEnmLingua() != enmLingua)
-        {
-          continue;
-        }
-        return msgUsuario.getStrTexto();
-      }
+      lstMsgUsrTemp = this.getLstMsgUsrPadrao();
     }
-    catch (Exception ex)
+    else
     {
-      new Erro(this.getStrTextoPadrao(103), ex);
+      lstMsgUsrTemp = this.getLstMsgUsr();
     }
-    finally
+    for (MsgUsuario msgUsuario : lstMsgUsrTemp)
     {
+      if (msgUsuario.getIntId() != intMensagemId || msgUsuario.getEnmLingua() != enmLingua)
+      {
+        continue;
+      }
+      return msgUsuario.getStrTexto();
     }
+
     return null;
   }
 
@@ -319,56 +234,27 @@ public abstract class App extends Objeto
 
   public String getStrVersao()
   {
-    try
+    if (!Utils.getBooStrVazia(_strVersao))
     {
-      if (!Utils.getBooStrVazia(_strVersao))
-      {
-        return _strVersao;
-      }
-      _strVersao = "0.0.1 beta";
+      return _strVersao;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _strVersao = "0.0.1 beta";
+
     return _strVersao;
   }
 
   protected void inicializar()
   {
-    try
-    {
-      this.setIntStartTime(System.currentTimeMillis());
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    this.setIntStartTime(System.currentTimeMillis());
   }
 
   private List<MsgUsuario> inicializarLstMsgUsrPadrao()
   {
     List<MsgUsuario> lstMsgUsrResultado;
-    try
-    {
-      lstMsgUsrResultado = new ArrayList<>();
-      lstMsgUsrResultado.add(new MsgUsuario("Erro inesperado.", 0));
-      return lstMsgUsrResultado;
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
-    return null;
+
+    lstMsgUsrResultado = new ArrayList<>();
+    lstMsgUsrResultado.add(new MsgUsuario("Erro inesperado.", 0));
+    return lstMsgUsrResultado;
   }
 
   /**
@@ -382,18 +268,8 @@ public abstract class App extends Objeto
 
   private void iniciar()
   {
-    try
-    {
-      this.inicializar();
-      this.setEventos();
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    this.inicializar();
+    this.setEventos();
   }
 
   public void setBooDebug(boolean booDebug)
@@ -407,21 +283,12 @@ public abstract class App extends Objeto
 
   private void setI(App app)
   {
-    try
+    if (i != null)
     {
-      if (i != null)
-      {
-        return;
-      }
-      i = app;
+      return;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+
+    i = app;
   }
 
   private void setIntStartTime(long intStartTime)

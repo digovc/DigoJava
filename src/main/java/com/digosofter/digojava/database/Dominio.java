@@ -1,14 +1,14 @@
 package com.digosofter.digojava.database;
 
+import com.digosofter.digojava.Objeto;
+import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.erro.Erro;
+
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import com.digosofter.digojava.Objeto;
-import com.digosofter.digojava.Utils;
-import com.digosofter.digojava.erro.Erro;
 
 public abstract class Dominio extends Objeto
 {
@@ -18,12 +18,10 @@ public abstract class Dominio extends Objeto
   private int _intId;
 
   /**
-   * Carrega os dados contidos na posição atual do ResultSet nos atributos desta
-   * instância.
+   * Carrega os dados contidos na posição atual do ResultSet nos atributos desta instância.
    */
   public void carregarDados(ResultSet rst)
   {
-    List<Integer> lstIntClnIndexCarregada;
     try
     {
       if (rst == null)
@@ -34,40 +32,27 @@ public abstract class Dominio extends Objeto
       {
         return;
       }
-      lstIntClnIndexCarregada = new ArrayList<>();
+      List<Integer> lstIntClnIndexCarregada = new ArrayList<>();
       this.carregarDados(rst, this.getClass(), lstIntClnIndexCarregada);
     }
     catch (Exception ex)
     {
       new Erro("Erro inesperado.\n", ex);
     }
-    finally
-    {
-    }
   }
 
   private void carregarDados(ResultSet rst, Class<?> cls, List<Integer> lstIntClnIndexCarregada)
   {
-    try
+    if (cls == null)
     {
-      if (cls == null)
-      {
-        return;
-      }
-      
-      this.carregarDados(rst, cls.getSuperclass(), lstIntClnIndexCarregada);
-      
-      for (Field objField : cls.getDeclaredFields())
-      {
-        this.carregarDados(rst, objField, lstIntClnIndexCarregada);
-      }
+      return;
     }
-    catch (Exception ex)
+
+    this.carregarDados(rst, cls.getSuperclass(), lstIntClnIndexCarregada);
+
+    for (Field objField : cls.getDeclaredFields())
     {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
+      this.carregarDados(rst, objField, lstIntClnIndexCarregada);
     }
   }
 
@@ -114,14 +99,12 @@ public abstract class Dominio extends Objeto
 
   private void carregarDados(ResultSet rst, Field objField, int intClnIndex, List<Integer> lstIntClnIndexCarregada)
   {
-    String strClnNomeSimplificado;
-    String strFieldNomeSimplificado;
     try
     {
-      strClnNomeSimplificado = rst.getMetaData().getColumnName(intClnIndex);
+      String strClnNomeSimplificado = rst.getMetaData().getColumnName(intClnIndex);
       strClnNomeSimplificado = Utils.simplificar(strClnNomeSimplificado);
       strClnNomeSimplificado = strClnNomeSimplificado.replace("_", "");
-      strFieldNomeSimplificado = objField.getName();
+      String strFieldNomeSimplificado = objField.getName();
       strFieldNomeSimplificado = Utils.simplificar(strFieldNomeSimplificado);
       strFieldNomeSimplificado = strFieldNomeSimplificado.replace("_", "");
       if (!strClnNomeSimplificado.equals(strFieldNomeSimplificado))

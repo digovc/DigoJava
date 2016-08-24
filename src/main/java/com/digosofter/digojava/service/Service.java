@@ -4,7 +4,6 @@ import com.digosofter.digojava.erro.Erro;
 
 public abstract class Service extends Thread
 {
-
   private boolean _booParar;
 
   protected void dormirHora(int intHora)
@@ -14,10 +13,10 @@ public abstract class Service extends Thread
 
   protected void dormirMilissegundo(int intMilissegundo)
   {
-    long lng;
     try
     {
-      lng = 0;
+      long lng = 0;
+
       while (!this.getBooParar() && lng < intMilissegundo)
       {
         Thread.sleep(100);
@@ -27,9 +26,6 @@ public abstract class Service extends Thread
     catch (Exception ex)
     {
       new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
     }
   }
 

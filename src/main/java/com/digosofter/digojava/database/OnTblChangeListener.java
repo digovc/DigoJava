@@ -2,7 +2,6 @@ package com.digosofter.digojava.database;
 
 public interface OnTblChangeListener
 {
-
   /**
    * Evento disparado quando um registro for adicionado para tabela.
    *
