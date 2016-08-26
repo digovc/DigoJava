@@ -109,15 +109,18 @@ public class Filtro extends Objeto
    */
   public String getSqlFiltro(boolean booPrimeiroTermo)
   {
-    if (!Utils.getBooStrVazia(_sqlFiltro))
+    if (_sqlFiltro != null)
     {
       return _sqlFiltro;
     }
+
     if (this.getBooSelect())
     {
       _sqlFiltro = this.getSqlFiltroSelect(booPrimeiroTermo);
+
       return _sqlFiltro;
     }
+
     _sqlFiltro = this.getSqlFiltroNaoSelect(booPrimeiroTermo);
 
     return _sqlFiltro;
@@ -126,24 +129,24 @@ public class Filtro extends Objeto
   private String getSqlFiltroNaoSelect(boolean booPrimeiroTermo)
   {
     String strResultado = "_condicao _tbl_nome._cln_nome _operador _filtro";
+
     strResultado = strResultado.replace("_condicao", !booPrimeiroTermo ? this.getStrCondicao() : Utils.STR_VAZIA);
     strResultado = strResultado.replace("_tbl_nome", this.getClnFiltro().getTbl().getSqlNome());
     strResultado = strResultado.replace("_cln_nome", this.getClnFiltro().getSqlNome());
     strResultado = strResultado.replace("_operador", this.getStrOperador());
     strResultado = strResultado.replace("_filtro", this.getStrFiltroFormatado());
-    strResultado = booPrimeiroTermo ? strResultado.substring(1) : strResultado;
 
-    return strResultado;
+    return booPrimeiroTermo ? strResultado.substring(1) : strResultado;
   }
 
   private String getSqlFiltroSelect(boolean booPrimeiroTermo)
   {
     String strResultado = "_condicao (_sub_select)";
+
     strResultado = strResultado.replace("_condicao", !booPrimeiroTermo ? this.getStrCondicao() : Utils.STR_VAZIA);
     strResultado = strResultado.replace("_sub_select", this.getStrFiltro());
-    strResultado = booPrimeiroTermo ? strResultado.substring(1) : strResultado;
 
-    return strResultado;
+    return booPrimeiroTermo ? strResultado.substring(1) : strResultado;
   }
 
   private String getStrCondicao()
@@ -152,10 +155,13 @@ public class Filtro extends Objeto
     {
       case IS:
         return "is";
+
       case IS_NOT:
         return "is not";
+
       case OR:
         return "or";
+
       default:
         return "and";
     }
@@ -173,7 +179,7 @@ public class Filtro extends Objeto
       return "null";
     }
 
-    return "'" + this.getStrFiltro() + "'";
+    return ("'" + this.getStrFiltro() + "'");
   }
 
   private String getStrFiltroFormatado()
@@ -182,19 +188,24 @@ public class Filtro extends Objeto
     {
       return _strFiltroFormatado;
     }
+
     switch (this.getEnmOperador())
     {
       case CONTEM:
         return _strFiltroFormatado = this.getStrFiltroFormatadoContem();
+
       case PREFIXO:
         return _strFiltroFormatado = this.getStrFiltroFormatadoPrefixo();
+
       case SUFIXO:
         return _strFiltroFormatado = this.getStrFiltroFormatadoSufixo();
+
       case MAIOR:
       case MAIOR_IGUAL:
       case MENOR:
       case MENOR_IGUAL:
         return _strFiltroFormatado = this.getStrFiltro();
+
       default:
         return _strFiltroFormatado = this.getStrFiltroAspas();
     }
@@ -204,64 +215,73 @@ public class Filtro extends Objeto
   {
     if (Utils.getBooStrVazia(this.getStrFiltro()))
     {
-      return Utils.STR_VAZIA;
+      return null;
     }
-    String strResultado = "'%_filtro%'";
-    strResultado = strResultado.replace("_filtro", this.getStrFiltro());
 
-    return strResultado;
+    String strResultado = "'%_filtro%'";
+
+    return strResultado.replace("_filtro", this.getStrFiltro());
   }
 
   private String getStrFiltroFormatadoPrefixo()
   {
     if (Utils.getBooStrVazia(this.getStrFiltro()))
     {
-      return Utils.STR_VAZIA;
+      return null;
     }
-    String strResultado = "'%_filtro'";
-    strResultado = strResultado.replace("_filtro", this.getStrFiltro());
 
-    return strResultado;
+    String strResultado = "'%_filtro'";
+
+    return strResultado.replace("_filtro", this.getStrFiltro());
   }
 
   private String getStrFiltroFormatadoSufixo()
   {
     if (Utils.getBooStrVazia(this.getStrFiltro()))
     {
-      return Utils.STR_VAZIA;
+      return null;
     }
-    String strResultado = "'_filtro%'";
-    strResultado = strResultado.replace("_filtro", this.getStrFiltro());
 
-    return strResultado;
+    String strResultado = "'_filtro%'";
+
+    return strResultado.replace("_filtro", this.getStrFiltro());
   }
 
   private String getStrOperador()
   {
-    if (!Utils.getBooStrVazia(_strOperador))
+    if (_strOperador != null)
     {
       return _strOperador;
     }
+
     switch (this.getEnmOperador())
     {
       case CONTEM:
       case SUFIXO:
       case PREFIXO:
         return _strOperador = "LIKE";
+
       case DIFERENTE:
         return _strOperador = "<>";
+
       case IS_NOT_NULL:
         return _strOperador = "is not null";
+
       case IS_NULL:
         return _strOperador = "is null";
+
       case MAIOR:
         return _strOperador = ">";
+
       case MAIOR_IGUAL:
         return _strOperador = ">=";
+
       case MENOR:
         return _strOperador = "<";
+
       case MENOR_IGUAL:
         return _strOperador = "<=";
+
       default:
         return _strOperador = "=";
     }

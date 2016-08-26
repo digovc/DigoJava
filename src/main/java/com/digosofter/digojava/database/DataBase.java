@@ -9,34 +9,29 @@ public abstract class DataBase extends Objeto
 
   public boolean execSqlGetBoo(String sql)
   {
-    String str;
-
-    str = this.execSqlGetStr(sql);
-    if (Utils.getBooStrVazia(str))
+    if (Utils.getBooStrVazia(sql))
     {
       return false;
     }
-    switch (str.toLowerCase())
-    {
-      case "1":
-      case "s":
-      case "sim":
-      case "t":
-      case "true":
-        return true;
-      default:
-        return false;
-    }
+
+    return Utils.getBoo(this.execSqlGetStr(sql));
   }
 
   public double execSqlGetDbl(String sql)
   {
-    String str;
+    if (Utils.getBooStrVazia(sql))
+    {
+      return 0;
+    }
 
-    str = this.execSqlGetStr(sql);
-    str = !Utils.getBooStrVazia(str) ? str : "0";
+    String strResultado = this.execSqlGetStr(sql);
 
-    return Double.valueOf(str);
+    if (Utils.getBooStrVazia(strResultado))
+    {
+      return 0;
+    }
+
+    return Double.valueOf(strResultado);
   }
 
   public int execSqlGetInt(String sql)

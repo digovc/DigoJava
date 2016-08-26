@@ -1,7 +1,6 @@
 /**/
 package com.digosofter.digojava;
 
-import com.digosofter.digojava.MsgUsuario.EnmLingua;
 import com.digosofter.digojava.database.Tabela;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,8 +17,7 @@ import java.util.List;
  */
 public abstract class App extends Objeto
 {
-
-  private static App i;
+  private static App _i;
 
   /**
    * @return Retorna a única instância desta classe durante o ciclo de vida da aplicação. Esta instância é carregada automaticamente quando a classe
@@ -27,7 +25,7 @@ public abstract class App extends Objeto
    */
   public static App getI()
   {
-    return i;
+    return _i;
   }
 
   private boolean _booDebug;
@@ -35,8 +33,6 @@ public abstract class App extends Objeto
   private long _intSegLigado;
   private long _intStartTime;
   private int _intVersao = 1;
-  private List<MsgUsuario> _lstMsgUsr;
-  private List<MsgUsuario> _lstMsgUsrPadrao;
   private List<Tabela<?>> _lstTbl;
   private Gson _objGson;
   private String _strVersao;
@@ -68,6 +64,7 @@ public abstract class App extends Objeto
     {
       return;
     }
+
     this.getLstTbl().add(tbl);
   }
 
@@ -113,41 +110,6 @@ public abstract class App extends Objeto
   }
 
   /**
-   * Esta lista tem por objetivo manter centralizada todos os textos que serão mostrados para o usuário no decorrer do uso da aplicação. A classe
-   * {@link MsgUsuario} dá a oportunidade de se trabalhar com aplicações em diversas idiomas. Este método precisa ser sobrescrito para ser inicializar
-   * e retornar as mensagens da aplicação.
-   *
-   * @return Retorna lista de objetos do tipo {@link MsgUsuario}, que mantém todos os textos que serão apresentados para o usuário num só local.
-   */
-  public List<MsgUsuario> getLstMsgUsr()
-  {
-    if (_lstMsgUsr != null)
-    {
-      return _lstMsgUsr;
-    }
-    _lstMsgUsr = new ArrayList<>();
-
-    return _lstMsgUsr;
-  }
-
-  /**
-   * Esta lista tem o mesmo propósito da outra acessada pelo {@link #getLstMsgUsr()}, com exceção de que esta guarda as mensagens internas do
-   * framework DigoJava.
-   *
-   * @return Lista de mensagens que podem ser lançadas ao usuário.
-   */
-  protected List<MsgUsuario> getLstMsgUsrPadrao()
-  {
-    if (_lstMsgUsrPadrao != null)
-    {
-      return _lstMsgUsrPadrao;
-    }
-    _lstMsgUsrPadrao = this.inicializarLstMsgUsrPadrao();
-
-    return _lstMsgUsrPadrao;
-  }
-
-  /**
    * @return Retorna a lista de instâncias das tabelas que a aplicação necessita para funcionas. Este objetos foram adicionados através do métodos
    * {@link #addTbl(Tabela)}. Este processo tem por objetivo manter concentradas num mesmo local a instância de todos as tabelas.
    */
@@ -157,7 +119,9 @@ public abstract class App extends Objeto
     {
       return _lstTbl;
     }
+
     _lstTbl = new ArrayList<>();
+
     this.inicializarLstTbl(_lstTbl);
 
     return _lstTbl;
@@ -175,70 +139,24 @@ public abstract class App extends Objeto
     {
       return _objGson;
     }
+
     objGsonBuilder = new GsonBuilder();
+
     objGsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
     _objGson = objGsonBuilder.create();
 
     return _objGson;
   }
 
-  /**
-   * @param intId Código que indica a mensagem que se espera como retorno.
-   * @return Retorna a primeira mensagem que recebeu o código representado no parâmetro "intId". Caso não haja um objeto do tipo {@link MsgUsuario} na
-   * lista {@link #getLstMsgUsr()} que contenha este código, retorna "null". O texto que será estará no idioma <i>default</i>, ou seja <b>português do
-   * Brasil</b>.
-   */
-  public String getStrMsgUsr(int intId)
-  {
-    return this.getStrMsgUsr(intId, EnmLingua.PORTUGUES_BRASIL, false);
-  }
-
-  public String getStrMsgUsr(int intMensagemId, EnmLingua enmLingua, boolean booMensagemPadrao)
-  {
-    List<MsgUsuario> lstMsgUsrTemp;
-
-    if (booMensagemPadrao)
-    {
-      lstMsgUsrTemp = this.getLstMsgUsrPadrao();
-    }
-    else
-    {
-      lstMsgUsrTemp = this.getLstMsgUsr();
-    }
-    for (MsgUsuario msgUsuario : lstMsgUsrTemp)
-    {
-      if (msgUsuario.getIntId() != intMensagemId || msgUsuario.getEnmLingua() != enmLingua)
-      {
-        continue;
-      }
-      return msgUsuario.getStrTexto();
-    }
-
-    return null;
-  }
-
-  public String getStrMsgUsrPadrao(int intId)
-  {
-    return this.getStrMsgUsr(intId, EnmLingua.PORTUGUES_BRASIL, true);
-  }
-
-  public String getStrTexto(int intId)
-  {
-    return this.getStrMsgUsr(intId);
-  }
-
-  public String getStrTextoPadrao(int intId)
-  {
-    return this.getStrMsgUsrPadrao(intId);
-  }
-
   public String getStrVersao()
   {
-    if (!Utils.getBooStrVazia(_strVersao))
+    if (_strVersao != null)
     {
       return _strVersao;
     }
-    _strVersao = "0.0.1 beta";
+
+    _strVersao = "1.0.0 beta";
 
     return _strVersao;
   }
@@ -246,15 +164,6 @@ public abstract class App extends Objeto
   protected void inicializar()
   {
     this.setIntStartTime(System.currentTimeMillis());
-  }
-
-  private List<MsgUsuario> inicializarLstMsgUsrPadrao()
-  {
-    List<MsgUsuario> lstMsgUsrResultado;
-
-    lstMsgUsrResultado = new ArrayList<>();
-    lstMsgUsrResultado.add(new MsgUsuario("Erro inesperado.", 0));
-    return lstMsgUsrResultado;
   }
 
   /**
@@ -281,14 +190,14 @@ public abstract class App extends Objeto
   {
   }
 
-  private void setI(App app)
+  private void setI(App i)
   {
-    if (i != null)
+    if (_i != null)
     {
       return;
     }
 
-    i = app;
+    _i = i;
   }
 
   private void setIntStartTime(long intStartTime)

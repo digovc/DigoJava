@@ -2,10 +2,10 @@ package com.digosofter.digojava.database;
 
 import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
-import com.digosofter.digojava.erro.Erro;
 
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -22,23 +22,26 @@ public abstract class Dominio extends Objeto
    */
   public void carregarDados(ResultSet rst)
   {
+    if (rst == null)
+    {
+      return;
+    }
+
     try
     {
-      if (rst == null)
-      {
-        return;
-      }
       if (rst.getMetaData().getColumnCount() < 1)
       {
         return;
       }
-      List<Integer> lstIntClnIndexCarregada = new ArrayList<>();
-      this.carregarDados(rst, this.getClass(), lstIntClnIndexCarregada);
     }
-    catch (Exception ex)
+    catch (SQLException ex)
     {
-      new Erro("Erro inesperado.\n", ex);
+      ex.printStackTrace();
     }
+
+    List<Integer> lstIntClnIndexCarregada = new ArrayList<>();
+
+    this.carregarDados(rst, this.getClass(), lstIntClnIndexCarregada);
   }
 
   private void carregarDados(ResultSet rst, Class<?> cls, List<Integer> lstIntClnIndexCarregada)
@@ -61,35 +64,39 @@ public abstract class Dominio extends Objeto
     try
     {
       objField.setAccessible(true);
+
       if (boolean.class.equals(objField.getType()))
       {
         objField.set(this, UtilsDataBase.getBoo(rst, rst.getMetaData().getColumnName(intClnIndex)));
         return;
       }
+
       if (double.class.equals(objField.getType()))
       {
         objField.set(this, UtilsDataBase.getDbl(rst, rst.getMetaData().getColumnName(intClnIndex)));
         return;
       }
+
       if (GregorianCalendar.class.equals(objField.getType()))
       {
         objField.set(this, UtilsDataBase.getDtt(rst, rst.getMetaData().getColumnName(intClnIndex)));
         return;
       }
+
       if (int.class.equals(objField.getType()))
       {
         objField.set(this, UtilsDataBase.getInt(rst, rst.getMetaData().getColumnName(intClnIndex)));
         return;
       }
+
       if (String.class.equals(objField.getType()))
       {
         objField.set(this, UtilsDataBase.getStr(rst, rst.getMetaData().getColumnName(intClnIndex)));
-        return;
       }
     }
     catch (Exception ex)
     {
-      new Erro("Erro inesperado.\n", ex);
+      ex.printStackTrace();
     }
     finally
     {
@@ -99,50 +106,62 @@ public abstract class Dominio extends Objeto
 
   private void carregarDados(ResultSet rst, Field objField, int intClnIndex, List<Integer> lstIntClnIndexCarregada)
   {
+    String strClnNomeSimplificado = null;
+
     try
     {
-      String strClnNomeSimplificado = rst.getMetaData().getColumnName(intClnIndex);
-      strClnNomeSimplificado = Utils.simplificar(strClnNomeSimplificado);
-      strClnNomeSimplificado = strClnNomeSimplificado.replace("_", "");
-      String strFieldNomeSimplificado = objField.getName();
-      strFieldNomeSimplificado = Utils.simplificar(strFieldNomeSimplificado);
-      strFieldNomeSimplificado = strFieldNomeSimplificado.replace("_", "");
-      if (!strClnNomeSimplificado.equals(strFieldNomeSimplificado))
-      {
-        return;
-      }
-      this.carregarDados(rst, objField, intClnIndex);
-      lstIntClnIndexCarregada.add(intClnIndex);
+      strClnNomeSimplificado = rst.getMetaData().getColumnName(intClnIndex);
     }
-    catch (Exception ex)
+    catch (SQLException ex)
     {
-      new Erro("Erro inesperado.\n", ex);
+      ex.printStackTrace();
     }
-    finally
+
+    if (strClnNomeSimplificado == null)
     {
+      return;
     }
+
+    strClnNomeSimplificado = Utils.simplificar(strClnNomeSimplificado);
+    strClnNomeSimplificado = strClnNomeSimplificado.replace("_", "");
+
+    String strFieldNomeSimplificado = objField.getName();
+
+    strFieldNomeSimplificado = Utils.simplificar(strFieldNomeSimplificado);
+    strFieldNomeSimplificado = strFieldNomeSimplificado.replace("_", "");
+
+    if (!strClnNomeSimplificado.equals(strFieldNomeSimplificado))
+    {
+      return;
+    }
+
+    this.carregarDados(rst, objField, intClnIndex);
+
+    lstIntClnIndexCarregada.add(intClnIndex);
   }
 
   private void carregarDados(ResultSet rst, Field objField, List<Integer> lstIntClnIndexCarregada)
   {
+    if (objField == null)
+    {
+      return;
+    }
+
     try
     {
-      if (objField == null)
-      {
-        return;
-      }
       for (int intClnIndex = 1; intClnIndex <= rst.getMetaData().getColumnCount(); intClnIndex++)
       {
         if (lstIntClnIndexCarregada.contains(intClnIndex))
         {
           continue;
         }
+
         this.carregarDados(rst, objField, intClnIndex, lstIntClnIndexCarregada);
       }
     }
-    catch (Exception ex)
+    catch (SQLException ex)
     {
-      new Erro("Erro inesperado.\n", ex);
+      ex.printStackTrace();
     }
     finally
     {

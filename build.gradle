@@ -6,7 +6,7 @@ targetCompatibility = 1.7
 
 dependencies {
 
-    compile files('libs/gson-2.5.jar')
-    compile files('libs/commons-net-3.3.jar')
-    compile files('libs/commons-io-2.4.jar')
+    compile 'com.google.code.gson:gson:+'
+    compile 'commons-io:commons-io:+'
+    compile 'commons-net:commons-net:+'
 }

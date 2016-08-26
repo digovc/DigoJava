@@ -15,7 +15,9 @@ public abstract class Config extends Objeto
     {
       return _arqJson;
     }
+
     _arqJson = new ArquivoTxt();
+
     _arqJson.setDir(this.getDirArquivo());
     _arqJson.setStrNome("AppConfig.json");
 
@@ -30,8 +32,11 @@ public abstract class Config extends Objeto
     {
       return _objGson;
     }
+
     GsonBuilder objGsonBuilder = new GsonBuilder();
+
     objGsonBuilder.setPrettyPrinting();
+
     _objGson = objGsonBuilder.create();
 
     return _objGson;

@@ -1,7 +1,5 @@
 package com.digosofter.digojava.service;
 
-import com.digosofter.digojava.erro.Erro;
-
 public abstract class Service extends Thread
 {
   private boolean _booParar;
@@ -20,12 +18,13 @@ public abstract class Service extends Thread
       while (!this.getBooParar() && lng < intMilissegundo)
       {
         Thread.sleep(100);
+
         lng += 100;
       }
     }
-    catch (Exception ex)
+    catch (InterruptedException ex)
     {
-      new Erro("Erro inesperado.\n", ex);
+      ex.printStackTrace();
     }
   }
 

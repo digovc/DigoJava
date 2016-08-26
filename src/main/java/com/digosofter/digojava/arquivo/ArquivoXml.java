@@ -12,6 +12,12 @@ public class ArquivoXml extends Arquivo
     {
       return _fil;
     }
+
+    if (!this.getBooExiste())
+    {
+      return null;
+    }
+
     _fil = new File(this.getDirCompleto());
 
     return _fil;

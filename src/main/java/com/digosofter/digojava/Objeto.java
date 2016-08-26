@@ -21,6 +21,7 @@ public abstract class Objeto
     {
       return _intObjetoId;
     }
+
     Objeto.setIntObjetoIdStatic(Objeto.getIntObjetoIdStatic() + 1);
 
     _intObjetoId = Objeto.getIntObjetoIdStatic();
@@ -45,10 +46,11 @@ public abstract class Objeto
 
   public String getStrNomeExibicao()
   {
-    if (!Utils.getBooStrVazia(_strNomeExibicao))
+    if (_strNomeExibicao != null)
     {
       return _strNomeExibicao;
     }
+
     _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
 
     return _strNomeExibicao;
@@ -56,10 +58,11 @@ public abstract class Objeto
 
   public String getStrNomeSimplificado()
   {
-    if (!Utils.getBooStrVazia(_strNomeSimplificado))
+    if (_strNomeSimplificado != null)
     {
       return _strNomeSimplificado;
     }
+
     _strNomeSimplificado = Utils.simplificar(this.getStrNome());
 
     return _strNomeSimplificado;
@@ -77,17 +80,24 @@ public abstract class Objeto
 
   public void setStrNome(String strNome)
   {
+    if (_strNome == strNome)
+    {
+      return;
+    }
+
     _strNome = strNome;
+
     this.setStrNomeSimplificado(null);
   }
 
   public void setStrNomeExibicao(String strNomeExibicao)
   {
-    _strNomeExibicao = strNomeExibicao;
-    if (Utils.getBooStrVazia(_strNomeExibicao))
+    if (_strNomeExibicao == strNomeExibicao)
     {
       return;
     }
+
+    _strNomeExibicao = strNomeExibicao;
 
     _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNomeExibicao);
   }
