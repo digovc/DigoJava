@@ -3,21 +3,23 @@ package com.digosofter.digojava.database;
 import com.digosofter.digojava.App;
 import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.dominio.DominioMain;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class Tabela<T extends Dominio> extends Objeto
+public abstract class Tabela<T extends DominioMain> extends Objeto
 {
-  private boolean _booMenuAdicionar;
-  private boolean _booMenuAlterar;
-  private boolean _booMenuApagar;
-  private Coluna _clnChavePrimaria;
+  private boolean _booPermitirAdicionar;
+  private boolean _booPermitirAlterar;
+  private boolean _booPermitirApagar;
+  private Coluna _clnIntId;
   private Coluna _clnNome;
   private Coluna _clnOrdem;
   private Class<T> _clsDominio;
+  private DataBase _dbe;
   private List<Coluna> _lstCln;
   private List<Coluna> _lstClnCadastro;
   private List<Coluna> _lstClnConsulta;
@@ -26,7 +28,6 @@ public abstract class Tabela<T extends Dominio> extends Objeto
   private List<OnTblChangeListener> _lstEvtOnTblChangeListener;
   private List<Filtro> _lstFilCadastro;
   private List<Filtro> _lstFilConsulta;
-  private DataBase _objDb;
   private String _sqlNome;
   private String _strPesquisa;
 
@@ -40,6 +41,11 @@ public abstract class Tabela<T extends Dominio> extends Objeto
 
   protected void addAppLstTbl()
   {
+    if (App.getI() == null)
+    {
+      return;
+    }
+    
     App.getI().addTbl(this);
   }
 
@@ -128,19 +134,19 @@ public abstract class Tabela<T extends Dominio> extends Objeto
     }
   }
 
-  public boolean getBooMenuAdicionar()
+  public boolean getBooPermitirAdicionar()
   {
-    return _booMenuAdicionar;
+    return _booPermitirAdicionar;
   }
 
-  public boolean getBooMenuAlterar()
+  public boolean getBooPermitirAlterar()
   {
-    return _booMenuAlterar;
+    return _booPermitirAlterar;
   }
 
-  public boolean getBooMenuApagar()
+  public boolean getBooPermitirApagar()
   {
-    return _booMenuApagar;
+    return _booPermitirApagar;
   }
 
   /**
@@ -174,18 +180,16 @@ public abstract class Tabela<T extends Dominio> extends Objeto
     return null;
   }
 
-  public Coluna getClnChavePrimaria()
+  public Coluna getClnIntId()
   {
-    if (_clnChavePrimaria != null)
+    if (_clnIntId != null)
     {
-      return _clnChavePrimaria;
+      return _clnIntId;
     }
 
-    _clnChavePrimaria = this.getLstCln().get(0);
+    _clnIntId = new Coluna("int_id", this, Coluna.EnmTipo.BIGINT);
 
-    _clnChavePrimaria.setBooChavePrimaria(true);
-
-    return _clnChavePrimaria;
+    return _clnIntId;
   }
 
   public Coluna getClnNome()
@@ -195,7 +199,7 @@ public abstract class Tabela<T extends Dominio> extends Objeto
       return _clnNome;
     }
 
-    _clnNome = this.getClnChavePrimaria();
+    _clnNome = this.getClnIntId();
 
     _clnNome.setBooNome(true);
 
@@ -221,13 +225,18 @@ public abstract class Tabela<T extends Dominio> extends Objeto
     return _clsDominio;
   }
 
+  public DataBase getDbe()
+  {
+    return _dbe;
+  }
+
   public int getIntQtdLinha()
   {
     String sql = "select count(1) from _tbl_nome;";
 
     sql = sql.replace("_tbl_nome", this.getSqlNome());
 
-    return this.getObjDb().execSqlGetInt(sql);
+    return this.getDbe().execSqlGetInt(sql);
   }
 
   public List<Coluna> getLstCln()
@@ -257,7 +266,12 @@ public abstract class Tabela<T extends Dominio> extends Objeto
 
     for (Coluna cln : this.getLstCln())
     {
-      if (cln.getBooChavePrimaria())
+      if (cln == null)
+      {
+        continue;
+      }
+
+      if (cln == this.getClnIntId())
       {
         continue;
       }
@@ -294,7 +308,7 @@ public abstract class Tabela<T extends Dominio> extends Objeto
 
     _lstClnConsulta = new ArrayList<>();
 
-    _lstClnConsulta.add(this.getClnChavePrimaria());
+    _lstClnConsulta.add(this.getClnIntId());
     _lstClnConsulta.add(this.getClnNome());
 
     for (Coluna cln : this.getLstCln())
@@ -309,7 +323,7 @@ public abstract class Tabela<T extends Dominio> extends Objeto
         continue;
       }
 
-      if (cln.getBooChavePrimaria())
+      if (cln == this.getClnIntId())
       {
         continue;
       }
@@ -408,11 +422,6 @@ public abstract class Tabela<T extends Dominio> extends Objeto
     return _lstFilConsulta;
   }
 
-  public DataBase getObjDb()
-  {
-    return _objDb;
-  }
-
   public String getSqlNome()
   {
     if (!Utils.getBooStrVazia(_sqlNome))
@@ -481,24 +490,24 @@ public abstract class Tabela<T extends Dominio> extends Objeto
     this.getLstEvtOnChangeListener().remove(evtOnTblChangeListener);
   }
 
-  protected void setBooMenuAdicionar(boolean booMenuAdicionar)
+  protected void setBooPermitirAdicionar(boolean booPermitirAdicionar)
   {
-    _booMenuAdicionar = booMenuAdicionar;
+    _booPermitirAdicionar = booPermitirAdicionar;
   }
 
-  protected void setBooMenuAlterar(boolean booMenuAlterar)
+  protected void setBooPermitirAlterar(boolean booPermitirAlterar)
   {
-    _booMenuAlterar = booMenuAlterar;
+    _booPermitirAlterar = booPermitirAlterar;
   }
 
-  protected void setBooMenuApagar(boolean booMenuApagar)
+  protected void setBooPermitirApagar(boolean booPermitirApagar)
   {
-    _booMenuApagar = booMenuApagar;
+    _booPermitirApagar = booPermitirApagar;
   }
 
   public void setClnChavePrimaria(Coluna clnChavePrimaria)
   {
-    _clnChavePrimaria = clnChavePrimaria;
+    _clnIntId = clnChavePrimaria;
   }
 
   public void setClnNome(Coluna clnNome)
@@ -516,6 +525,11 @@ public abstract class Tabela<T extends Dominio> extends Objeto
     _clsDominio = clsDominio;
   }
 
+  public void setDbe(DataBase dbe)
+  {
+    _dbe = dbe;
+  }
+
   void setLstClnCadastro(List<Coluna> lstClnCadastro)
   {
     _lstClnCadastro = lstClnCadastro;
@@ -524,11 +538,6 @@ public abstract class Tabela<T extends Dominio> extends Objeto
   void setLstClnConsulta(List<Coluna> lstClnConsulta)
   {
     _lstClnConsulta = lstClnConsulta;
-  }
-
-  public void setObjDb(DataBase objDb)
-  {
-    _objDb = objDb;
   }
 
   @Override

@@ -4,6 +4,7 @@ import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.OnValorAlteradoArg;
 import com.digosofter.digojava.OnValorAlteradoListener;
 import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.dominio.DominioMain;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -54,7 +55,6 @@ public class Coluna extends Objeto
     TEMPORAL,
   }
 
-  private boolean _booChavePrimaria;
   private boolean _booClnDominioValorCarregado;
   private boolean _booNome;
   private boolean _booNotNull;
@@ -92,9 +92,15 @@ public class Coluna extends Objeto
 
   public Coluna(String strNome, Tabela<?> tbl, EnmTipo enmTipo)
   {
+    this(strNome, tbl, enmTipo, null);
+  }
+
+  public Coluna(String strNome, Tabela<?> tbl, EnmTipo enmTipo, Coluna clnRef)
+  {
+    this.setClnRef(clnRef);
+    this.setEnmTipo(enmTipo);
     this.setStrNome(strNome);
     this.setTbl(tbl);
-    this.setEnmTipo(enmTipo);
   }
 
   public void addEvtOnValorAlteradoListener(OnValorAlteradoListener evt)
@@ -156,11 +162,6 @@ public class Coluna extends Objeto
 
       evt.onValorAlterado(this, arg);
     }
-  }
-
-  public boolean getBooChavePrimaria()
-  {
-    return _booChavePrimaria;
   }
 
   private boolean getBooClnDominioValorCarregado()
@@ -402,7 +403,7 @@ public class Coluna extends Objeto
 
     _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_ref_nome", this.getClnRef().getTbl().getSqlNome());
     _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getSqlNome());
-    _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnChavePrimaria().getSqlNome());
+    _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnIntId().getSqlNome());
     _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_nome", this.getTbl().getSqlNome());
     _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_nome", this.getSqlNome());
 
@@ -597,7 +598,7 @@ public class Coluna extends Objeto
     return _tbl;
   }
 
-  public <T extends Dominio> void lerDominio(T objDominio)
+  public <T extends DominioMain> void lerDominio(T objDominio)
   {
     if (objDominio == null)
     {
@@ -609,7 +610,7 @@ public class Coluna extends Objeto
     this.lerDominio(objDominio, objDominio.getClass());
   }
 
-  private <T extends Dominio> void lerDominio(T objDominio, Class<?> cls)
+  private <T extends DominioMain> void lerDominio(T objDominio, Class<?> cls)
   {
     if (objDominio == null)
     {
@@ -638,7 +639,7 @@ public class Coluna extends Objeto
     }
   }
 
-  private <T extends Dominio> boolean lerDominio(T objDominio, Field objField)
+  private <T extends DominioMain> boolean lerDominio(T objDominio, Field objField)
   {
     if (objDominio == null)
     {
@@ -723,24 +724,6 @@ public class Coluna extends Objeto
     }
 
     this.getLstEvtOnValorAlteradoListener().remove(evt);
-  }
-
-  public void setBooChavePrimaria(boolean booChavePrimaria)
-  {
-    _booChavePrimaria = booChavePrimaria;
-
-    if (!_booChavePrimaria)
-    {
-      this.getTbl().setClnChavePrimaria(null);
-      return;
-    }
-
-    if (!this.equals(this.getTbl().getClnChavePrimaria()))
-    {
-      this.getTbl().getClnChavePrimaria()._booChavePrimaria = false;
-    }
-
-    this.getTbl().setClnChavePrimaria(this);
   }
 
   private void setBooClnDominioValorCarregado(boolean booClnDominioValorCarregado)
@@ -873,7 +856,7 @@ public class Coluna extends Objeto
     this.setStrValor(String.valueOf(chrValor));
   }
 
-  public void setClnRef(Coluna clnRef)
+  private void setClnRef(Coluna clnRef)
   {
     _clnRef = clnRef;
   }

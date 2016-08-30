@@ -1,7 +1,8 @@
-package com.digosofter.digojava.database;
+package com.digosofter.digojava.dominio;
 
 import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.database.UtilsDataBase;
 
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public abstract class Dominio extends Objeto
+public abstract class DominioMain extends Objeto
 {
   private boolean _booAtivo;
   private GregorianCalendar _dttAlteracao;

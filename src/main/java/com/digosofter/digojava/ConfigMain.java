@@ -4,7 +4,7 @@ import com.digosofter.digojava.arquivo.ArquivoTxt;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public abstract class Config extends Objeto
+public abstract class ConfigMain extends Objeto
 {
   private transient ArquivoTxt _arqJson;
   private transient Gson _objGson;
@@ -24,7 +24,10 @@ public abstract class Config extends Objeto
     return _arqJson;
   }
 
-  protected abstract String getDirArquivo();
+  protected String getDirArquivo()
+  {
+    return "/";
+  }
 
   protected Gson getObjGson()
   {
@@ -42,7 +45,9 @@ public abstract class Config extends Objeto
     return _objGson;
   }
 
-  protected abstract void recuperar();
+  protected void recuperar()
+  {
+  }
 
   public void salvar()
   {
