@@ -4,8 +4,8 @@ import com.digosofter.digojava.dominio.DominioMain;
 
 public abstract class View extends Tabela<DominioMain>
 {
-  public View(String strNome)
+  public View(String strNome, DataBase dbe)
   {
-    super(strNome, null);
+    super(strNome, null, dbe);
   }
 }

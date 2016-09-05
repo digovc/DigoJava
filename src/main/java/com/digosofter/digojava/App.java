@@ -44,6 +44,8 @@ public abstract class App extends Objeto
   protected App()
   {
     this.setI(this);
+
+    this.iniciar();
   }
 
   /**
@@ -174,7 +176,7 @@ public abstract class App extends Objeto
   {
   }
 
-  public void iniciar()
+  private void iniciar()
   {
     this.inicializar();
     this.setEventos();

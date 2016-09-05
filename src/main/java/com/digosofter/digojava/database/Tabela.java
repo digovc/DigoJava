@@ -31,11 +31,14 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   private String _sqlNome;
   private String _strPesquisa;
 
-  protected Tabela(String strNome, Class<T> clsDominio)
+  protected Tabela(String strNome, Class<T> clsDominio, DataBase dbe)
   {
     this.setClsDominio(clsDominio);
+    this.setDbe(dbe);
     this.setStrNome(strNome);
+
     this.addAppLstTbl();
+
     this.inicializarLstCln(-1);
   }
 
@@ -45,7 +48,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     {
       return;
     }
-    
+
     App.getI().addTbl(this);
   }
 
@@ -525,7 +528,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     _clsDominio = clsDominio;
   }
 
-  public void setDbe(DataBase dbe)
+  private void setDbe(DataBase dbe)
   {
     _dbe = dbe;
   }
