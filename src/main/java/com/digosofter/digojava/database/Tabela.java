@@ -179,6 +179,8 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     return null;
   }
 
+  public abstract Coluna getClnBooAtivo();
+
   public abstract Coluna getClnDttAlteracao();
 
   public abstract Coluna getClnDttCadastro();
@@ -462,6 +464,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
 
   protected int inicializarLstCln(int intOrdem)
   {
+    this.getClnBooAtivo().setIntOrdem(++intOrdem);
     this.getClnDttAlteracao().setIntOrdem(++intOrdem);
     this.getClnDttCadastro().setIntOrdem(++intOrdem);
     this.getClnIntId().setIntOrdem(++intOrdem);
