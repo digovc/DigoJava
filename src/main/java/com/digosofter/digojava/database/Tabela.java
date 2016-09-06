@@ -27,6 +27,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   private List<Filtro> _lstFilConsulta;
   private String _sqlNome;
   private String _strPesquisa;
+  private Tabela _tblPrincipal;
 
   protected Tabela(String strNome, Class<T> clsDominio, DataBase dbe)
   {
@@ -453,6 +454,18 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   public String getStrPesquisa()
   {
     return _strPesquisa;
+  }
+
+  public Tabela getTblPrincipal()
+  {
+    if (_tblPrincipal != null)
+    {
+      return _tblPrincipal;
+    }
+
+    _tblPrincipal = this;
+
+    return _tblPrincipal;
   }
 
   protected void inicializar()
