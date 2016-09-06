@@ -136,6 +136,10 @@ public class Coluna extends Objeto
     this.getMapOpcao().put(intValor, strNome);
   }
 
+  public void criar()
+  {
+  }
+
   private void dispararEvtOnValorAlteradoListener()
   {
     if (this.getLstEvtOnValorAlteradoListener().isEmpty())

@@ -1,6 +1,5 @@
 package com.digosofter.digojava.database;
 
-import com.digosofter.digojava.App;
 import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
 import com.digosofter.digojava.dominio.DominioMain;
@@ -12,10 +11,8 @@ import java.util.List;
 
 public abstract class Tabela<T extends DominioMain> extends Objeto
 {
-  private boolean _booPermitirAdicionar;
   private boolean _booPermitirAlterar;
   private boolean _booPermitirApagar;
-  private Coluna _clnIntId;
   private Coluna _clnNome;
   private Coluna _clnOrdem;
   private Class<T> _clsDominio;
@@ -37,19 +34,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     this.setDbe(dbe);
     this.setStrNome(strNome);
 
-    this.addAppLstTbl();
-
-    this.inicializarLstCln(-1);
-  }
-
-  protected void addAppLstTbl()
-  {
-    if (App.getI() == null)
-    {
-      return;
-    }
-
-    App.getI().addTbl(this);
+    this.iniciar();
   }
 
   public void addCln(Coluna cln)
@@ -98,6 +83,22 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     this.dispararEvtOnApagarReg(arg);
   }
 
+  // TODO: Criar uma classe que gerencia a criação e atualização das tabelas.
+  protected abstract void criar();
+
+  private void criarColuna()
+  {
+    for (Coluna cln : this.getLstCln())
+    {
+      if (cln == null)
+      {
+        continue;
+      }
+
+      cln.criar();
+    }
+  }
+
   protected void dispararEvtOnAdicionarReg(OnChangeArg arg)
   {
     for (OnTblChangeListener evt : this.getLstEvtOnChangeListener())
@@ -135,11 +136,6 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
 
       evt.onTblAtualizar(e);
     }
-  }
-
-  public boolean getBooPermitirAdicionar()
-  {
-    return _booPermitirAdicionar;
   }
 
   public boolean getBooPermitirAlterar()
@@ -183,17 +179,15 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     return null;
   }
 
-  public Coluna getClnIntId()
-  {
-    if (_clnIntId != null)
-    {
-      return _clnIntId;
-    }
+  public abstract Coluna getClnDttAlteracao();
 
-    _clnIntId = new Coluna("int_id", this, Coluna.EnmTipo.BIGINT);
+  public abstract Coluna getClnDttCadastro();
 
-    return _clnIntId;
-  }
+  public abstract Coluna getClnIntId();
+
+  protected abstract Coluna getClnIntUsuarioAlteracaoId();
+
+  protected abstract Coluna getClnIntUsuarioCadastroId();
 
   public Coluna getClnNome()
   {
@@ -252,6 +246,8 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     _lstClnOrdenado = null;
 
     _lstCln = new ArrayList<>();
+
+    this.inicializarLstCln(-1);
 
     return _lstCln;
   }
@@ -457,9 +453,27 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     return _strPesquisa;
   }
 
+  protected void inicializar()
+  {
+    this.criar();
+    this.criarColuna();
+
+  }
+
   protected int inicializarLstCln(int intOrdem)
   {
+    this.getClnDttAlteracao().setIntOrdem(++intOrdem);
+    this.getClnDttCadastro().setIntOrdem(++intOrdem);
+    this.getClnIntId().setIntOrdem(++intOrdem);
+    this.getClnIntUsuarioAlteracaoId().setIntOrdem(++intOrdem);
+    this.getClnIntUsuarioCadastroId().setIntOrdem(++intOrdem);
+
     return intOrdem;
+  }
+
+  private void iniciar()
+  {
+    this.inicializar();
   }
 
   /**
@@ -493,11 +507,6 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     this.getLstEvtOnChangeListener().remove(evtOnTblChangeListener);
   }
 
-  protected void setBooPermitirAdicionar(boolean booPermitirAdicionar)
-  {
-    _booPermitirAdicionar = booPermitirAdicionar;
-  }
-
   protected void setBooPermitirAlterar(boolean booPermitirAlterar)
   {
     _booPermitirAlterar = booPermitirAlterar;
@@ -506,11 +515,6 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   protected void setBooPermitirApagar(boolean booPermitirApagar)
   {
     _booPermitirApagar = booPermitirApagar;
-  }
-
-  public void setClnChavePrimaria(Coluna clnChavePrimaria)
-  {
-    _clnIntId = clnChavePrimaria;
   }
 
   public void setClnNome(Coluna clnNome)
@@ -530,7 +534,14 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
 
   private void setDbe(DataBase dbe)
   {
+    if (_dbe == dbe)
+    {
+      return;
+    }
+
     _dbe = dbe;
+
+    _dbe.addTbl(this);
   }
 
   void setLstClnCadastro(List<Coluna> lstClnCadastro)

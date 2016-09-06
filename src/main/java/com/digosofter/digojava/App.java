@@ -1,12 +1,8 @@
 /**/
 package com.digosofter.digojava;
 
-import com.digosofter.digojava.database.Tabela;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Principal classe da aplicação. Esta classe deve ser implementada/estendida pela classe especializada da sua aplicação. Ela controla todo o ciclo de
@@ -33,7 +29,6 @@ public abstract class App extends Objeto
   private long _intSegLigado;
   private long _intStartTime;
   private int _intVersao = 1;
-  private List<Tabela<?>> _lstTbl;
   private Gson _objGson;
   private String _strVersao;
 
@@ -46,27 +41,6 @@ public abstract class App extends Objeto
     this.setI(this);
 
     this.iniciar();
-  }
-
-  /**
-   * Serve para adicionar novas instâncias das tabelas que a aplicação precisa para funcionar.<br/> As tabelas adicionadas por este método podem ser
-   * acessadas posteriormente através do método {@link #getLstTbl()}.
-   *
-   * @param tbl Tabela que faz parte da aplicação e será adicionada.
-   */
-  public void addTbl(Tabela<?> tbl)
-  {
-    if (tbl == null)
-    {
-      return;
-    }
-
-    if (this.getLstTbl().contains(tbl))
-    {
-      return;
-    }
-
-    this.getLstTbl().add(tbl);
   }
 
   /**
@@ -111,24 +85,6 @@ public abstract class App extends Objeto
   }
 
   /**
-   * @return Retorna a lista de instâncias das tabelas que a aplicação necessita para funcionas. Este objetos foram adicionados através do métodos
-   * {@link #addTbl(Tabela)}. Este processo tem por objetivo manter concentradas num mesmo local a instância de todos as tabelas.
-   */
-  public List<Tabela<?>> getLstTbl()
-  {
-    if (_lstTbl != null)
-    {
-      return _lstTbl;
-    }
-
-    _lstTbl = new ArrayList<>();
-
-    this.inicializarLstTbl(_lstTbl);
-
-    return _lstTbl;
-  }
-
-  /**
    * @return Retorna uma instância única de um objeto do tipo "Gson", contido na biblioteca do Google para tratamento de JSON. É através deste objeto
    * é possível transformar os mais variados objetos em JSON e vice-versa.
    */
@@ -165,15 +121,6 @@ public abstract class App extends Objeto
   protected void inicializar()
   {
     this.setIntStartTime(System.currentTimeMillis());
-  }
-
-  /**
-   * Este método tem a responsabilidade de inicializar a lista de tabelas da aplicação.
-   *
-   * @param lstTbl Lista de tabela da aplicação.
-   */
-  protected void inicializarLstTbl(final List<Tabela<?>> lstTbl)
-  {
   }
 
   private void iniciar()
