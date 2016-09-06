@@ -68,12 +68,14 @@ public class Coluna extends Objeto
   private boolean _booVisivelConsulta;
   private boolean _booVisivelDetalhe = true;
   private Coluna _clnRef;
+  private double _dblValorDefault;
   private EnmTipo _enmTipo;
   private EnmTipoGrupo _enmTipoGrupo;
   private int _intFrmLinha = 1;
   private int _intFrmLinhaPeso = 1;
   private int _intOrdem;
   private int _intTamanhoCampo = 100;
+  private int _intValorDefault;
   private List<OnValorAlteradoListener> _lstEvtOnValorAlteradoListener;
   private LinkedHashMap<Integer, String> _mapOpcao;
   private String _sqlNome;
@@ -273,6 +275,18 @@ public class Coluna extends Objeto
     return Double.parseDouble(this.getStrValor());
   }
 
+  public double getDblValorDefault()
+  {
+    if (Utils.getBooStrVazia(this.getStrValorDefault()))
+    {
+      return 0;
+    }
+
+    _dblValorDefault = Double.valueOf(this.getStrValorDefault());
+
+    return _dblValorDefault;
+  }
+
   public GregorianCalendar getDttValor()
   {
     if (Utils.getBooStrVazia(this.getStrValor()))
@@ -353,6 +367,13 @@ public class Coluna extends Objeto
   public int getIntValor()
   {
     return (int) this.getDblValor();
+  }
+
+  public int getIntValorDefault()
+  {
+    _intValorDefault = (int) this.getDblValorDefault();
+
+    return _intValorDefault;
   }
 
   private List<OnValorAlteradoListener> getLstEvtOnValorAlteradoListener()
@@ -870,6 +891,13 @@ public class Coluna extends Objeto
     this.setStrValor(String.valueOf(dblValor));
   }
 
+  public void setDblValorDefault(double dblValorDefault)
+  {
+    _dblValorDefault = dblValorDefault;
+
+    this.setStrValorDefault(String.valueOf(_dblValorDefault));
+  }
+
   public void setDttValor(Calendar dttValor)
   {
     if (dttValor == null)
@@ -909,6 +937,13 @@ public class Coluna extends Objeto
   public void setIntValor(int intValor)
   {
     this.setStrValor(String.valueOf(intValor));
+  }
+
+  public void setIntValorDefault(Integer intValorDefault)
+  {
+    _intValorDefault = intValorDefault;
+
+    this.setDblValorDefault(_intValorDefault);
   }
 
   public void setStrDominioNome(String strDominioNome)
