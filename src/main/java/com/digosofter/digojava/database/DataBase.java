@@ -10,6 +10,11 @@ public abstract class DataBase extends Objeto
 {
   private List<Tabela<?>> _lstTbl;
 
+  protected DataBase()
+  {
+    this.iniciar();
+  }
+
   public void addTbl(Tabela<?> tbl)
   {
     if (tbl == null)
@@ -104,5 +109,14 @@ public abstract class DataBase extends Objeto
     }
 
     return null;
+  }
+
+  protected void inicializar()
+  {
+  }
+
+  private void iniciar()
+  {
+    this.inicializar();
   }
 }

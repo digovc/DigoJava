@@ -6,6 +6,6 @@ public abstract class View extends Tabela<DominioMain>
 {
   public View(String strNome, DataBase dbe)
   {
-    super(strNome, null, dbe);
+    super(strNome, dbe);
   }
 }

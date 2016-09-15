@@ -1,9 +1,6 @@
 /**/
 package com.digosofter.digojava;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 /**
  * Principal classe da aplicação. Esta classe deve ser implementada/estendida pela classe especializada da sua aplicação. Ela controla todo o ciclo de
  * vida da aplicação como um todo deste que o usuário a inicia, até a sua conclusão. Esta classe não pode ser instanciada, pois precisa
@@ -29,7 +26,6 @@ public abstract class App extends Objeto
   private long _intSegLigado;
   private long _intStartTime;
   private int _intVersao = 1;
-  private Gson _objGson;
   private String _strVersao;
 
   /**
@@ -82,28 +78,6 @@ public abstract class App extends Objeto
   public int getIntVersao()
   {
     return _intVersao;
-  }
-
-  /**
-   * @return Retorna uma instância única de um objeto do tipo "Gson", contido na biblioteca do Google para tratamento de JSON. É através deste objeto
-   * é possível transformar os mais variados objetos em JSON e vice-versa.
-   */
-  public Gson getObjGson()
-  {
-    GsonBuilder objGsonBuilder;
-
-    if (_objGson != null)
-    {
-      return _objGson;
-    }
-
-    objGsonBuilder = new GsonBuilder();
-
-    objGsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-
-    _objGson = objGsonBuilder.create();
-
-    return _objGson;
   }
 
   public String getStrVersao()

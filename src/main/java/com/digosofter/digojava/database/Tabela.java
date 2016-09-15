@@ -4,6 +4,7 @@ import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
 import com.digosofter.digojava.dominio.DominioMain;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,9 +30,9 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   private String _strPesquisa;
   private Tabela _tblPrincipal;
 
-  protected Tabela(String strNome, Class<T> clsDominio, DataBase dbe)
+  protected Tabela(String strNome, DataBase dbe)
   {
-    this.setClsDominio(clsDominio);
+    this.setClsDominio((Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
     this.setDbe(dbe);
     this.setStrNome(strNome);
 
@@ -543,7 +544,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     _clnOrdem = clnOrdem;
   }
 
-  protected void setClsDominio(Class<T> clsDominio)
+  private void setClsDominio(Class<T> clsDominio)
   {
     _clsDominio = clsDominio;
   }

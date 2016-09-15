@@ -36,6 +36,7 @@ public abstract class Utils
     YYYY,
     YYYY_MM_DD,
     YYYY_MM_DD_HH_MM_SS,
+    YYYY_MM_DD_HH_T_MM_SS_Z,
   }
 
   public enum EnmStringTipo
@@ -321,14 +322,7 @@ public abstract class Utils
 
     SimpleDateFormat objSimpleDateFormat = new SimpleDateFormat(strDataFormato, Utils.getObjLocaleBrasil());
 
-    String strResultado = objSimpleDateFormat.format(dtt.getTime());
-
-    if (Utils.getBooStrVazia(strResultado))
-    {
-      return null;
-    }
-
-    return strResultado.replace("00:00 ", Utils.STR_VAZIA);
+    return objSimpleDateFormat.format(dtt.getTime());
   }
 
   public static String getStrFixa(int intTermo, int intQuantidade)
@@ -619,12 +613,20 @@ public abstract class Utils
     }
 
     strData = strData.toLowerCase();
+
     strData = strData.replace("/", "-");
     strData = strData.replace("t", " ");
 
+    String strFormato = Utils.getStrDttFormato(strData);
+
+    if (Utils.getBooStrVazia(strFormato))
+    {
+      return null;
+    }
+
     GregorianCalendar dttResultado = new GregorianCalendar();
 
-    SimpleDateFormat objSimpleDateFormat = new SimpleDateFormat(Utils.getStrDttFormato(strData));
+    SimpleDateFormat objSimpleDateFormat = new SimpleDateFormat(strFormato);
 
     try
     {
@@ -794,6 +796,9 @@ public abstract class Utils
       case YYYY_MM_DD_HH_MM_SS:
         return "yyyy-MM-dd HH:mm:ss";
 
+      case YYYY_MM_DD_HH_T_MM_SS_Z:
+        return "yyyy-MM-dd'T'HH:mm:ssZ";
+
       case MM:
         return "MM";
 
@@ -825,6 +830,7 @@ public abstract class Utils
     }
 
     strDtt = strDtt.toLowerCase();
+
     strDtt = strDtt.replace("/", "-");
     strDtt = strDtt.replace("t", " ");
 
@@ -870,6 +876,16 @@ public abstract class Utils
     if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d.\\d\\d\\d"))
     {
       return "yyyy-MM-dd HH:mm:ss.SSS";
+    }
+
+    if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d\\-\\d\\d:\\d\\d"))
+    {
+      return "yyyy-MM-dd HH:mm:ssZ";
+    }
+
+    if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d.\\d\\d\\d-\\d\\d:\\d\\d"))
+    {
+      return "yyyy-MM-dd HH:mm:ss.SSSZ";
     }
 
     if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"))
