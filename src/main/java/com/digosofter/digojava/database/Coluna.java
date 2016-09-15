@@ -82,6 +82,7 @@ public class Coluna extends Objeto
   private String _sqlSubSelectClnRef;
   private String _sqlValorDetault;
   private String _strDominioNome;
+  private String _strNomeExibicao;
   private String _strNomeValor;
   private String _strTblNomeClnNome;
   private String _strValor;
@@ -467,6 +468,35 @@ public class Coluna extends Objeto
     _strDominioNome = this.getStrNomeSimplificado().replace("_", Utils.STR_VAZIA);
 
     return _strDominioNome;
+  }
+
+  public String getStrNomeExibicao()
+  {
+    if (_strNomeExibicao != null)
+    {
+      return _strNomeExibicao;
+    }
+
+    _strNomeExibicao = super.getStrNomeExibicao();
+
+    if (Utils.getBooStrVazia(_strNomeExibicao))
+    {
+      return null;
+    }
+
+    if (!_strNomeExibicao.toLowerCase().equals(this.getSqlNome()))
+    {
+      return _strNomeExibicao;
+    }
+
+    _strNomeExibicao = _strNomeExibicao.substring(4);
+
+    _strNomeExibicao = _strNomeExibicao.replace("_id", Utils.STR_VAZIA);
+    _strNomeExibicao = _strNomeExibicao.replace("_", " ");
+
+    _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNomeExibicao);
+
+    return _strNomeExibicao;
   }
 
   private String getStrNomeValor()
@@ -949,27 +979,6 @@ public class Coluna extends Objeto
   public void setStrDominioNome(String strDominioNome)
   {
     _strDominioNome = strDominioNome;
-  }
-
-  @Override
-  public void setStrNome(String strNome)
-  {
-    super.setStrNome(strNome);
-
-    if (Utils.getBooStrVazia(strNome))
-    {
-      return;
-    }
-
-    if (strNome.length() < 5)
-    {
-      return;
-    }
-
-    strNome = strNome.substring(4);
-    strNome = strNome.replace("_id", "");
-
-    this.setStrNomeExibicao(strNome);
   }
 
   private void setStrNomeValor(String strNomeValor)

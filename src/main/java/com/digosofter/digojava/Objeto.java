@@ -51,8 +51,13 @@ public abstract class Objeto
       return _strNomeExibicao;
     }
 
-    _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
+    if (Utils.getBooStrVazia(this.getStrNome()))
+    {
+      return null;
+    }
 
+    _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
+    
     return _strNomeExibicao;
   }
 

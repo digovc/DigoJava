@@ -27,6 +27,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   private List<Filtro> _lstFilCadastro;
   private List<Filtro> _lstFilConsulta;
   private String _sqlNome;
+  private String _strNomeExibicao;
   private String _strPesquisa;
   private Tabela _tblPrincipal;
 
@@ -452,6 +453,34 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     return null;
   }
 
+  public String getStrNomeExibicao()
+  {
+    if (_strNomeExibicao != null)
+    {
+      return _strNomeExibicao;
+    }
+
+    _strNomeExibicao = super.getStrNomeExibicao();
+
+    if (Utils.getBooStrVazia(_strNomeExibicao))
+    {
+      return null;
+    }
+
+    if (!_strNomeExibicao.toLowerCase().equals(this.getSqlNome()))
+    {
+      return _strNomeExibicao;
+    }
+
+    _strNomeExibicao = _strNomeExibicao.substring(4);
+
+    _strNomeExibicao = _strNomeExibicao.replace("_", " ");
+
+    _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNomeExibicao);
+
+    return _strNomeExibicao;
+  }
+
   public String getStrPesquisa()
   {
     return _strPesquisa;
@@ -569,19 +598,6 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   void setLstClnConsulta(List<Coluna> lstClnConsulta)
   {
     _lstClnConsulta = lstClnConsulta;
-  }
-
-  @Override
-  public void setStrNome(final String strNome)
-  {
-    super.setStrNome(strNome);
-
-    if (Utils.getBooStrVazia(strNome))
-    {
-      return;
-    }
-
-    this.setStrNomeExibicao(strNome.replace("tbl_", ""));
   }
 
   public void setStrPesquisa(String strPesquisa)
