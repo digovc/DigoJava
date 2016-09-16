@@ -12,6 +12,11 @@ import java.util.List;
 
 public abstract class Tabela<T extends DominioMain> extends Objeto
 {
+  public static final String STR_CLN_DTT_ALTERACAO_NOME = "altecação";
+  public static final String STR_CLN_DTT_CADASTRO_NOME = "cadastro";
+  public static final String STR_CLN_STR_USUARIO_ALTERACAO_NOME = "cadastro";
+  public static final String STR_CLN_STR_USUARIO_CADASTRO_NOME = "cadastro";
+
   private boolean _booPermitirAlterar;
   private boolean _booPermitirApagar;
   private Coluna _clnNome;
