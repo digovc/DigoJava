@@ -667,11 +667,6 @@ public class Coluna extends Objeto
 
   private <T extends DominioMain> void lerDominio(T objDominio, Class<?> cls)
   {
-    if (objDominio == null)
-    {
-      return;
-    }
-
     if (cls == null)
     {
       return;
@@ -686,27 +681,19 @@ public class Coluna extends Objeto
 
     for (Field objField : cls.getDeclaredFields())
     {
-      if (this.lerDominio(objDominio, objField))
+      if (!this.lerDominio(objDominio, objField))
       {
-        this.setBooClnDominioValorCarregado(true);
-        return;
+        continue;
       }
+
+      this.setBooClnDominioValorCarregado(true);
+      return;
     }
   }
 
   private <T extends DominioMain> boolean lerDominio(T objDominio, Field objField)
   {
-    if (objDominio == null)
-    {
-      return false;
-    }
-
-    if (objField == null)
-    {
-      return false;
-    }
-
-    if (!Utils.simplificar(objField.getName().replace("_", Utils.STR_VAZIA)).equals(this.getStrDominioNome()))
+    if (!objField.getName().replace("_", Utils.STR_VAZIA).toLowerCase().equals(this.getStrDominioNome()))
     {
       return false;
     }
@@ -715,7 +702,6 @@ public class Coluna extends Objeto
 
     try
     {
-
       switch (this.getEnmTipo())
       {
         case BOOLEAN:
@@ -729,7 +715,7 @@ public class Coluna extends Objeto
         case TIME_WITHOUT_TIME_ZONE:
         case TIMESTAMP_WITH_TIME_ZONE:
         case TIMESTAMP_WITHOUT_TIME_ZONE:
-          this.setDttValor((GregorianCalendar) objField.get(objDominio));
+          this.setDttValor((Calendar) objField.get(objDominio));
           return true;
 
         case DECIMAL:
