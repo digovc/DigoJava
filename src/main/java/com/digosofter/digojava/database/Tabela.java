@@ -38,7 +38,6 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
 
   protected Tabela(String strNome, DataBase dbe)
   {
-    this.setClsDominio((Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
     this.setDbe(dbe);
     this.setStrNome(strNome);
 
@@ -229,6 +228,28 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
 
   public Class<T> getClsDominio()
   {
+    if (_clsDominio != null)
+    {
+      return _clsDominio;
+    }
+
+    if (!(this.getClass().getGenericSuperclass() instanceof ParameterizedType))
+    {
+      return null;
+    }
+
+    if (((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments() == null)
+    {
+      return null;
+    }
+
+    if (((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments().length < 1)
+    {
+      return null;
+    }
+
+    _clsDominio = ((Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+
     return _clsDominio;
   }
 
@@ -256,8 +277,6 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     _lstClnOrdenado = null;
 
     _lstCln = new ArrayList<>();
-
-    this.inicializarLstCln(-1);
 
     return _lstCln;
   }
@@ -428,6 +447,8 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
 
     _lstFilConsulta = new ArrayList<>();
 
+    this.inicializarLstFilConsulta(_lstFilConsulta);
+
     return _lstFilConsulta;
   }
 
@@ -505,9 +526,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
 
   protected void inicializar()
   {
-    this.criar();
-    this.criarColuna();
-
+    this.inicializarLstCln(-1);
   }
 
   protected int inicializarLstCln(int intOrdem)
@@ -522,9 +541,15 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     return intOrdem;
   }
 
+  protected void inicializarLstFilConsulta(final List<Filtro> lstFilConsulta)
+  {
+  }
+
   private void iniciar()
   {
     this.inicializar();
+    this.criar();
+    this.criarColuna();
   }
 
   /**
@@ -578,11 +603,6 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     _clnOrdem = clnOrdem;
   }
 
-  private void setClsDominio(Class<T> clsDominio)
-  {
-    _clsDominio = clsDominio;
-  }
-
   private void setDbe(DataBase dbe)
   {
     if (_dbe == dbe)
@@ -608,5 +628,11 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   public void setStrPesquisa(String strPesquisa)
   {
     _strPesquisa = strPesquisa;
+  }
+
+  @Override
+  public String toString()
+  {
+    return this.getSqlNome();
   }
 }

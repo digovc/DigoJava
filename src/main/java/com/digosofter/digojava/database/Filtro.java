@@ -42,18 +42,15 @@ public class Filtro extends Objeto
 
   public Filtro(Coluna clnFiltro, boolean booFiltro)
   {
-    this.setClnFiltro(clnFiltro);
-    this.setStrFiltro(booFiltro ? "1" : "0");
+    this(clnFiltro, (booFiltro ? "1" : "0"));
   }
 
-  public Filtro(Coluna clnFiltro, EnmOperador enmOperador, int intFiltro)
+  public Filtro(Coluna clnFiltro, int intFiltro, EnmOperador enmOperador)
   {
-    this.setClnFiltro(clnFiltro);
-    this.setEnmOperador(enmOperador);
-    this.setStrFiltro(String.valueOf(intFiltro));
+    this(clnFiltro, String.valueOf(intFiltro), enmOperador);
   }
 
-  public Filtro(Coluna clnFiltro, EnmOperador enmOperador, String strFiltro)
+  public Filtro(Coluna clnFiltro, String strFiltro, EnmOperador enmOperador)
   {
     this.setClnFiltro(clnFiltro);
     this.setEnmOperador(enmOperador);
@@ -62,14 +59,12 @@ public class Filtro extends Objeto
 
   public Filtro(Coluna clnFiltro, GregorianCalendar dttFiltro)
   {
-    this.setClnFiltro(clnFiltro);
-    this.setStrFiltro(Utils.getStrDataFormatada(dttFiltro, EnmDataFormato.YYYY_MM_DD_HH_MM_SS));
+    this(clnFiltro, (Utils.getStrDataFormatada(dttFiltro, EnmDataFormato.YYYY_MM_DD_HH_MM_SS)));
   }
 
   public Filtro(Coluna clnFiltro, int intFiltro)
   {
-    this.setClnFiltro(clnFiltro);
-    this.setStrFiltro(String.valueOf(intFiltro));
+    this(clnFiltro, intFiltro, EnmOperador.IGUAL);
   }
 
   public Filtro(Coluna clnFiltro, String strFiltro)

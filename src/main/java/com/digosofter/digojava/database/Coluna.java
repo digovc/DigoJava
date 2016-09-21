@@ -64,6 +64,7 @@ public class Coluna extends Objeto
   private boolean _booOrdem;
   private boolean _booOrdemDecrescente;
   private boolean _booSenha;
+  private boolean _booValorDefault;
   private boolean _booVisivelCadastro = true;
   private boolean _booVisivelConsulta;
   private boolean _booVisivelDetalhe = true;
@@ -79,18 +80,21 @@ public class Coluna extends Objeto
   private List<OnValorAlteradoListener> _lstEvtOnValorAlteradoListener;
   private LinkedHashMap<Integer, String> _mapOpcao;
   private String _sqlNome;
-  private String _sqlSubSelectClnRef;
+  private String _sqlNomeInsert;
+  private String _sqlSelect;
+  private String _sqlSubSelect;
+  private String _sqlUpdate;
+  private String _sqlValor;
   private String _sqlValorDetault;
+  private String _sqlValorInsert;
   private String _strDominioNome;
   private String _strNomeExibicao;
   private String _strNomeValor;
-  private String _strTblNomeClnNome;
   private String _strValor;
   private String _strValorAnterior;
   private String _strValorDefault;
   private String _strValorExibicao;
   private String _strValorMonetario;
-  private String _strValorSql;
   private Tabela<?> _tbl;
 
   public Coluna(String strNome, Tabela<?> tbl, EnmTipo enmTipo)
@@ -139,6 +143,48 @@ public class Coluna extends Objeto
     this.getMapOpcao().put(intValor, strNome);
   }
 
+  protected void atualizarBooValorDefault(final boolean booValorDefault)
+  {
+    this.setStrValorDefault(booValorDefault ? "true" : "false");
+  }
+
+  private void atualizarIntValorDefault(final int intValorDefault)
+  {
+    this.setStrValorDefault(String.valueOf(intValorDefault));
+  }
+
+  private void atualizarSqlValor(final String sqlValor)
+  {
+    this.setSqlNomeInsert(null);
+    this.setSqlUpdate(null);
+    this.setSqlValorInsert(null);
+  }
+
+  private void atualizarStrValor(final String strValor)
+  {
+    this.setStrNomeValor(null);
+    this.setStrValorExibicao(null);
+    this.setStrValorMonetario(null);
+    this.setSqlValor(null);
+
+    this.dispararEvtOnValorAlteradoListener();
+  }
+
+  public void carregarValorDefault()
+  {
+    if (!this.getBooVazia())
+    {
+      return;
+    }
+
+    if (Utils.getBooStrVazia(this.getStrValorDefault()))
+    {
+      return;
+    }
+
+    this.setStrValor(this.getStrValorDefault());
+  }
+
   public void criar()
   {
   }
@@ -169,6 +215,16 @@ public class Coluna extends Objeto
 
       evt.onValorAlterado(this, arg);
     }
+  }
+
+  public boolean getBooChavePrimaria()
+  {
+    if (this.getTbl() == null)
+    {
+      return false;
+    }
+
+    return this.equals(this.getTbl().getClnIntId());
   }
 
   private boolean getBooClnDominioValorCarregado()
@@ -219,6 +275,13 @@ public class Coluna extends Objeto
   public boolean getBooValor()
   {
     return Utils.getBoo(this.getStrValor());
+  }
+
+  public boolean getBooValorDefault()
+  {
+    _booValorDefault = Utils.getBoo(this.getStrValorDefault());
+
+    return _booValorDefault;
   }
 
   /**
@@ -312,7 +375,7 @@ public class Coluna extends Objeto
 
   protected EnmTipoGrupo getEnmTipoGrupo()
   {
-    if (_enmTipoGrupo != EnmTipoGrupo.NONE)
+    if (_enmTipoGrupo != null)
     {
       return _enmTipoGrupo;
     }
@@ -396,7 +459,7 @@ public class Coluna extends Objeto
       return _mapOpcao;
     }
 
-    _mapOpcao = new LinkedHashMap<Integer, String>();
+    _mapOpcao = new LinkedHashMap<>();
 
     return _mapOpcao;
   }
@@ -413,11 +476,46 @@ public class Coluna extends Objeto
     return _sqlNome;
   }
 
-  public String getSqlSubSelectClnRef()
+  public String getSqlNomeInsert()
   {
-    if (_sqlSubSelectClnRef != null)
+    if (_sqlNomeInsert != null)
     {
-      return _sqlSubSelectClnRef;
+      return _sqlNomeInsert;
+    }
+
+    if (this.getBooVazia())
+    {
+      return null;
+    }
+
+    if ((this.getBooChavePrimaria()) && (this.getIntValor() < 1))
+    {
+      return null;
+    }
+
+    if ((this.getClnRef() != null) && (this.getIntValor() < 1))
+    {
+      return null;
+    }
+
+    return _sqlNomeInsert = String.format("%s, ", this.getSqlNome());
+  }
+
+  public String getSqlSelect()
+  {
+    if (_sqlSelect != null)
+    {
+      return _sqlSelect;
+    }
+
+    return _sqlSelect = String.format("%s.%s, ", this.getTbl().getSqlNome(), this.getSqlNome());
+  }
+
+  public String getSqlSubSelect()
+  {
+    if (_sqlSubSelect != null)
+    {
+      return _sqlSubSelect;
     }
 
     if (this.getClnRef() == null)
@@ -425,15 +523,62 @@ public class Coluna extends Objeto
       return null;
     }
 
-    _sqlSubSelectClnRef = "(select _tbl_ref_nome._cln_ref_nome from _tbl_ref_nome where _tbl_ref_nome._cln_ref_pk = _tbl_nome._cln_nome) _cln_nome, ";
+    _sqlSubSelect = "(select _tbl_ref_nome._cln_ref_nome from _tbl_ref_nome where _tbl_ref_nome._cln_ref_pk = _tbl_nome._cln_nome) _cln_nome, ";
 
-    _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_ref_nome", this.getClnRef().getTbl().getSqlNome());
-    _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getSqlNome());
-    _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnIntId().getSqlNome());
-    _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_nome", this.getTbl().getSqlNome());
-    _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_nome", this.getSqlNome());
+    _sqlSubSelect = _sqlSubSelect.replace("_tbl_ref_nome", this.getClnRef().getTbl().getSqlNome());
+    _sqlSubSelect = _sqlSubSelect.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getSqlNome());
+    _sqlSubSelect = _sqlSubSelect.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnIntId().getSqlNome());
+    _sqlSubSelect = _sqlSubSelect.replace("_tbl_nome", this.getTbl().getSqlNome());
+    _sqlSubSelect = _sqlSubSelect.replace("_cln_nome", this.getSqlNome());
 
-    return _sqlSubSelectClnRef;
+    return _sqlSubSelect;
+  }
+
+  public String getSqlUpdate()
+  {
+    if (_sqlUpdate != null)
+    {
+      return _sqlUpdate;
+    }
+
+    if (this.getBooVazia())
+    {
+      return null;
+    }
+
+    if (this.getBooChavePrimaria())
+    {
+      return null;
+    }
+
+    if ((this.getClnRef() != null) && (this.getIntValor() < 1))
+    {
+      return null;
+    }
+
+    return _sqlUpdate = String.format("%s = %s, ", this.getSqlNome(), this.getSqlValor());
+  }
+
+  public String getSqlValor()
+  {
+    if (_sqlValor != null)
+    {
+      return _sqlValor;
+    }
+
+    switch (this.getEnmTipo())
+    {
+      case BOOLEAN:
+        return _sqlValor = this.getBooValor() ? "1" : "0";
+    }
+
+    switch (this.getEnmTipoGrupo())
+    {
+      case NUMERICO:
+        return _sqlValor = this.getStrValor();
+      default:
+        return _sqlValor = String.format("'%s'", this.getStrValor());
+    }
   }
 
   protected String getSqlValorDetault()
@@ -448,9 +593,34 @@ public class Coluna extends Objeto
       return null;
     }
 
-    _sqlValorDetault = "DEFAULT '_cln_valor_default'".replace("_cln_valor_default", this.getStrValorDefault());
+    _sqlValorDetault = "default _cln_valor_default".replace("_cln_valor_default", this.getStrValorDefault());
 
     return _sqlValorDetault;
+  }
+
+  public String getSqlValorInsert()
+  {
+    if (_sqlValorInsert != null)
+    {
+      return _sqlValorInsert;
+    }
+
+    if (this.getBooVazia())
+    {
+      return null;
+    }
+
+    if ((this.getBooChavePrimaria()) && (this.getIntValor() < 1))
+    {
+      return null;
+    }
+
+    if ((this.getClnRef() != null) && (this.getIntValor() < 1))
+    {
+      return null;
+    }
+
+    return _sqlValorInsert = String.format("%s, ", this.getSqlValor());
   }
 
   protected String getStrDominioNome()
@@ -509,24 +679,9 @@ public class Coluna extends Objeto
     _strNomeValor = "_cln_nome = '_cln_valor'";
 
     _strNomeValor = _strNomeValor.replace("_cln_nome", this.getSqlNome());
-    _strNomeValor = _strNomeValor.replace("_cln_valor", this.getStrValorSql());
+    _strNomeValor = _strNomeValor.replace("_cln_valor", this.getSqlValor());
 
     return _strNomeValor;
-  }
-
-  public String getStrTblNomeClnNome()
-  {
-    if (_strTblNomeClnNome != null)
-    {
-      return _strTblNomeClnNome;
-    }
-
-    _strTblNomeClnNome = "_tbl_nome._cln_nome, ";
-
-    _strTblNomeClnNome = _strTblNomeClnNome.replace("_tbl_nome", this.getTbl().getSqlNome());
-    _strTblNomeClnNome = _strTblNomeClnNome.replace("_cln_nome", this.getSqlNome());
-
-    return _strTblNomeClnNome;
   }
 
   public String getStrValor()
@@ -602,35 +757,6 @@ public class Coluna extends Objeto
     _strValorMonetario = Utils.getStrValorMonetario(Double.parseDouble(this.getStrValor()));
 
     return _strValorMonetario;
-  }
-
-  public String getStrValorSql()
-  {
-    if (_strValorSql != null)
-    {
-      return _strValorSql;
-    }
-
-    switch (this.getEnmTipo())
-    {
-      case BOOLEAN:
-        return _strValorSql = this.getBooValor() ? "1" : "0";
-
-      case DATE_TIME:
-        return _strValorSql = this.getStrValor();
-
-      case INTEGER:
-        return _strValorSql = this.getStrValor();
-
-      case NUMERIC:
-        return _strValorSql = this.getStrValor();
-
-      case REAL:
-        return _strValorSql = this.getStrValor();
-
-      default:
-        return _strValorSql = getStrValorSqlText();
-    }
   }
 
   private String getStrValorSqlText()
@@ -858,6 +984,13 @@ public class Coluna extends Objeto
     this.setStrValor(String.valueOf(booValor));
   }
 
+  public void setBooValorDefault(boolean booValorDefault)
+  {
+    _booValorDefault = booValorDefault;
+
+    this.atualizarBooValorDefault(_booValorDefault);
+  }
+
   public void setBooVisivelCadastro(boolean booVisivelCadastro)
   {
     _booVisivelCadastro = booVisivelCadastro;
@@ -959,7 +1092,34 @@ public class Coluna extends Objeto
   {
     _intValorDefault = intValorDefault;
 
-    this.setDblValorDefault(_intValorDefault);
+    this.atualizarIntValorDefault(_intValorDefault);
+  }
+
+  private void setSqlNomeInsert(final String sqlNomeInsert)
+  {
+    _sqlNomeInsert = sqlNomeInsert;
+  }
+
+  private void setSqlUpdate(final String sqlUpdate)
+  {
+    _sqlUpdate = sqlUpdate;
+  }
+
+  private void setSqlValor(String sqlValor)
+  {
+    if (_sqlValor == sqlValor)
+    {
+      return;
+    }
+
+    _sqlValor = sqlValor;
+
+    this.atualizarSqlValor(sqlValor);
+  }
+
+  private void setSqlValorInsert(String sqlValorInsert)
+  {
+    _sqlValorInsert = sqlValorInsert;
   }
 
   public void setStrDominioNome(String strDominioNome)
@@ -983,12 +1143,7 @@ public class Coluna extends Objeto
 
     _strValor = strValor;
 
-    this.setStrNomeValor(null);
-    this.setStrValorExibicao(null);
-    this.setStrValorMonetario(null);
-    this.setStrValorSql(null);
-
-    this.dispararEvtOnValorAlteradoListener();
+    this.atualizarStrValor(strValor);
   }
 
   private void setStrValorAnterior(String strValorAnterior)
@@ -1011,11 +1166,6 @@ public class Coluna extends Objeto
     _strValorMonetario = strValorMonetario;
   }
 
-  private void setStrValorSql(String strValorSql)
-  {
-    _strValorSql = strValorSql;
-  }
-
   public void setTbl(Tabela<?> tbl)
   {
     if (_tbl == tbl)
@@ -1031,5 +1181,11 @@ public class Coluna extends Objeto
     }
 
     _tbl.addCln(this);
+  }
+
+  @Override
+  public String toString()
+  {
+    return String.format("%s: %s", this.getSqlNome(), this.getStrValor());
   }
 }

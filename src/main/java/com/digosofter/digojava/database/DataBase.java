@@ -86,7 +86,7 @@ public abstract class DataBase extends Objeto
    *
    * @param intTblObjetoId Código do objeto da tabela que se deseja retornar.
    */
-  public Tabela getTblPorIntObjetoId(int intTblObjetoId)
+  public Tabela getTbl(int intTblObjetoId)
   {
     if (intTblObjetoId < 0)
     {
