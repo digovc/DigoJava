@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Coluna extends Objeto
 {
@@ -706,6 +707,13 @@ public class Coluna extends Objeto
       return _strValorExibicao;
     }
 
+    String strValorExibicaoOpcao = this.getStrValorExibicaoOpcao();
+
+    if (!Utils.getBooStrVazia(strValorExibicaoOpcao))
+    {
+      return _strValorExibicao = strValorExibicaoOpcao;
+    }
+
     switch (this.getEnmTipo())
     {
       case BOOLEAN:
@@ -745,6 +753,26 @@ public class Coluna extends Objeto
       default:
         return _strValorExibicao = this.getStrValor();
     }
+  }
+
+  private String getStrValorExibicaoOpcao()
+  {
+    if (this.getMapOpcao().isEmpty())
+    {
+      return null;
+    }
+
+    for (Map.Entry<Integer, String> itmOpcao : this.getMapOpcao().entrySet())
+    {
+      if (this.getIntValor() != itmOpcao.getKey())
+      {
+        continue;
+      }
+
+      return itmOpcao.getValue();
+    }
+
+    return null;
   }
 
   private String getStrValorMonetario()

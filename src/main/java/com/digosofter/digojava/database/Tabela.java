@@ -90,6 +90,16 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     this.dispararEvtOnApagarReg(arg);
   }
 
+  private void atualizarDbe(final DataBase dbe)
+  {
+    if (dbe == null)
+    {
+      return;
+    }
+
+    dbe.addTbl(this);
+  }
+
   // TODO: Criar uma classe que gerencia a criação e atualização das tabelas.
   protected abstract void criar();
 
@@ -612,7 +622,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
 
     _dbe = dbe;
 
-    _dbe.addTbl(this);
+    this.atualizarDbe(dbe);
   }
 
   void setLstClnCadastro(List<Coluna> lstClnCadastro)

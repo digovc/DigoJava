@@ -8,7 +8,7 @@ import java.util.List;
 
 public abstract class DataBase extends Objeto
 {
-  private List<Tabela<?>> _lstTbl;
+  private List<Tabela> _lstTbl;
 
   protected DataBase()
   {
@@ -69,7 +69,7 @@ public abstract class DataBase extends Objeto
   /**
    * @return Retorna a lista de tabelas deste banco de dados.
    */
-  public List<Tabela<?>> getLstTbl()
+  public List<Tabela> getLstTbl()
   {
     if (_lstTbl != null)
     {
