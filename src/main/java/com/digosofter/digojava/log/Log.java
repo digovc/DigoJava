@@ -67,8 +67,9 @@ public class Log
       this.setDtt(Calendar.getInstance());
     }
 
-    String strResultado = "_log_tipo - _log_conteudo";
+    String strResultado = "_log_data - _log_tipo - _log_conteudo";
 
+    strResultado = strResultado.replace("_log_data", Utils.getStrDataFormatada(this.getDtt(), Utils.EnmDataFormato.HH_MM_SS_DD_MM_YYYY));
     strResultado = strResultado.replace("_log_tipo", this.getStrTipo());
     strResultado = strResultado.replace("_log_conteudo", this.getStrLog());
 

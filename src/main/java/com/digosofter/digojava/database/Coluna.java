@@ -577,9 +577,24 @@ public class Coluna extends Objeto
     {
       case NUMERICO:
         return _sqlValor = this.getStrValor();
+
       default:
-        return _sqlValor = String.format("'%s'", this.getStrValor());
+        return _sqlValor = this.getSqlValorAlfanumerico();
     }
+  }
+
+  private String getSqlValorAlfanumerico()
+  {
+    if (Utils.getBooStrVazia(this.getStrValor()))
+    {
+      return null;
+    }
+
+    String strResultado = this.getStrValor();
+
+    strResultado = strResultado.replace("'", "''");
+
+    return String.format("'%s'", strResultado);
   }
 
   protected String getSqlValorDetault()
