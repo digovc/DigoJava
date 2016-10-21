@@ -56,6 +56,8 @@ public class Coluna extends Objeto
     TEMPORAL,
   }
 
+  public static final String STR_VALOR_NULO = "<<<<<null>>>>>";
+
   private boolean _booClnDominioValorCarregado;
   private boolean _booNome;
   private boolean _booNotNull;
@@ -567,19 +569,24 @@ public class Coluna extends Objeto
       return _sqlValor;
     }
 
+    if (STR_VALOR_NULO.equals(this.getStrValor()))
+    {
+      return (_sqlValor = "null");
+    }
+
     switch (this.getEnmTipo())
     {
       case BOOLEAN:
-        return _sqlValor = this.getBooValor() ? "1" : "0";
+        return (_sqlValor = this.getBooValor() ? "1" : "0");
     }
 
     switch (this.getEnmTipoGrupo())
     {
       case NUMERICO:
-        return _sqlValor = this.getStrValor();
+        return (_sqlValor = this.getStrValor());
 
       default:
-        return _sqlValor = this.getSqlValorAlfanumerico();
+        return (_sqlValor = this.getSqlValorAlfanumerico());
     }
   }
 

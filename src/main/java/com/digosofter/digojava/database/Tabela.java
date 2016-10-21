@@ -103,7 +103,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   // TODO: Criar uma classe que gerencia a criação e atualização das tabelas.
   protected abstract void criar();
 
-  private void criarColuna()
+  protected void criarColuna()
   {
     for (Coluna cln : this.getLstCln())
     {
@@ -565,7 +565,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   /**
    * Limpa os valores de todas as colunas da tabela.
    */
-  public void limparColunas()
+  public void limparDados()
   {
     for (Coluna cln : this.getLstCln())
     {
