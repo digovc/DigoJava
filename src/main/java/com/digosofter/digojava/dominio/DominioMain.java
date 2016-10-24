@@ -17,6 +17,8 @@ public abstract class DominioMain extends Objeto
   private GregorianCalendar _dttAlteracao;
   private GregorianCalendar _dttCadastro;
   private int _intId;
+  private int _intUsuarioAlteracaoId;
+  private int _intUsuarioCadastroId;
 
   /**
    * Carrega os dados contidos na posição atual do ResultSet nos atributos desta instância.
@@ -190,6 +192,16 @@ public abstract class DominioMain extends Objeto
     return _intId;
   }
 
+  public int getIntUsuarioAlteracaoId()
+  {
+    return _intUsuarioAlteracaoId;
+  }
+
+  public int getIntUsuarioCadastroId()
+  {
+    return _intUsuarioCadastroId;
+  }
+
   public void setBooAtivo(boolean booAtivo)
   {
     _booAtivo = booAtivo;
@@ -208,5 +220,15 @@ public abstract class DominioMain extends Objeto
   public void setIntId(int intId)
   {
     _intId = intId;
+  }
+
+  public void setIntUsuarioAlteracaoId(int intUsuarioAlteracaoId)
+  {
+    _intUsuarioAlteracaoId = intUsuarioAlteracaoId;
+  }
+
+  public void setIntUsuarioCadastroId(int intUsuarioCadastroId)
+  {
+    _intUsuarioCadastroId = intUsuarioCadastroId;
   }
 }
