@@ -22,11 +22,10 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   private Coluna _clnNome;
   private Coluna _clnOrdem;
   private Class<T> _clsDominio;
-  private DataBase _dbe;
+  private DbeMain _dbe;
   private List<Coluna> _lstCln;
   private List<Coluna> _lstClnCadastro;
   private List<Coluna> _lstClnConsulta;
-  private List<Coluna> _lstClnConsultaOrdenado;
   private List<Coluna> _lstClnOrdenado;
   private List<OnTblChangeListener> _lstEvtOnTblChangeListener;
   private List<Filtro> _lstFilCadastro;
@@ -36,7 +35,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   private String _strPesquisa;
   private Tabela _tblPrincipal;
 
-  protected Tabela(String strNome, DataBase dbe)
+  protected Tabela(String strNome, DbeMain dbe)
   {
     this.setDbe(dbe);
     this.setStrNome(strNome);
@@ -90,7 +89,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     this.dispararEvtOnApagarReg(arg);
   }
 
-  private void atualizarDbe(final DataBase dbe)
+  private void atualizarDbe(final DbeMain dbe)
   {
     if (dbe == null)
     {
@@ -263,7 +262,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     return _clsDominio;
   }
 
-  public DataBase getDbe()
+  public DbeMain getDbe()
   {
     return _dbe;
   }
@@ -342,8 +341,6 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
       return _lstClnConsulta;
     }
 
-    _lstClnConsultaOrdenado = null;
-
     _lstClnConsulta = new ArrayList<>();
 
     _lstClnConsulta.add(this.getClnIntId());
@@ -380,27 +377,6 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     }
 
     return _lstClnConsulta;
-  }
-
-  public List<Coluna> getLstClnConsultaOrdenado()
-  {
-    if (_lstClnConsultaOrdenado != null)
-    {
-      return _lstClnConsultaOrdenado;
-    }
-
-    _lstClnConsultaOrdenado = this.getLstClnConsulta();
-
-    Collections.sort(_lstClnConsultaOrdenado, new Comparator<Coluna>()
-    {
-      @Override
-      public int compare(Coluna cln1, Coluna cln2)
-      {
-        return (cln1.getIntOrdem() - cln2.getIntOrdem());
-      }
-    });
-
-    return _lstClnConsultaOrdenado;
   }
 
   public List<Coluna> getLstClnOrdenado()
@@ -536,19 +512,17 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
 
   protected void inicializar()
   {
-    this.inicializarLstCln(-1);
+    this.inicializarLstCln(this.getLstCln());
   }
 
-  protected int inicializarLstCln(int intOrdem)
+  protected void inicializarLstCln(List<Coluna> lstCln)
   {
-    this.getClnBooAtivo().setIntOrdem(++intOrdem);
-    this.getClnDttAlteracao().setIntOrdem(++intOrdem);
-    this.getClnDttCadastro().setIntOrdem(++intOrdem);
-    this.getClnIntId().setIntOrdem(++intOrdem);
-    this.getClnIntUsuarioAlteracaoId().setIntOrdem(++intOrdem);
-    this.getClnIntUsuarioCadastroId().setIntOrdem(++intOrdem);
-
-    return intOrdem;
+    lstCln.add(this.getClnBooAtivo());
+    lstCln.add(this.getClnDttAlteracao());
+    lstCln.add(this.getClnDttCadastro());
+    lstCln.add(this.getClnIntId());
+    lstCln.add(this.getClnIntUsuarioAlteracaoId());
+    lstCln.add(this.getClnIntUsuarioCadastroId());
   }
 
   protected void inicializarLstFilConsulta(final List<Filtro> lstFilConsulta)
@@ -613,7 +587,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     _clnOrdem = clnOrdem;
   }
 
-  private void setDbe(DataBase dbe)
+  private void setDbe(DbeMain dbe)
   {
     if (_dbe == dbe)
     {

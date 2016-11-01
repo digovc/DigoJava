@@ -6,11 +6,11 @@ import com.digosofter.digojava.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class DataBase extends Objeto
+public abstract class DbeMain extends Objeto
 {
   private List<Tabela> _lstTbl;
 
-  protected DataBase()
+  protected DbeMain()
   {
     this.iniciar();
   }

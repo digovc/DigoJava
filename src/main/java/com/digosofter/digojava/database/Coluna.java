@@ -77,7 +77,6 @@ public class Coluna extends Objeto
   private EnmTipoGrupo _enmTipoGrupo;
   private int _intFrmLinha = 1;
   private int _intFrmLinhaPeso = 1;
-  private int _intOrdem;
   private int _intTamanhoCampo = 100;
   private int _intValorDefault;
   private List<OnValorAlteradoListener> _lstEvtOnValorAlteradoListener;
@@ -419,11 +418,6 @@ public class Coluna extends Objeto
   public int getIntFrmLinhaPeso()
   {
     return _intFrmLinhaPeso;
-  }
-
-  public int getIntOrdem()
-  {
-    return _intOrdem;
   }
 
   public int getIntTamanhoCampo()
@@ -1123,11 +1117,6 @@ public class Coluna extends Objeto
     _intFrmLinhaPeso = intFrmLinhaPeso;
   }
 
-  public void setIntOrdem(int intOrdem)
-  {
-    _intOrdem = intOrdem;
-  }
-
   public void setIntTamanhoCampo(int intTamanhoCampo)
   {
     _intTamanhoCampo = intTamanhoCampo;
@@ -1218,19 +1207,7 @@ public class Coluna extends Objeto
 
   public void setTbl(Tabela<?> tbl)
   {
-    if (_tbl == tbl)
-    {
-      return;
-    }
-
     _tbl = tbl;
-
-    if (_tbl == null)
-    {
-      return;
-    }
-
-    _tbl.addCln(this);
   }
 
   @Override
