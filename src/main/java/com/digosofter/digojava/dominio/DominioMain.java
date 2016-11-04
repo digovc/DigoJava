@@ -19,6 +19,7 @@ public abstract class DominioMain extends Objeto
   private int _intId;
   private int _intUsuarioAlteracaoId;
   private int _intUsuarioCadastroId;
+  private String _strObservacao;
 
   /**
    * Carrega os dados contidos na posição atual do ResultSet nos atributos desta instância.
@@ -202,6 +203,11 @@ public abstract class DominioMain extends Objeto
     return _intUsuarioCadastroId;
   }
 
+  public String getStrObservacao()
+  {
+    return _strObservacao;
+  }
+
   public void setBooAtivo(boolean booAtivo)
   {
     _booAtivo = booAtivo;
@@ -230,5 +236,10 @@ public abstract class DominioMain extends Objeto
   public void setIntUsuarioCadastroId(int intUsuarioCadastroId)
   {
     _intUsuarioCadastroId = intUsuarioCadastroId;
+  }
+
+  public void setStrObservacao(String strObservacao)
+  {
+    _strObservacao = strObservacao;
   }
 }

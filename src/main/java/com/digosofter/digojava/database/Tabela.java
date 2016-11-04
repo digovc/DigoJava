@@ -235,6 +235,8 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     return _clnOrdem;
   }
 
+  public abstract Coluna getClnStrObservacao();
+
   public Class<T> getClsDominio()
   {
     if (_clsDominio != null)
@@ -523,6 +525,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     lstCln.add(this.getClnIntId());
     lstCln.add(this.getClnIntUsuarioAlteracaoId());
     lstCln.add(this.getClnIntUsuarioCadastroId());
+    lstCln.add(this.getClnStrObservacao());
   }
 
   protected void inicializarLstFilConsulta(final List<Filtro> lstFilConsulta)
