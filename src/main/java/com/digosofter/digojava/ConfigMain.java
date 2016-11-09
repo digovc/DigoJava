@@ -45,10 +45,6 @@ public abstract class ConfigMain extends Objeto
     return _objGson;
   }
 
-  protected void recuperar()
-  {
-  }
-
   public void salvar()
   {
     this.getArqJson().setStrConteudo(this.getObjGson().toJson(this));
