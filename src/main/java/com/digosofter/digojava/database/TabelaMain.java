@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class Tabela<T extends DominioMain> extends Objeto
+public abstract class TabelaMain<T extends DominioMain> extends Objeto
 {
   public static final String STR_CLN_DTT_ALTERACAO_NOME = "altecação";
   public static final String STR_CLN_DTT_CADASTRO_NOME = "cadastro";
@@ -33,9 +33,9 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
   private String _sqlNome;
   private String _strNomeExibicao;
   private String _strPesquisa;
-  private Tabela _tblPrincipal;
+  private TabelaMain _tblPrincipal;
 
-  protected Tabela(String strNome, DbeMain dbe)
+  protected TabelaMain(String strNome, DbeMain dbe)
   {
     this.setDbe(dbe);
     this.setStrNome(strNome);
@@ -500,7 +500,7 @@ public abstract class Tabela<T extends DominioMain> extends Objeto
     return _strPesquisa;
   }
 
-  public Tabela getTblPrincipal()
+  public TabelaMain getTblPrincipal()
   {
     if (_tblPrincipal != null)
     {

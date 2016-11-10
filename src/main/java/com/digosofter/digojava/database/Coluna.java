@@ -97,14 +97,14 @@ public class Coluna extends Objeto
   private String _strValorDefault;
   private String _strValorExibicao;
   private String _strValorMonetario;
-  private Tabela<?> _tbl;
+  private TabelaMain<?> _tbl;
 
-  public Coluna(String strNome, Tabela<?> tbl, EnmTipo enmTipo)
+  public Coluna(String strNome, TabelaMain<?> tbl, EnmTipo enmTipo)
   {
     this(strNome, tbl, enmTipo, null);
   }
 
-  public Coluna(String strNome, Tabela<?> tbl, EnmTipo enmTipo, Coluna clnRef)
+  public Coluna(String strNome, TabelaMain<?> tbl, EnmTipo enmTipo, Coluna clnRef)
   {
     this.setClnRef(clnRef);
     this.setEnmTipo(enmTipo);
@@ -818,7 +818,7 @@ public class Coluna extends Objeto
     return strValorResultado;
   }
 
-  public Tabela<?> getTbl()
+  public TabelaMain<?> getTbl()
   {
     return _tbl;
   }
@@ -1124,6 +1124,11 @@ public class Coluna extends Objeto
 
   public void setIntValor(int intValor)
   {
+    if ((intValor < 1) && (this.getClnRef() != null))
+    {
+      return;
+    }
+
     this.setStrValor(String.valueOf(intValor));
   }
 
@@ -1205,7 +1210,7 @@ public class Coluna extends Objeto
     _strValorMonetario = strValorMonetario;
   }
 
-  public void setTbl(Tabela<?> tbl)
+  public void setTbl(TabelaMain<?> tbl)
   {
     _tbl = tbl;
   }

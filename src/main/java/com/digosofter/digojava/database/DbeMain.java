@@ -8,14 +8,14 @@ import java.util.List;
 
 public abstract class DbeMain extends Objeto
 {
-  private List<Tabela> _lstTbl;
+  private List<TabelaMain> _lstTbl;
 
   protected DbeMain()
   {
     this.iniciar();
   }
 
-  public void addTbl(Tabela<?> tbl)
+  public void addTbl(TabelaMain<?> tbl)
   {
     if (tbl == null)
     {
@@ -69,7 +69,7 @@ public abstract class DbeMain extends Objeto
   /**
    * @return Retorna a lista de tabelas deste banco de dados.
    */
-  public List<Tabela> getLstTbl()
+  public List<TabelaMain> getLstTbl()
   {
     if (_lstTbl != null)
     {
@@ -86,14 +86,14 @@ public abstract class DbeMain extends Objeto
    *
    * @param intTblObjetoId Código do objeto da tabela que se deseja retornar.
    */
-  public Tabela getTbl(int intTblObjetoId)
+  public TabelaMain getTbl(int intTblObjetoId)
   {
     if (intTblObjetoId < 0)
     {
       return null;
     }
 
-    for (Tabela tbl : this.getLstTbl())
+    for (TabelaMain tbl : this.getLstTbl())
     {
       if (tbl == null)
       {
