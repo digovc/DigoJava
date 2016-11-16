@@ -26,11 +26,6 @@ public abstract class LogManagerMain extends Objeto
       return;
     }
 
-    if (this.getLstLog().contains(log))
-    {
-      return;
-    }
-
     this.getLstLog().add(log);
 
     log.setLogManagerMain(this);

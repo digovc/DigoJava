@@ -269,7 +269,10 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return _dbe;
   }
 
-  public int getIntQtdLinha()
+  /**
+   * @return Retorna a quantidade de registros presentes nesta tabela.
+   */
+  public int getIntRegistroQuantidade()
   {
     String sql = "select count(1) from _tbl_nome;";
 
