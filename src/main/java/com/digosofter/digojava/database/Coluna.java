@@ -16,6 +16,13 @@ import java.util.Map;
 
 public class Coluna extends Objeto
 {
+  public enum EnmOrdem
+  {
+    CRESCENTE,
+    DECRESCENTE,
+    NONE,
+  }
+
   public enum EnmTipo
   {
     BIGINT,
@@ -57,15 +64,12 @@ public class Coluna extends Objeto
   }
 
   public static final String STR_VALOR_NULO = "<<<<<null>>>>>";
-
   private boolean _booClnDominioValorCarregado;
   private boolean _booNome;
   private boolean _booNotNull;
   private boolean _booObrigatorio;
   private boolean _booOnDeleteCascade;
   private boolean _booOnUpdateCascade;
-  private boolean _booOrdem;
-  private boolean _booOrdemDecrescente;
   private boolean _booSenha;
   private boolean _booValorDefault;
   private boolean _booVisivelCadastro = true;
@@ -73,6 +77,7 @@ public class Coluna extends Objeto
   private boolean _booVisivelDetalhe = true;
   private Coluna _clnRef;
   private double _dblValorDefault;
+  private EnmOrdem _enmOrdem = EnmOrdem.NONE;
   private EnmTipo _enmTipo;
   private EnmTipoGrupo _enmTipoGrupo;
   private int _intFrmLinha = 1;
@@ -259,16 +264,6 @@ public class Coluna extends Objeto
     return _booOnUpdateCascade;
   }
 
-  public boolean getBooOrdem()
-  {
-    return _booOrdem;
-  }
-
-  public boolean getBooOrdemDecrescente()
-  {
-    return _booOrdemDecrescente;
-  }
-
   public boolean getBooSenha()
   {
     return _booSenha;
@@ -361,6 +356,11 @@ public class Coluna extends Objeto
     }
 
     return Utils.strToDtt(this.getStrValor());
+  }
+
+  public EnmOrdem getEnmOrdem()
+  {
+    return _enmOrdem;
   }
 
   public EnmTipo getEnmTipo()
@@ -927,6 +927,11 @@ public class Coluna extends Objeto
     this.setStrValor(this.getStrValorDefault());
   }
 
+  protected void limparOrdem()
+  {
+    this.setEnmOrdem(Coluna.EnmOrdem.NONE);
+  }
+
   public void removerEvtOnValorAlteradoListener(OnValorAlteradoListener evt)
   {
     if (evt == null)
@@ -993,29 +998,6 @@ public class Coluna extends Objeto
   public void setBooOnUpdateCascade(boolean booOnUpdateCascade)
   {
     _booOnUpdateCascade = booOnUpdateCascade;
-  }
-
-  public void setBooOrdem(boolean booOrdem)
-  {
-    _booOrdem = booOrdem;
-
-    if (!_booOrdem)
-    {
-      this.getTbl().setClnOrdem(null);
-      return;
-    }
-
-    if (!this.equals(this.getTbl().getClnOrdem()))
-    {
-      this.getTbl().getClnOrdem()._booOrdem = false;
-    }
-
-    this.getTbl().setClnOrdem(this);
-  }
-
-  public void setBooOrdemDecrescente(boolean booOrdemDecrescente)
-  {
-    _booOrdemDecrescente = booOrdemDecrescente;
   }
 
   public void setBooSenha(boolean booSenha)
@@ -1100,6 +1082,23 @@ public class Coluna extends Objeto
     }
 
     this.setStrValor(Utils.getStrDataFormatada(dttValor, Utils.EnmDataFormato.YYYY_MM_DD_HH_MM_SS));
+  }
+
+  public void setEnmOrdem(EnmOrdem enmOrdem)
+  {
+    if (_enmOrdem == enmOrdem)
+    {
+      return;
+    }
+
+    _enmOrdem = enmOrdem;
+
+    if (this.getTbl() == null)
+    {
+      return;
+    }
+
+    this.getTbl().addClnOrdem(this);
   }
 
   private void setEnmTipo(EnmTipo enmTipo)

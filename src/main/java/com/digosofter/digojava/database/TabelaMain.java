@@ -20,7 +20,6 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   private boolean _booPermitirAlterar;
   private boolean _booPermitirApagar;
   private Coluna _clnNome;
-  private Coluna _clnOrdem;
   private Class<T> _clsDominio;
   private DbeMain _dbe;
   private List<Coluna> _lstCln;
@@ -32,6 +31,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   private List<Filtro> _lstFilConsulta;
   private String _sqlNome;
   private String _strNomeExibicao;
+  private String _sqlOrderBy;
   private String _strPesquisa;
   private TabelaMain _tblPrincipal;
 
@@ -61,6 +61,30 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     }
 
     this.getLstCln().add(cln);
+  }
+
+  void addClnOrdem(final Coluna cln)
+  {
+    if (cln == null)
+    {
+      return;
+    }
+
+    if (!this.equals(cln.getTbl()))
+    {
+      return;
+    }
+
+    String strAscDesc = Coluna.EnmOrdem.CRESCENTE.equals(cln.getEnmOrdem()) ? "asc" : "desc";
+
+    String strOrderBy = String.format("%s %s, ", cln.getSqlNome(), strAscDesc);
+
+    if (this.getSqlOrderBy() == null)
+    {
+      this.setSqlOrderBy(Utils.STR_VAZIA);
+    }
+
+    this.setSqlOrderBy(this.getSqlOrderBy().concat(strOrderBy));
   }
 
   public void addEvtOnTblChangeListener(OnTblChangeListener evt)
@@ -219,20 +243,6 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     _clnNome.setBooNome(true);
 
     return _clnNome;
-  }
-
-  public Coluna getClnOrdem()
-  {
-    if (_clnOrdem != null)
-    {
-      return _clnOrdem;
-    }
-
-    _clnOrdem = this.getClnNome();
-
-    _clnOrdem.setBooOrdem(true);
-
-    return _clnOrdem;
   }
 
   public abstract Coluna getClnStrObservacao();
@@ -498,6 +508,11 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return _strNomeExibicao;
   }
 
+  protected String getSqlOrderBy()
+  {
+    return _sqlOrderBy;
+  }
+
   public String getStrPesquisa()
   {
     return _strPesquisa;
@@ -558,6 +573,16 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     }
   }
 
+  public void limparOrdem()
+  {
+    this.setSqlOrderBy(Utils.STR_VAZIA);
+
+    for (Coluna cln : this.getLstCln())
+    {
+      cln.limparOrdem();
+    }
+  }
+
   public void removerEvtOnTblChangeListener(OnTblChangeListener evtOnTblChangeListener)
   {
     if (evtOnTblChangeListener == null)
@@ -588,11 +613,6 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     _clnNome = clnNome;
   }
 
-  public void setClnOrdem(Coluna clnOrdem)
-  {
-    _clnOrdem = clnOrdem;
-  }
-
   private void setDbe(DbeMain dbe)
   {
     if (_dbe == dbe)
@@ -613,6 +633,11 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   void setLstClnConsulta(List<Coluna> lstClnConsulta)
   {
     _lstClnConsulta = lstClnConsulta;
+  }
+
+  private void setSqlOrderBy(String sqlOrderBy)
+  {
+    _sqlOrderBy = sqlOrderBy;
   }
 
   public void setStrPesquisa(String strPesquisa)
