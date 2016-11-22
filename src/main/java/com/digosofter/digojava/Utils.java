@@ -268,9 +268,9 @@ public abstract class Utils
     {
       objMessageDigest = MessageDigest.getInstance("MD5");
     }
-    catch (NoSuchAlgorithmException e)
+    catch (NoSuchAlgorithmException ex)
     {
-      e.printStackTrace();
+      ex.printStackTrace();
 
       return null;
     }
@@ -632,9 +632,9 @@ public abstract class Utils
     {
       dttResultado.setTime(objSimpleDateFormat.parse(strData));
     }
-    catch (ParseException e)
+    catch (ParseException ex)
     {
-      e.printStackTrace();
+      ex.printStackTrace();
 
       return null;
     }
