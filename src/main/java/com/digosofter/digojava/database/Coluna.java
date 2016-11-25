@@ -505,7 +505,7 @@ public class Coluna extends Objeto
       return _sqlSelect;
     }
 
-    return _sqlSelect = String.format("%s.%s, ", this.getTbl().getSqlNome(), this.getSqlNome());
+    return _sqlSelect = String.format("%s, ", this.getSqlNome());
   }
 
   public String getSqlSubSelect()

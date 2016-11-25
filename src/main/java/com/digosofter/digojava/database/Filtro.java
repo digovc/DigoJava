@@ -45,6 +45,11 @@ public class Filtro extends Objeto
     this(clnFiltro, (booFiltro ? "1" : "0"));
   }
 
+  public Filtro(Coluna clnFiltro, EnmOperador enmOperador)
+  {
+    this(clnFiltro, null, enmOperador);
+  }
+
   public Filtro(Coluna clnFiltro, int intFiltro, EnmOperador enmOperador)
   {
     this(clnFiltro, String.valueOf(intFiltro), enmOperador);
@@ -111,19 +116,27 @@ public class Filtro extends Objeto
 
     if (this.getBooSelect())
     {
-      _sqlFiltro = this.getSqlFiltroSelect(booPrimeiroTermo);
-
-      return _sqlFiltro;
+      return _sqlFiltro = this.getSqlFiltroSelect(booPrimeiroTermo);
     }
 
-    _sqlFiltro = this.getSqlFiltroNaoSelect(booPrimeiroTermo);
-
-    return _sqlFiltro;
+    return _sqlFiltro = this.getSqlFiltroNaoSelect(booPrimeiroTermo);
   }
 
   private String getSqlFiltroNaoSelect(boolean booPrimeiroTermo)
   {
-    String strResultado = "_condicao _tbl_nome._cln_nome _operador _filtro";
+    String strResultado;
+
+    switch (this.getEnmOperador())
+    {
+      case IS_NOT_NULL:
+      case IS_NULL:
+        strResultado = "_condicao _tbl_nome._cln_nome _operador";
+        break;
+
+      default:
+        strResultado = "_condicao _tbl_nome._cln_nome _operador _filtro";
+        break;
+    }
 
     strResultado = strResultado.replace("_condicao", !booPrimeiroTermo ? this.getStrCondicao() : Utils.STR_VAZIA);
     strResultado = strResultado.replace("_tbl_nome", this.getClnFiltro().getTbl().getSqlNome());
