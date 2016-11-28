@@ -25,13 +25,14 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   private List<Coluna> _lstCln;
   private List<Coluna> _lstClnCadastro;
   private List<Coluna> _lstClnConsulta;
+  private List<Coluna> _lstClnOrdem;
   private List<Coluna> _lstClnOrdenado;
   private List<OnTblChangeListener> _lstEvtOnTblChangeListener;
   private List<Filtro> _lstFilCadastro;
   private List<Filtro> _lstFilConsulta;
   private String _sqlNome;
-  private String _strNomeExibicao;
   private String _sqlOrderBy;
+  private String _strNomeExibicao;
   private String _strPesquisa;
   private TabelaMain _tblPrincipal;
 
@@ -75,16 +76,16 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
       return;
     }
 
-    String strAscDesc = Coluna.EnmOrdem.CRESCENTE.equals(cln.getEnmOrdem()) ? "asc" : "desc";
-
-    String strOrderBy = String.format("%s %s, ", cln.getSqlNome(), strAscDesc);
-
-    if (this.getSqlOrderBy() == null)
+    if (!Coluna.EnmOrdem.NONE.equals(cln.getEnmOrdem()))
     {
-      this.setSqlOrderBy(Utils.STR_VAZIA);
+      this.getLstClnOrdem().add(cln);
+    }
+    else
+    {
+      this.getLstClnOrdem().remove(cln);
     }
 
-    this.setSqlOrderBy(this.getSqlOrderBy().concat(strOrderBy));
+    this.setSqlOrderBy(null);
   }
 
   public void addEvtOnTblChangeListener(OnTblChangeListener evt)
@@ -176,6 +177,11 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
       evt.onTblAtualizar(e);
     }
+  }
+
+  protected void finalizar()
+  {
+
   }
 
   public boolean getBooPermitirAlterar()
@@ -394,6 +400,18 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return _lstClnConsulta;
   }
 
+  protected List<Coluna> getLstClnOrdem()
+  {
+    if (_lstClnOrdem != null)
+    {
+      return _lstClnOrdem;
+    }
+
+    _lstClnOrdem = new ArrayList<>();
+
+    return _lstClnOrdem;
+  }
+
   public List<Coluna> getLstClnOrdenado()
   {
     if (_lstClnOrdenado != null)
@@ -465,6 +483,23 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return _sqlNome;
   }
 
+  protected String getSqlOrderBy()
+  {
+    if (_sqlOrderBy != null)
+    {
+      return _sqlOrderBy;
+    }
+
+    _sqlOrderBy = Utils.STR_VAZIA;
+
+    for (Coluna cln : this.getLstClnOrdem())
+    {
+      _sqlOrderBy = _sqlOrderBy.concat(cln.getSqlOrderBy());
+    }
+
+    return _sqlOrderBy;
+  }
+
   public String getStrClnNome(String strNomeSql)
   {
     for (Coluna cln : this.getLstCln())
@@ -508,11 +543,6 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return _strNomeExibicao;
   }
 
-  protected String getSqlOrderBy()
-  {
-    return _sqlOrderBy;
-  }
-
   public String getStrPesquisa()
   {
     return _strPesquisa;
@@ -532,7 +562,12 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
   protected void inicializar()
   {
+    this.criar();
+    this.criarColuna();
+
     this.inicializarLstCln(this.getLstCln());
+
+    this.getClnIntId().setEnmOrdem(Coluna.EnmOrdem.CRESCENTE);
   }
 
   protected void inicializarLstCln(List<Coluna> lstCln)
@@ -553,8 +588,8 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   private void iniciar()
   {
     this.inicializar();
-    this.criar();
-    this.criarColuna();
+    this.setEventos();
+    this.finalizar();
   }
 
   /**
@@ -575,7 +610,8 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
   public void limparOrdem()
   {
-    this.setSqlOrderBy(Utils.STR_VAZIA);
+    this.getLstClnOrdem().clear();
+    this.setSqlOrderBy(null);
 
     for (Coluna cln : this.getLstCln())
     {
@@ -625,6 +661,11 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     this.atualizarDbe(dbe);
   }
 
+  protected void setEventos()
+  {
+
+  }
+
   void setLstClnCadastro(List<Coluna> lstClnCadastro)
   {
     _lstClnCadastro = lstClnCadastro;
@@ -635,7 +676,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     _lstClnConsulta = lstClnConsulta;
   }
 
-  private void setSqlOrderBy(String sqlOrderBy)
+  private void setSqlOrderBy(final String sqlOrderBy)
   {
     _sqlOrderBy = sqlOrderBy;
   }

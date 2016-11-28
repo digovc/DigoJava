@@ -88,6 +88,7 @@ public class Coluna extends Objeto
   private LinkedHashMap<Integer, String> _mapOpcao;
   private String _sqlNome;
   private String _sqlNomeInsert;
+  private String _sqlOrderBy;
   private String _sqlSelect;
   private String _sqlSubSelect;
   private String _sqlUpdate;
@@ -496,6 +497,25 @@ public class Coluna extends Objeto
     }
 
     return _sqlNomeInsert = String.format("%s, ", this.getSqlNome());
+  }
+
+  String getSqlOrderBy()
+  {
+    if (_sqlOrderBy != null)
+    {
+      return _sqlOrderBy;
+    }
+
+    if (EnmOrdem.NONE.equals(this.getEnmOrdem()))
+    {
+      return null;
+    }
+
+    String strAscDesc = Coluna.EnmOrdem.CRESCENTE.equals(this.getEnmOrdem()) ? "asc" : "desc";
+
+    _sqlOrderBy = String.format("%s %s, ", this.getSqlNome(), strAscDesc);
+
+    return _sqlOrderBy;
   }
 
   public String getSqlSelect()
@@ -1033,11 +1053,6 @@ public class Coluna extends Objeto
   {
     _booVisivelConsulta = booVisivelConsulta;
 
-    if (!_booVisivelConsulta)
-    {
-      return;
-    }
-
     this.getTbl().setLstClnConsulta(null);
   }
 
@@ -1093,6 +1108,8 @@ public class Coluna extends Objeto
 
     _enmOrdem = enmOrdem;
 
+    this.setSqlOrderBy(null);
+
     if (this.getTbl() == null)
     {
       return;
@@ -1141,6 +1158,11 @@ public class Coluna extends Objeto
   private void setSqlNomeInsert(final String sqlNomeInsert)
   {
     _sqlNomeInsert = sqlNomeInsert;
+  }
+
+  private void setSqlOrderBy(final String sqlOrderBy)
+  {
+    _sqlOrderBy = sqlOrderBy;
   }
 
   private void setSqlUpdate(final String sqlUpdate)
