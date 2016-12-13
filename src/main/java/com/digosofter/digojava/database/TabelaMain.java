@@ -362,10 +362,10 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
       return _lstClnConsulta;
     }
 
-    _lstClnConsulta = new ArrayList<>();
+    List<Coluna> lstClnConsultaResultado = new ArrayList<>();
 
-    _lstClnConsulta.add(this.getClnIntId());
-    _lstClnConsulta.add(this.getClnNome());
+    lstClnConsultaResultado.add(this.getClnIntId());
+    lstClnConsultaResultado.add(this.getClnNome());
 
     for (Coluna cln : this.getLstCln())
     {
@@ -379,23 +379,15 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
         continue;
       }
 
-      if (cln == this.getClnIntId())
+      if (lstClnConsultaResultado.contains(cln))
       {
         continue;
       }
 
-      if (cln.getBooNome())
-      {
-        continue;
-      }
-
-      if (_lstClnConsulta.contains(cln))
-      {
-        continue;
-      }
-
-      _lstClnConsulta.add(cln);
+      lstClnConsultaResultado.add(cln);
     }
+
+    _lstClnConsulta = lstClnConsultaResultado;
 
     return _lstClnConsulta;
   }
@@ -562,12 +554,10 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
   protected void inicializar()
   {
-    this.criar();
-    this.criarColuna();
-
     this.inicializarLstCln(this.getLstCln());
 
-    this.getClnIntId().setEnmOrdem(Coluna.EnmOrdem.CRESCENTE);
+    this.criar();
+    this.criarColuna();
   }
 
   protected void inicializarLstCln(List<Coluna> lstCln)
