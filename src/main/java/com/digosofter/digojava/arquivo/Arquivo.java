@@ -231,8 +231,9 @@ public abstract class Arquivo extends Objeto
 
     File fil = new File(_dirCompleto);
 
-    this.setDir(fil.getPath().replace(this.getStrNome(), Utils.STR_VAZIA));
     this.setStrNome(fil.getName());
+
+    this.setDir(fil.getPath().replace(this.getStrNome(), Utils.STR_VAZIA));
   }
 
   public void setStrConteudo(String strConteudo)
