@@ -12,10 +12,10 @@ import java.util.List;
 
 public abstract class TabelaMain<T extends DominioMain> extends Objeto
 {
-  public static final String STR_CLN_DTT_ALTERACAO_NOME = "altecação";
-  public static final String STR_CLN_DTT_CADASTRO_NOME = "cadastro";
-  public static final String STR_CLN_STR_USUARIO_ALTERACAO_NOME = "cadastro";
-  public static final String STR_CLN_STR_USUARIO_CADASTRO_NOME = "cadastro";
+  public static final String STR_CLN_DTT_ALTERACAO_NOME = "Alteração";
+  public static final String STR_CLN_DTT_CADASTRO_NOME = "Cadastro";
+  public static final String STR_CLN_STR_USUARIO_ALTERACAO_NOME = "Usuário (alteração)";
+  public static final String STR_CLN_STR_USUARIO_CADASTRO_NOME = "Usuário (cadastro)";
 
   private boolean _booPermitirAlterar;
   private boolean _booPermitirApagar;
@@ -42,26 +42,6 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     this.setStrNome(strNome);
 
     this.iniciar();
-  }
-
-  public void addCln(Coluna cln)
-  {
-    if (cln == null)
-    {
-      return;
-    }
-
-    if (!this.equals(cln.getTbl()))
-    {
-      return;
-    }
-
-    if (this.getLstCln().contains(cln))
-    {
-      return;
-    }
-
-    this.getLstCln().add(cln);
   }
 
   void addClnOrdem(final Coluna cln)
@@ -558,6 +538,40 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
     this.criar();
     this.criarColuna();
+
+    this.inicializarClnDttAlteracao();
+    this.inicializarClnIntUsuarioAlteracaoId();
+    this.inicializarClnIntUsuarioCadastroId();
+  }
+
+  private void inicializarClnDttAlteracao()
+  {
+    if (this.getClnDttAlteracao() == null)
+    {
+      return;
+    }
+
+    this.getClnDttAlteracao().setStrNomeExibicao(STR_CLN_DTT_ALTERACAO_NOME);
+  }
+
+  private void inicializarClnIntUsuarioAlteracaoId()
+  {
+    if (this.getClnIntUsuarioAlteracaoId() == null)
+    {
+      return;
+    }
+
+    this.getClnIntUsuarioAlteracaoId().setStrNomeExibicao(STR_CLN_STR_USUARIO_ALTERACAO_NOME);
+  }
+
+  private void inicializarClnIntUsuarioCadastroId()
+  {
+    if (this.getClnIntUsuarioCadastroId() == null)
+    {
+      return;
+    }
+
+    this.getClnIntUsuarioCadastroId().setStrNomeExibicao(STR_CLN_STR_USUARIO_CADASTRO_NOME);
   }
 
   protected void inicializarLstCln(List<Coluna> lstCln)
@@ -634,7 +648,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     _booPermitirApagar = booPermitirApagar;
   }
 
-  public void setClnNome(Coluna clnNome)
+  void setClnNome(Coluna clnNome)
   {
     _clnNome = clnNome;
   }
