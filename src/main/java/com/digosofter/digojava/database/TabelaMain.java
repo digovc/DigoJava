@@ -411,7 +411,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
       return _lstClnOrdenado;
     }
 
-    _lstClnOrdenado = this.getLstCln();
+    _lstClnOrdenado = new ArrayList<>(this.getLstCln());
 
     Collections.sort(_lstClnOrdenado, new Comparator<Coluna>()
     {
