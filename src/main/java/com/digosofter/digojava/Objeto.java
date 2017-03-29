@@ -9,6 +9,37 @@ public abstract class Objeto
   private String _strNome;
   private transient String _strNomeExibicao;
   private transient String _strNomeSimplificado;
+  private transient Thread _trdLock;
+
+  protected void bloquearThread()
+  {
+    if (Thread.currentThread().equals(this.getTrdLock()))
+    {
+      return;
+    }
+
+    if (this.getTrdLock() != null)
+    {
+      this.esperarThread();
+    }
+
+    this.setTrdLock(Thread.currentThread());
+  }
+
+  private void esperarThread()
+  {
+    while (this.getTrdLock() != null)
+    {
+      try
+      {
+        Thread.sleep(5);
+      }
+      catch (InterruptedException e)
+      {
+        e.printStackTrace();
+      }
+    }
+  }
 
   /**
    * Retorna um número único para cada uma das intâncias dos objetos que decendem desta classe. O primeiro valor é 1.
@@ -57,7 +88,7 @@ public abstract class Objeto
     }
 
     _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
-    
+
     return _strNomeExibicao;
   }
 
@@ -71,6 +102,21 @@ public abstract class Objeto
     _strNomeSimplificado = Utils.simplificar(this.getStrNome());
 
     return _strNomeSimplificado;
+  }
+
+  private Thread getTrdLock()
+  {
+    return _trdLock;
+  }
+
+  public void liberarThread()
+  {
+    if (this.getTrdLock() == null)
+    {
+      return;
+    }
+
+    this.setTrdLock(null);
   }
 
   private static void setIntObjetoIdStatic(int intObjetoIdStatic)
@@ -111,4 +157,10 @@ public abstract class Objeto
   {
     _strNomeSimplificado = strNomeSimplificado;
   }
+
+  private void setTrdLock(Thread trdLock)
+  {
+    _trdLock = trdLock;
+  }
+
 }

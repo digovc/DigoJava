@@ -601,6 +601,8 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
    */
   public void limparDados()
   {
+    this.bloquearThread();
+
     for (Coluna cln : this.getLstCln())
     {
       if (cln == null)

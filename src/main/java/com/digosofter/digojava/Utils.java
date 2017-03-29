@@ -1,5 +1,8 @@
 package com.digosofter.digojava;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -22,28 +25,12 @@ public abstract class Utils
 {
   public enum EnmDataFormato
   {
-    DD,
-    DD_MM,
-    DD_MM_YY,
-    DD_MM_YYYY,
-    DD_MM_YYYY_HH_MM,
-    DD_MM_YYYY_HH_MM_SS,
-    HH_MM,
-    HH_MM_DD_MM_YY,
-    HH_MM_DD_MM_YYYY,
-    HH_MM_SS_DD_MM_YYYY,
-    MM,
-    YYYY,
-    YYYY_MM_DD,
-    YYYY_MM_DD_HH_MM_SS,
-    YYYY_MM_DD_HH_T_MM_SS_Z,
+    DD, DD_MM, DD_MM_YY, DD_MM_YYYY, DD_MM_YYYY_HH_MM, DD_MM_YYYY_HH_MM_SS, HH_MM, HH_MM_DD_MM_YY, HH_MM_DD_MM_YYYY, HH_MM_SS_DD_MM_YYYY, MM, YYYY, YYYY_MM_DD, YYYY_MM_DD_HH_MM_SS, YYYY_MM_DD_HH_T_MM_SS_Z,
   }
 
   public enum EnmStringTipo
   {
-    ALPHA,
-    ALPHANUMERICO,
-    NUMERICO
+    ALPHA, ALPHANUMERICO, NUMERICO
   }
 
   public static final String STR_VAZIA = "";
@@ -190,6 +177,38 @@ public abstract class Utils
     return stbResultado.toString();
   }
 
+  public static String downloadString(String url)
+  {
+    if (Utils.getBooStrVazia(url))
+    {
+      return null;
+    }
+
+    if (!url.startsWith("http"))
+    {
+      url = ("http://" + url);
+    }
+
+    InputStream objInputStream = null;
+
+    try
+    {
+      objInputStream = new URL(url).openStream();
+
+      return IOUtils.toString(objInputStream);
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+    finally
+    {
+      IOUtils.closeQuietly(objInputStream);
+    }
+
+    return null;
+  }
+
   public static boolean getBoo(final String strValor)
   {
     if (Utils.getBooStrVazia(strValor))
@@ -331,7 +350,7 @@ public abstract class Utils
 
     if (Utils.getBooStrVazia(strNumero))
     {
-      return null;
+      strNumero = Utils.STR_VAZIA;
     }
 
     while (strNumero.length() < intQuantidade)
@@ -351,7 +370,7 @@ public abstract class Utils
   {
     if (Utils.getBooStrVazia(strTermo))
     {
-      return null;
+      strTermo = Utils.STR_VAZIA;
     }
 
     while (strTermo.length() < intQuantidade)
