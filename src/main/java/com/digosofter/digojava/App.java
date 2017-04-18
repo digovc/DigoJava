@@ -21,7 +21,6 @@ public abstract class App extends Objeto
     return _i;
   }
 
-  private boolean _booDebug;
   private long _intMilisegLigado;
   private long _intSegLigado;
   private long _intStartTime;
@@ -37,14 +36,6 @@ public abstract class App extends Objeto
     this.setI(this);
 
     this.iniciar();
-  }
-
-  /**
-   * @return Retorna atributo que indica se a aplicação está em modo de "debug" ou não.
-   */
-  public boolean getBooDebug()
-  {
-    return _booDebug;
   }
 
   /**
@@ -101,11 +92,6 @@ public abstract class App extends Objeto
   {
     this.inicializar();
     this.setEventos();
-  }
-
-  public void setBooDebug(boolean booDebug)
-  {
-    _booDebug = booDebug;
   }
 
   protected void setEventos()
