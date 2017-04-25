@@ -72,7 +72,6 @@ public class Coluna extends Objeto
   private boolean _booOnUpdateCascade;
   private boolean _booSenha;
   private boolean _booValorDefault;
-  private boolean _booVisivelCadastro = true;
   private boolean _booVisivelConsulta;
   private boolean _booVisivelDetalhe = true;
   private Coluna _clnRef;
@@ -290,11 +289,6 @@ public class Coluna extends Objeto
   public boolean getBooVazia()
   {
     return Utils.getBooStrVazia(this.getStrValor());
-  }
-
-  public boolean getBooVisivelCadastro()
-  {
-    return _booVisivelCadastro;
   }
 
   public boolean getBooVisivelConsulta()
@@ -1035,18 +1029,6 @@ public class Coluna extends Objeto
     _booValorDefault = booValorDefault;
 
     this.atualizarBooValorDefault(_booValorDefault);
-  }
-
-  public void setBooVisivelCadastro(boolean booVisivelCadastro)
-  {
-    _booVisivelCadastro = booVisivelCadastro;
-
-    if (!_booVisivelCadastro)
-    {
-      return;
-    }
-
-    this.getTbl().setLstClnCadastro(null);
   }
 
   public void setBooVisivelConsulta(boolean booVisivelConsulta)

@@ -23,12 +23,10 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   private Class<T> _clsDominio;
   private DbeMain _dbe;
   private List<Coluna> _lstCln;
-  private List<Coluna> _lstClnCadastro;
   private List<Coluna> _lstClnConsulta;
   private List<Coluna> _lstClnOrdem;
   private List<Coluna> _lstClnOrdenado;
   private List<OnTblChangeListener> _lstEvtOnTblChangeListener;
-  private List<Filtro> _lstFilCadastro;
   private List<Filtro> _lstFilConsulta;
   private String _sqlNome;
   private String _sqlOrderBy;
@@ -291,50 +289,6 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return _lstCln;
   }
 
-  public List<Coluna> getLstClnCadastro()
-  {
-    if (_lstClnCadastro != null)
-    {
-      return _lstClnCadastro;
-    }
-
-    _lstClnCadastro = new ArrayList<>();
-
-    _lstClnCadastro.add(this.getClnNome());
-
-    for (Coluna cln : this.getLstCln())
-    {
-      if (cln == null)
-      {
-        continue;
-      }
-
-      if (cln == this.getClnIntId())
-      {
-        continue;
-      }
-
-      if (cln.getBooNome())
-      {
-        continue;
-      }
-
-      if (!cln.getBooVisivelCadastro())
-      {
-        continue;
-      }
-
-      if (_lstClnCadastro.contains(cln))
-      {
-        continue;
-      }
-
-      _lstClnCadastro.add(cln);
-    }
-
-    return _lstClnCadastro;
-  }
-
   public List<Coluna> getLstClnConsulta()
   {
     if (_lstClnConsulta != null)
@@ -415,18 +369,6 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     _lstEvtOnTblChangeListener = new ArrayList<>();
 
     return _lstEvtOnTblChangeListener;
-  }
-
-  public List<Filtro> getLstFilCadastro()
-  {
-    if (_lstFilCadastro != null)
-    {
-      return _lstFilCadastro;
-    }
-
-    _lstFilCadastro = new ArrayList<>();
-
-    return _lstFilCadastro;
   }
 
   protected final List<Filtro> getLstFilConsulta()
@@ -670,11 +612,6 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   protected void setEventos()
   {
 
-  }
-
-  void setLstClnCadastro(List<Coluna> lstClnCadastro)
-  {
-    _lstClnCadastro = lstClnCadastro;
   }
 
   void setLstClnConsulta(List<Coluna> lstClnConsulta)

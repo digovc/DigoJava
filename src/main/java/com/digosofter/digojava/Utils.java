@@ -25,12 +25,28 @@ public abstract class Utils
 {
   public enum EnmDataFormato
   {
-    DD, DD_MM, DD_MM_YY, DD_MM_YYYY, DD_MM_YYYY_HH_MM, DD_MM_YYYY_HH_MM_SS, HH_MM, HH_MM_DD_MM_YY, HH_MM_DD_MM_YYYY, HH_MM_SS_DD_MM_YYYY, MM, YYYY, YYYY_MM_DD, YYYY_MM_DD_HH_MM_SS, YYYY_MM_DD_HH_T_MM_SS_Z,
+    DD,
+    DD_MM,
+    DD_MM_YY,
+    DD_MM_YYYY,
+    DD_MM_YYYY_HH_MM,
+    DD_MM_YYYY_HH_MM_SS,
+    HH_MM,
+    HH_MM_DD_MM_YY,
+    HH_MM_DD_MM_YYYY,
+    HH_MM_SS_DD_MM_YYYY,
+    MM,
+    YYYY,
+    YYYY_MM_DD,
+    YYYY_MM_DD_HH_MM_SS,
+    YYYY_MM_DD_HH_T_MM_SS_Z,
   }
 
   public enum EnmStringTipo
   {
-    ALPHA, ALPHANUMERICO, NUMERICO
+    ALPHA,
+    ALPHANUMERICO,
+    NUMERICO
   }
 
   public static final String STR_VAZIA = "";
