@@ -2,7 +2,6 @@ package com.digosofter.digojava;
 
 public class OnValorAlteradoArg extends EventArg
 {
-
   private String _strValor;
   private String _strValorAnterior;
 

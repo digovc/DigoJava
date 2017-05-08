@@ -1,9 +1,7 @@
 package com.digosofter.digojava.arquivo;
 
-import com.digosofter.digojava.App;
 import com.digosofter.digojava.Objeto;
 import com.digosofter.digojava.Utils;
-import com.digosofter.digojava.erro.Erro;
 
 import org.apache.commons.io.IOUtils;
 
@@ -25,57 +23,65 @@ public abstract class Arquivo extends Objeto
    */
   public void copiar(String dirDestino)
   {
-    byte[] arrBte;
-    File fil;
-    FileInputStream filOriginal;
-    FileOutputStream filCopia;
-    int i;
+    if (Utils.getBooStrVazia(dirDestino))
+    {
+      return;
+    }
+
+    if (!this.getBooExiste())
+    {
+      return;
+    }
+
+    this.criarDiretorio(dirDestino);
+
+    File fil = new File(dirDestino + "/" + this.getStrNome());
+
     try
     {
-      this.criarDiretorio(dirDestino);
-      arrBte = new byte[1024];
-      fil = new File(dirDestino + "/" + this.getStrNome());
       if (!fil.exists())
       {
         fil.createNewFile();
       }
-      filCopia = new FileOutputStream(fil);
-      filOriginal = new FileInputStream(this.getDirCompleto());
+
+      FileOutputStream filCopia = new FileOutputStream(fil);
+      FileInputStream filOriginal = new FileInputStream(this.getDirCompleto());
+
+      int i;
+
+      byte[] arrBte = new byte[1024];
+
       while ((i = filOriginal.read(arrBte)) > 0)
       {
         filCopia.write(arrBte, 0, i);
       }
+
       filCopia.close();
       filOriginal.close();
     }
     catch (Exception ex)
     {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
+      ex.printStackTrace();
     }
   }
 
   public void criarArquivo()
   {
-    PrintWriter objPrintWriter;
+    if (this.getBooExiste())
+    {
+      return;
+    }
+
     try
     {
-      if (this.getBooExiste())
-      {
-        return;
-      }
-      objPrintWriter = new PrintWriter(this.getDirCompleto(), "UTF-8");
+      PrintWriter objPrintWriter = new PrintWriter(this.getDirCompleto(), "UTF-8");
+
       objPrintWriter.print(this.getStrConteudo());
       objPrintWriter.close();
     }
     catch (Exception ex)
     {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
+      ex.printStackTrace();
     }
   }
 
@@ -86,46 +92,30 @@ public abstract class Arquivo extends Objeto
 
   private void criarDiretorio(String dir)
   {
-    File fil;
-    try
+    if (Utils.getBooStrVazia(dir))
     {
-      if (Utils.getBooStrVazia(dir))
-      {
-        return;
-      }
-      fil = new File(dir);
-      if (fil.exists())
-      {
-        return;
-      }
-      fil.mkdirs();
+      return;
     }
-    catch (Exception ex)
+
+    File fil = new File(dir);
+
+    if (fil.exists())
     {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
+      return;
     }
-    finally
-    {
-    }
+
+    fil.mkdirs();
   }
 
   protected boolean getBooExiste()
   {
-    try
+    if (Utils.getBooStrVazia(this.getDirCompleto()))
     {
-      if (Utils.getBooStrVazia(this.getDirCompleto()))
-      {
-        return false;
-      }
-      _booExiste = new File(this.getDirCompleto()).exists();
+      return false;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+
+    _booExiste = new File(this.getDirCompleto()).exists();
+
     return _booExiste;
   }
 
@@ -136,61 +126,55 @@ public abstract class Arquivo extends Objeto
 
   public String getDirCompleto()
   {
-    try
+    if (_dirCompleto != null)
     {
-      if (!Utils.getBooStrVazia(_dirCompleto))
-      {
-        return _dirCompleto;
-      }
-      if (!Utils.getBooStrVazia(this.getDir()))
-      {
-        _dirCompleto = "_dir/_str_nome";
-      }
-      else
-      {
-        _dirCompleto = "../_str_nome";
-      }
-      _dirCompleto = _dirCompleto.replace("_dir", this.getDir() != null ? this.getDir() : Utils.STR_VAZIA);
-      _dirCompleto = _dirCompleto.replace("_str_nome", this.getStrNome());
-      _dirCompleto = _dirCompleto.replace("//", "/");
+      return _dirCompleto;
     }
-    catch (Exception ex)
+
+    if (!Utils.getBooStrVazia(this.getDir()))
     {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
+      _dirCompleto = "_dir/_str_nome";
     }
-    finally
+    else
     {
+      _dirCompleto = "../_str_nome";
     }
+
+    _dirCompleto = _dirCompleto.replace("_dir", (this.getDir() != null) ? this.getDir() : Utils.STR_VAZIA);
+    _dirCompleto = _dirCompleto.replace("_str_nome", this.getStrNome());
+    _dirCompleto = _dirCompleto.replace("//", "/");
+
     return _dirCompleto;
   }
 
   public String getStrConteudo()
   {
-    FileInputStream fis;
+    if (_strConteudo != null)
+    {
+      return _strConteudo;
+    }
+
+    if (Utils.getBooStrVazia(this.getDirCompleto()))
+    {
+      return null;
+    }
+
+    if (!this.getBooExiste())
+    {
+      return null;
+    }
+
     try
     {
-      if (!Utils.getBooStrVazia(_strConteudo))
-      {
-        return _strConteudo;
-      }
-      if (Utils.getBooStrVazia(this.getDirCompleto()))
-      {
-        return Utils.STR_VAZIA;
-      }
-      if (!this.getBooExiste())
-      {
-        return Utils.STR_VAZIA;
-      }
-      fis = new FileInputStream(this.getDirCompleto());
+      FileInputStream fis = new FileInputStream(this.getDirCompleto());
+
       _strConteudo = IOUtils.toString(fis, "UTF-8");
     }
     catch (Exception ex)
     {
-      new Erro("Erro inesperado.\n", ex);
+      ex.printStackTrace();
     }
-    finally
-    {
-    }
+
     return _strConteudo;
   }
 
@@ -199,26 +183,30 @@ public abstract class Arquivo extends Objeto
    */
   public void salvar()
   {
-    File fil;
-    FileWriter filWriter;
+    if (Utils.getBooStrVazia(this.getStrConteudo()))
+    {
+      return;
+    }
+
+    this.criarDiretorio();
+
+    File fil = new File(this.getDirCompleto());
+
     try
     {
-      this.criarDiretorio();
-      fil = new File(this.getDirCompleto());
       if (!fil.exists())
       {
         fil.createNewFile();
       }
-      filWriter = new FileWriter(fil);
+
+      FileWriter filWriter = new FileWriter(fil);
+
       filWriter.write(this.getStrConteudo());
       filWriter.close();
     }
     catch (Exception ex)
     {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
+      ex.printStackTrace();
     }
   }
 
@@ -229,25 +217,23 @@ public abstract class Arquivo extends Objeto
 
   public void setDirCompleto(String dirCompleto)
   {
-    File fil;
-    try
+    if (_dirCompleto == dirCompleto)
     {
-      _dirCompleto = dirCompleto;
-      if (Utils.getBooStrVazia(_dirCompleto))
-      {
-        return;
-      }
-      fil = new File(_dirCompleto);
-      this.setStrNome(fil.getName());
-      this.setDir(fil.getPath().replace(this.getStrNome(), Utils.STR_VAZIA));
+      return;
     }
-    catch (Exception ex)
+
+    _dirCompleto = dirCompleto;
+
+    if (Utils.getBooStrVazia(_dirCompleto))
     {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
+      return;
     }
-    finally
-    {
-    }
+
+    File fil = new File(_dirCompleto);
+
+    this.setStrNome(fil.getName());
+
+    this.setDir(fil.getPath().replace(this.getStrNome(), Utils.STR_VAZIA));
   }
 
   public void setStrConteudo(String strConteudo)

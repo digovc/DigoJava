@@ -1,10 +1,11 @@
 package com.digosofter.digojava.database;
 
-public abstract class View extends Tabela<Dominio>
-{
+import com.digosofter.digojava.dominio.DominioMain;
 
-  public View(String strNome)
+public abstract class View extends TabelaMain<DominioMain>
+{
+  public View(String strNome, DbeMain dbe)
   {
-    super(strNome, null);
+    super(strNome, dbe);
   }
 }

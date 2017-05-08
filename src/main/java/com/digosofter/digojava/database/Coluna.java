@@ -1,21 +1,27 @@
 package com.digosofter.digojava.database;
 
+import com.digosofter.digojava.Objeto;
+import com.digosofter.digojava.OnValorAlteradoArg;
+import com.digosofter.digojava.OnValorAlteradoListener;
+import com.digosofter.digojava.Utils;
+import com.digosofter.digojava.dominio.DominioMain;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import com.digosofter.digojava.App;
-import com.digosofter.digojava.Objeto;
-import com.digosofter.digojava.OnValorAlteradoArg;
-import com.digosofter.digojava.OnValorAlteradoListener;
-import com.digosofter.digojava.Utils;
-import com.digosofter.digojava.erro.Erro;
+import java.util.Map;
 
 public class Coluna extends Objeto
 {
+  public enum EnmOrdem
+  {
+    CRESCENTE,
+    DECRESCENTE,
+    NONE,
+  }
 
   public enum EnmTipo
   {
@@ -52,159 +58,180 @@ public class Coluna extends Objeto
   public enum EnmTipoGrupo
   {
     ALPHANUMERICO,
+    NONE,
     NUMERICO,
     TEMPORAL,
   }
 
-  private boolean _booChavePrimaria;
+  public static final String STR_VALOR_NULO = "<<<<<null>>>>>";
   private boolean _booClnDominioValorCarregado;
   private boolean _booNome;
   private boolean _booNotNull;
   private boolean _booObrigatorio;
   private boolean _booOnDeleteCascade;
   private boolean _booOnUpdateCascade;
-  private boolean _booOrdem;
-  private boolean _booOrdemDecrescente;
   private boolean _booSenha;
-  private boolean _booVisivelCadastro = true;
+  private boolean _booValorDefault;
   private boolean _booVisivelConsulta;
   private boolean _booVisivelDetalhe = true;
   private Coluna _clnRef;
+  private double _dblValorDefault;
+  private EnmOrdem _enmOrdem = EnmOrdem.NONE;
   private EnmTipo _enmTipo;
   private EnmTipoGrupo _enmTipoGrupo;
   private int _intFrmLinha = 1;
   private int _intFrmLinhaPeso = 1;
-  private int _intOrdem;
   private int _intTamanhoCampo = 100;
+  private int _intValorDefault;
   private List<OnValorAlteradoListener> _lstEvtOnValorAlteradoListener;
   private LinkedHashMap<Integer, String> _mapOpcao;
   private String _sqlNome;
-  private String _sqlSubSelectClnRef;
+  private String _sqlNomeInsert;
+  private String _sqlOrderBy;
+  private String _sqlSelect;
+  private String _sqlSubSelect;
+  private String _sqlUpdate;
+  private String _sqlValor;
+  private String _sqlValorDetault;
+  private String _sqlValorInsert;
   private String _strDominioNome;
-  private String _strTblNomeClnNome;
+  private String _strNomeExibicao;
+  private String _strNomeValor;
   private String _strValor;
   private String _strValorAnterior;
   private String _strValorDefault;
   private String _strValorExibicao;
-  private String _strValorSql;
-  private Tabela<?> _tbl;
+  private String _strValorMonetario;
+  private TabelaMain<?> _tbl;
 
-  public Coluna(String strNome, Tabela<?> tbl, EnmTipo enmTipo)
+  public Coluna(String strNome, TabelaMain<?> tbl, EnmTipo enmTipo)
   {
-    try
-    {
-      this.setStrNome(strNome);
-      this.setTbl(tbl);
-      this.setEnmTipo(enmTipo);
-    }
-    catch (Exception ex)
-    {
-      new Erro(App.getI().getStrTextoPadrao(120), ex);
-    }
-    finally
-    {
-    }
+    this(strNome, tbl, enmTipo, null);
+  }
+
+  public Coluna(String strNome, TabelaMain<?> tbl, EnmTipo enmTipo, Coluna clnRef)
+  {
+    this.setClnRef(clnRef);
+    this.setEnmTipo(enmTipo);
+    this.setStrNome(strNome);
+    this.setTbl(tbl);
   }
 
   public void addEvtOnValorAlteradoListener(OnValorAlteradoListener evt)
   {
-    try
+    if (evt == null)
     {
-      if (evt == null)
-      {
-        return;
-      }
-      if (this.getLstEvtOnValorAlteradoListener().contains(evt))
-      {
-        return;
-      }
-      this.getLstEvtOnValorAlteradoListener().add(evt);
+      return;
     }
-    catch (Exception ex)
+
+    if (this.getLstEvtOnValorAlteradoListener().contains(evt))
     {
-      new Erro("Erro inesperado.\n", ex);
+      return;
     }
-    finally
-    {
-    }
+
+    this.getLstEvtOnValorAlteradoListener().add(evt);
   }
 
   /**
-   * Adiciona uma opção para lista, tornando o campo selecionável por
-   * "Combobox".
+   * Adiciona uma opção para lista, tornando o campo selecionável por "ComboBox".
    */
   public void addOpcao(int intValor, String strNome)
   {
-    try
+    if (Utils.getBooStrVazia(strNome))
     {
-      if (this.getMapOpcao().containsKey(intValor))
-      {
-        return;
-      }
-      this.getMapOpcao().put(intValor, strNome);
+      return;
     }
-    catch (Exception ex)
+
+    if (this.getMapOpcao().containsKey(intValor))
     {
-      new Erro("Erro inesperado.\n", ex);
+      return;
     }
-    finally
-    {
-    }
+
+    this.getMapOpcao().put(intValor, strNome);
   }
 
-  private void atualizarStrValor()
+  protected void atualizarBooValorDefault(final boolean booValorDefault)
   {
-    try
+    this.setStrValorDefault(booValorDefault ? "true" : "false");
+  }
+
+  private void atualizarIntValorDefault(final int intValorDefault)
+  {
+    this.setStrValorDefault(String.valueOf(intValorDefault));
+  }
+
+  private void atualizarSqlValor(final String sqlValor)
+  {
+    this.setSqlNomeInsert(null);
+    this.setSqlUpdate(null);
+    this.setSqlValorInsert(null);
+  }
+
+  private void atualizarStrValor(final String strValor)
+  {
+    this.setStrNomeValor(null);
+    this.setStrValorExibicao(null);
+    this.setStrValorMonetario(null);
+    this.setSqlValor(null);
+
+    this.dispararEvtOnValorAlteradoListener();
+  }
+
+  public void carregarValorDefault()
+  {
+    if (!this.getBooVazia())
     {
-      this.setStrValorExibicao(null);
-      this.dispararEvtOnValorAlteradoListener();
+      return;
     }
-    catch (Exception ex)
+
+    if (Utils.getBooStrVazia(this.getStrValorDefault()))
     {
-      new Erro("Erro inesperado.\n", ex);
+      return;
     }
-    finally
-    {
-    }
+
+    this.setStrValor(this.getStrValorDefault());
+  }
+
+  public void criar()
+  {
   }
 
   private void dispararEvtOnValorAlteradoListener()
   {
-    OnValorAlteradoArg arg;
-    try
+    if (this.getLstEvtOnValorAlteradoListener().isEmpty())
     {
-      if (this.getLstEvtOnValorAlteradoListener().isEmpty())
-      {
-        return;
-      }
-      if ((this.getStrValor() != null) ? (this.getStrValor().equals(this.getStrValorAnterior())) : (this.getStrValorAnterior() == null))
-      {
-        return;
-      }
-      arg = new OnValorAlteradoArg();
-      arg.setStrValor(this.getStrValor());
-      arg.setStrValorAnterior(this.getStrValorAnterior());
-      for (OnValorAlteradoListener evt : this.getLstEvtOnValorAlteradoListener())
-      {
-        if (evt == null)
-        {
-          continue;
-        }
-        evt.onValorAlterado(this, arg);
-      }
+      return;
     }
-    catch (Exception ex)
+
+    if ((this.getStrValor() != null) ? (this.getStrValor().equals(this.getStrValorAnterior())) : (this.getStrValorAnterior() == null))
     {
-      new Erro("Erro inesperado.\n", ex);
+      return;
     }
-    finally
+
+    OnValorAlteradoArg arg = new OnValorAlteradoArg();
+
+    arg.setStrValor(this.getStrValor());
+    arg.setStrValorAnterior(this.getStrValorAnterior());
+
+    for (OnValorAlteradoListener evt : this.getLstEvtOnValorAlteradoListener())
     {
+      if (evt == null)
+      {
+        continue;
+      }
+
+      evt.onValorAlterado(this, arg);
     }
   }
 
   public boolean getBooChavePrimaria()
   {
-    return _booChavePrimaria;
+    if (this.getTbl() == null)
+    {
+      return false;
+    }
+
+    return this.equals(this.getTbl().getClnIntId());
   }
 
   private boolean getBooClnDominioValorCarregado()
@@ -237,16 +264,6 @@ public class Coluna extends Objeto
     return _booOnUpdateCascade;
   }
 
-  public boolean getBooOrdem()
-  {
-    return _booOrdem;
-  }
-
-  public boolean getBooOrdemDecrescente()
-  {
-    return _booOrdemDecrescente;
-  }
-
   public boolean getBooSenha()
   {
     return _booSenha;
@@ -254,27 +271,14 @@ public class Coluna extends Objeto
 
   public boolean getBooValor()
   {
-    try
-    {
-      switch (this.getStrValor().toLowerCase())
-      {
-        case "true":
-        case "t":
-        case "sim":
-        case "s":
-        case "1":
-          return true;
-        default:
-          return false;
-      }
-    }
-    catch (Exception ex)
-    {
-      return false;
-    }
-    finally
-    {
-    }
+    return Utils.getBoo(this.getStrValor());
+  }
+
+  public boolean getBooValorDefault()
+  {
+    _booValorDefault = Utils.getBoo(this.getStrValorDefault());
+
+    return _booValorDefault;
   }
 
   /**
@@ -285,11 +289,6 @@ public class Coluna extends Objeto
   public boolean getBooVazia()
   {
     return Utils.getBooStrVazia(this.getStrValor());
-  }
-
-  public boolean getBooVisivelCadastro()
-  {
-    return _booVisivelCadastro;
   }
 
   public boolean getBooVisivelConsulta()
@@ -304,17 +303,17 @@ public class Coluna extends Objeto
 
   public char getChrValor()
   {
-    try
-    {
-      return this.getStrValor().charAt(0);
-    }
-    catch (Exception ex)
+    if (Utils.getBooStrVazia(this.getStrValor()))
     {
       return 0;
     }
-    finally
+
+    if (this.getStrValor().length() < 1)
     {
+      return 0;
     }
+
+    return this.getStrValor().charAt(0);
   }
 
   public Coluna getClnRef()
@@ -324,98 +323,86 @@ public class Coluna extends Objeto
 
   public double getDblValor()
   {
-    try
-    {
-      return Double.parseDouble(this.getStrValor());
-    }
-    catch (Exception ex)
+    if (Utils.getBooStrVazia(this.getStrValor()))
     {
       return 0;
     }
-    finally
+
+    return Double.parseDouble(this.getStrValor());
+  }
+
+  public double getDblValorDefault()
+  {
+    if (Utils.getBooStrVazia(this.getStrValorDefault()))
     {
+      return 0;
     }
+
+    _dblValorDefault = Double.valueOf(this.getStrValorDefault());
+
+    return _dblValorDefault;
   }
 
   public GregorianCalendar getDttValor()
   {
-    try
-    {
-      if (Utils.getBooStrVazia(this.getStrValor()))
-      {
-        return null;
-      }
-      return Utils.strToDtt(this.getStrValor());
-    }
-    catch (Exception ex)
+    if (Utils.getBooStrVazia(this.getStrValor()))
     {
       return null;
     }
-    finally
-    {
-    }
+
+    return Utils.strToDtt(this.getStrValor());
+  }
+
+  public EnmOrdem getEnmOrdem()
+  {
+    return _enmOrdem;
   }
 
   public EnmTipo getEnmTipo()
   {
-    try
+    if (_enmTipo != null)
     {
-      if (_enmTipo != null)
-      {
-        return _enmTipo;
-      }
-      _enmTipo = EnmTipo.TEXT;
+      return _enmTipo;
     }
-    catch (Exception ex)
-    {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
-    }
+
+    _enmTipo = EnmTipo.TEXT;
+
     return _enmTipo;
   }
 
   protected EnmTipoGrupo getEnmTipoGrupo()
   {
-    try
+    if (_enmTipoGrupo != null)
     {
-      switch (this.getEnmTipo())
-      {
-        case BIGINT:
-        case BIGSERIAL:
-        case DECIMAL:
-        case DOUBLE:
-        case INTEGER:
-        case INTERVAL:
-        case MONEY:
-        case NUMERIC:
-        case REAL:
-        case SERIAL:
-        case SMALLINT:
-          _enmTipoGrupo = EnmTipoGrupo.NUMERICO;
-          return _enmTipoGrupo;
-        case DATE:
-        case DATE_TIME:
-        case TIME_WITH_TIME_ZONE:
-        case TIME_WITHOUT_TIME_ZONE:
-        case TIMESTAMP_WITH_TIME_ZONE:
-        case TIMESTAMP_WITHOUT_TIME_ZONE:
-          _enmTipoGrupo = EnmTipoGrupo.TEMPORAL;
-          return _enmTipoGrupo;
-        default:
-          _enmTipoGrupo = EnmTipoGrupo.ALPHANUMERICO;
-          return _enmTipoGrupo;
-      }
+      return _enmTipoGrupo;
     }
-    catch (Exception ex)
+
+    switch (this.getEnmTipo())
     {
-      new Erro("Erro inesperado.\n", ex);
+      case BIGINT:
+      case BIGSERIAL:
+      case DECIMAL:
+      case DOUBLE:
+      case INTEGER:
+      case INTERVAL:
+      case MONEY:
+      case NUMERIC:
+      case REAL:
+      case SERIAL:
+      case SMALLINT:
+        return _enmTipoGrupo = EnmTipoGrupo.NUMERICO;
+
+      case DATE:
+      case DATE_TIME:
+      case TIME_WITH_TIME_ZONE:
+      case TIME_WITHOUT_TIME_ZONE:
+      case TIMESTAMP_WITH_TIME_ZONE:
+      case TIMESTAMP_WITHOUT_TIME_ZONE:
+        return _enmTipoGrupo = EnmTipoGrupo.TEMPORAL;
+
+      default:
+        return _enmTipoGrupo = EnmTipoGrupo.ALPHANUMERICO;
     }
-    finally
-    {
-    }
-    return _enmTipoGrupo;
   }
 
   public int getIntFrmLinha()
@@ -428,11 +415,6 @@ public class Coluna extends Objeto
     return _intFrmLinhaPeso;
   }
 
-  public int getIntOrdem()
-  {
-    return _intOrdem;
-  }
-
   public int getIntTamanhoCampo()
   {
     return _intTamanhoCampo;
@@ -440,192 +422,297 @@ public class Coluna extends Objeto
 
   public int getIntValor()
   {
-    try
-    {
-      return (int) this.getDblValor();
-    }
-    catch (Exception ex)
-    {
-      return 0;
-    }
-    finally
-    {
-    }
+    return (int) this.getDblValor();
+  }
+
+  public int getIntValorDefault()
+  {
+    _intValorDefault = (int) this.getDblValorDefault();
+
+    return _intValorDefault;
   }
 
   private List<OnValorAlteradoListener> getLstEvtOnValorAlteradoListener()
   {
-    try
+    if (_lstEvtOnValorAlteradoListener != null)
     {
-      if (_lstEvtOnValorAlteradoListener != null)
-      {
-        return _lstEvtOnValorAlteradoListener;
-      }
-      _lstEvtOnValorAlteradoListener = new ArrayList<>();
+      return _lstEvtOnValorAlteradoListener;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+
+    _lstEvtOnValorAlteradoListener = new ArrayList<>();
+
     return _lstEvtOnValorAlteradoListener;
   }
 
   public LinkedHashMap<Integer, String> getMapOpcao()
   {
-    try
+    if (_mapOpcao != null)
     {
-      if (_mapOpcao != null)
-      {
-        return _mapOpcao;
-      }
-      _mapOpcao = new LinkedHashMap<Integer, String>();
+      return _mapOpcao;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+
+    _mapOpcao = new LinkedHashMap<>();
+
     return _mapOpcao;
   }
 
   public String getSqlNome()
   {
-    try
+    if (_sqlNome != null)
     {
-      if (!Utils.getBooStrVazia(_sqlNome))
-      {
-        return _sqlNome;
-      }
-      _sqlNome = this.getStrNomeSimplificado();
+      return _sqlNome;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+
+    _sqlNome = this.getStrNomeSimplificado();
+
     return _sqlNome;
   }
 
-  public String getSqlSubSelectClnRef()
+  public String getSqlNomeInsert()
   {
-    try
+    if (_sqlNomeInsert != null)
     {
-      if (this.getClnRef() == null)
-      {
-        return null;
-      }
-      if (!Utils.getBooStrVazia(_sqlSubSelectClnRef))
-      {
-        return _sqlSubSelectClnRef;
-      }
-      _sqlSubSelectClnRef = "(select _tbl_ref_nome._cln_ref_nome from _tbl_ref_nome where _tbl_ref_nome._cln_ref_pk = _tbl_nome._cln_nome) _cln_nome, ";
-      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_ref_nome", this.getClnRef().getTbl().getSqlNome());
-      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getSqlNome());
-      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnChavePrimaria().getSqlNome());
-      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_tbl_nome", this.getTbl().getSqlNome());
-      _sqlSubSelectClnRef = _sqlSubSelectClnRef.replace("_cln_nome", this.getSqlNome());
+      return _sqlNomeInsert;
     }
-    catch (Exception ex)
+
+    if (this.getBooVazia())
     {
-      new Erro("Erro inesperado.\n", ex);
+      return null;
     }
-    finally
+
+    if ((this.getBooChavePrimaria()) && (this.getIntValor() < 1))
     {
+      return null;
     }
-    return _sqlSubSelectClnRef;
+
+    if ((this.getClnRef() != null) && (this.getIntValor() < 1))
+    {
+      return null;
+    }
+
+    return _sqlNomeInsert = String.format("%s, ", this.getSqlNome());
+  }
+
+  String getSqlOrderBy()
+  {
+    if (_sqlOrderBy != null)
+    {
+      return _sqlOrderBy;
+    }
+
+    if (EnmOrdem.NONE.equals(this.getEnmOrdem()))
+    {
+      return null;
+    }
+
+    String strAscDesc = Coluna.EnmOrdem.CRESCENTE.equals(this.getEnmOrdem()) ? "asc" : "desc";
+
+    _sqlOrderBy = String.format("%s %s, ", this.getSqlNome(), strAscDesc);
+
+    return _sqlOrderBy;
+  }
+
+  public String getSqlSelect()
+  {
+    if (_sqlSelect != null)
+    {
+      return _sqlSelect;
+    }
+
+    return _sqlSelect = String.format("%s, ", this.getSqlNome());
+  }
+
+  public String getSqlSubSelect()
+  {
+    if (_sqlSubSelect != null)
+    {
+      return _sqlSubSelect;
+    }
+
+    if (this.getClnRef() == null)
+    {
+      return null;
+    }
+
+    _sqlSubSelect = "(select _tbl_ref_nome._cln_ref_nome from _tbl_ref_nome where _tbl_ref_nome._cln_ref_pk = _tbl_nome._cln_nome) _cln_nome, ";
+
+    _sqlSubSelect = _sqlSubSelect.replace("_tbl_ref_nome", this.getClnRef().getTbl().getSqlNome());
+    _sqlSubSelect = _sqlSubSelect.replace("_cln_ref_nome", this.getClnRef().getTbl().getClnNome().getSqlNome());
+    _sqlSubSelect = _sqlSubSelect.replace("_cln_ref_pk", this.getClnRef().getTbl().getClnIntId().getSqlNome());
+    _sqlSubSelect = _sqlSubSelect.replace("_tbl_nome", this.getTbl().getSqlNome());
+    _sqlSubSelect = _sqlSubSelect.replace("_cln_nome", this.getSqlNome());
+
+    return _sqlSubSelect;
+  }
+
+  public String getSqlUpdate()
+  {
+    if (_sqlUpdate != null)
+    {
+      return _sqlUpdate;
+    }
+
+    if (this.getBooVazia())
+    {
+      return null;
+    }
+
+    if (this.getBooChavePrimaria())
+    {
+      return null;
+    }
+
+    if ((this.getClnRef() != null) && (this.getIntValor() < 1))
+    {
+      return null;
+    }
+
+    return _sqlUpdate = String.format("%s = %s, ", this.getSqlNome(), this.getSqlValor());
+  }
+
+  public String getSqlValor()
+  {
+    if (_sqlValor != null)
+    {
+      return _sqlValor;
+    }
+
+    if (STR_VALOR_NULO.equals(this.getStrValor()))
+    {
+      return (_sqlValor = "null");
+    }
+
+    switch (this.getEnmTipo())
+    {
+      case BOOLEAN:
+        return (_sqlValor = this.getBooValor() ? "1" : "0");
+    }
+
+    switch (this.getEnmTipoGrupo())
+    {
+      case NUMERICO:
+        return (_sqlValor = this.getStrValor());
+
+      default:
+        return (_sqlValor = this.getSqlValorAlfanumerico());
+    }
+  }
+
+  private String getSqlValorAlfanumerico()
+  {
+    if (Utils.getBooStrVazia(this.getStrValor()))
+    {
+      return null;
+    }
+
+    String strResultado = this.getStrValor();
+
+    strResultado = strResultado.replace("'", "''");
+
+    return String.format("'%s'", strResultado);
   }
 
   protected String getSqlValorDetault()
   {
-    String sqlResultado;
-    try
+    if (_sqlValorDetault != null)
     {
-      if (Utils.getBooStrVazia(this.getStrValorDefault()))
-      {
-        return Utils.STR_VAZIA;
-      }
-      sqlResultado = "DEFAULT '_cln_valor_default'";
-      sqlResultado = sqlResultado.replace("_cln_valor_default", this.getStrValorDefault());
-      return sqlResultado;
+      return _sqlValorDetault;
     }
-    catch (Exception ex)
+
+    if (Utils.getBooStrVazia(this.getStrValorDefault()))
     {
-      new Erro("Erro inesperado.\n", ex);
+      return null;
     }
-    finally
+
+    _sqlValorDetault = "default _cln_valor_default".replace("_cln_valor_default", this.getStrValorDefault());
+
+    return _sqlValorDetault;
+  }
+
+  public String getSqlValorInsert()
+  {
+    if (_sqlValorInsert != null)
     {
+      return _sqlValorInsert;
     }
-    return null;
+
+    if (this.getBooVazia())
+    {
+      return null;
+    }
+
+    if ((this.getBooChavePrimaria()) && (this.getIntValor() < 1))
+    {
+      return null;
+    }
+
+    if ((this.getClnRef() != null) && (this.getIntValor() < 1))
+    {
+      return null;
+    }
+
+    return _sqlValorInsert = String.format("%s, ", this.getSqlValor());
   }
 
   protected String getStrDominioNome()
   {
-    try
+    if (_strDominioNome != null)
     {
-      if (!Utils.getBooStrVazia(_strDominioNome))
-      {
-        return _strDominioNome;
-      }
-      _strDominioNome = this.getStrNomeSimplificado();
-      _strDominioNome = _strDominioNome.replace("_", Utils.STR_VAZIA);
+      return _strDominioNome;
     }
-    catch (Exception ex)
+
+    if (Utils.getBooStrVazia(this.getStrNomeSimplificado()))
     {
-      new Erro("Erro inesperado.\n", ex);
+      return null;
     }
-    finally
-    {
-    }
+
+    _strDominioNome = this.getStrNomeSimplificado().replace("_", Utils.STR_VAZIA);
+
     return _strDominioNome;
   }
 
-  public String getStrNomeValor()
+  public String getStrNomeExibicao()
   {
-    String strResultado;
-    try
+    if (_strNomeExibicao != null)
     {
-      strResultado = "_cln_nome = '_cln_valor'";
-      strResultado = strResultado.replace("_cln_nome", this.getSqlNome());
-      strResultado = strResultado.replace("_cln_valor", this.getStrValorSql());
-      return strResultado;
+      return _strNomeExibicao;
     }
-    catch (Exception ex)
+
+    _strNomeExibicao = super.getStrNomeExibicao();
+
+    if (Utils.getBooStrVazia(_strNomeExibicao))
     {
-      new Erro("Erro inesperado.\n", ex);
+      return null;
     }
-    finally
+
+    if (!_strNomeExibicao.toLowerCase().equals(this.getSqlNome()))
     {
+      return _strNomeExibicao;
     }
-    return null;
+
+    _strNomeExibicao = _strNomeExibicao.substring(4);
+
+    _strNomeExibicao = _strNomeExibicao.replace("_id", Utils.STR_VAZIA);
+    _strNomeExibicao = _strNomeExibicao.replace("_", " ");
+
+    _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNomeExibicao);
+
+    return _strNomeExibicao;
   }
 
-  public String getStrTblNomeClnNome()
+  private String getStrNomeValor()
   {
-    try
+    if (_strNomeValor != null)
     {
-      if (_strTblNomeClnNome != null)
-      {
-        return _strTblNomeClnNome;
-      }
-      _strTblNomeClnNome = "_tbl_nome._cln_nome, ";
-      _strTblNomeClnNome = _strTblNomeClnNome.replace("_tbl_nome", this.getTbl().getSqlNome());
-      _strTblNomeClnNome = _strTblNomeClnNome.replace("_cln_nome", this.getSqlNome());
+      return _strNomeValor;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
-    return _strTblNomeClnNome;
+
+    _strNomeValor = "_cln_nome = '_cln_valor'";
+
+    _strNomeValor = _strNomeValor.replace("_cln_nome", this.getSqlNome());
+    _strNomeValor = _strNomeValor.replace("_cln_valor", this.getSqlValor());
+
+    return _strNomeValor;
   }
 
   public String getStrValor()
@@ -645,228 +732,166 @@ public class Coluna extends Objeto
 
   public String getStrValorExibicao()
   {
-    try
+    if (_strValorExibicao != null)
     {
-      if (_strValorExibicao != null)
-      {
-        return _strValorExibicao;
-      }
-      switch (this.getEnmTipo())
-      {
-        case BOOLEAN:
-          _strValorExibicao = this.getBooValor() ? "Sim" : "Não";
-          break;
-        case CEP:
-          _strValorExibicao = Utils.addMascaraCep(this.getStrValor());
-          break;
-        case CNPJ:
-          _strValorExibicao = Utils.addMascaraCnpj(this.getStrValor());
-          break;
-        case CPF:
-          _strValorExibicao = Utils.addMascaraCpf(this.getStrValor());
-          break;
-        case DATE:
-          _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.DD_MM_YYYY);
-          break;
-        case DATE_TIME:
-        case TIMESTAMP_WITH_TIME_ZONE:
-        case TIMESTAMP_WITHOUT_TIME_ZONE:
-          _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.HH_MM_DD_MM_YYYY);
-          break;
-        case DOUBLE:
-        case NUMERIC:
-        case REAL:
-          _strValorExibicao = Utils.getStrValorNumerico(this.getDblValor());
-          break;
-        case EMAIL:
-          _strValorExibicao = this.getStrValor() != null ? this.getStrValor().toLowerCase() : null;
-          break;
-        case MONEY:
-          _strValorExibicao = Utils.getStrValorMonetario(this.getDblValor());
-          break;
-        case PERCENTUAL:
-          _strValorExibicao = Utils.getStrValorPercentual(this.getDblValor());
-          break;
-        default:
-          _strValorExibicao = this.getStrValor();
-          break;
-      }
+      return _strValorExibicao;
     }
-    catch (Exception ex)
-    {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
-    }
-    return _strValorExibicao;
-  }
 
-  public String getStrValorMonetario()
-  {
-    try
+    String strValorExibicaoOpcao = this.getStrValorExibicaoOpcao();
+
+    if (!Utils.getBooStrVazia(strValorExibicaoOpcao))
     {
-      if (Utils.getBooStrVazia(this.getStrValor()))
-      {
-        return "R$ 0,00";
-      }
-      return Utils.getStrValorMonetario(Double.parseDouble(this.getStrValor()));
+      return _strValorExibicao = strValorExibicaoOpcao;
     }
-    catch (Exception ex)
+
+    switch (this.getEnmTipo())
     {
-      return "R$ 0,00";
-    }
-    finally
-    {
+      case BOOLEAN:
+        return _strValorExibicao = this.getBooValor() ? "Sim" : "Não";
+
+      case CEP:
+        return _strValorExibicao = Utils.addMascaraCep(this.getStrValor());
+
+      case CNPJ:
+        return _strValorExibicao = Utils.addMascaraCnpj(this.getStrValor());
+
+      case CPF:
+        return _strValorExibicao = Utils.addMascaraCpf(this.getStrValor());
+
+      case DATE:
+        return _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.DD_MM_YYYY);
+
+      case DATE_TIME:
+      case TIMESTAMP_WITH_TIME_ZONE:
+      case TIMESTAMP_WITHOUT_TIME_ZONE:
+        return _strValorExibicao = Utils.getStrDataFormatada(this.getDttValor(), Utils.EnmDataFormato.HH_MM_DD_MM_YYYY);
+
+      case DOUBLE:
+      case NUMERIC:
+      case REAL:
+        return _strValorExibicao = Utils.getStrValorNumerico(this.getDblValor());
+
+      case EMAIL:
+        return _strValorExibicao = this.getStrValor() != null ? this.getStrValor().toLowerCase() : null;
+
+      case MONEY:
+        return _strValorExibicao = Utils.getStrValorMonetario(this.getDblValor());
+
+      case PERCENTUAL:
+        return _strValorExibicao = Utils.getStrValorPercentual(this.getDblValor());
+
+      default:
+        return _strValorExibicao = this.getStrValor();
     }
   }
 
-  public String getStrValorSql()
+  private String getStrValorExibicaoOpcao()
   {
-    try
+    if (this.getMapOpcao().isEmpty())
     {
-      if (Utils.getBooStrVazia(this.getStrValor()))
+      return null;
+    }
+
+    for (Map.Entry<Integer, String> itmOpcao : this.getMapOpcao().entrySet())
+    {
+      if (this.getIntValor() != itmOpcao.getKey())
       {
-        return null;
+        continue;
       }
-      switch (this.getEnmTipo())
-      {
-        case BOOLEAN:
-          _strValorSql = this.getBooValor() ? "1" : "0";
-          break;
-        case DATE_TIME:
-          _strValorSql = this.getStrValor();
-          break;
-        case INTEGER:
-          _strValorSql = this.getStrValor();
-          break;
-        case NUMERIC:
-          _strValorSql = this.getStrValor();
-          break;
-        case REAL:
-          _strValorSql = this.getStrValor();
-          break;
-        default:
-          _strValorSql = getStrValorSqlText();
-          break;
-      }
+
+      return itmOpcao.getValue();
     }
-    catch (Exception ex)
+
+    return null;
+  }
+
+  private String getStrValorMonetario()
+  {
+    if (_strValorMonetario != null)
     {
-      new Erro("Erro inesperado.\n", ex);
+      return _strValorMonetario;
     }
-    finally
-    {
-    }
-    return _strValorSql;
+
+    _strValorMonetario = Utils.getStrValorMonetario(Double.parseDouble(this.getStrValor()));
+
+    return _strValorMonetario;
   }
 
   private String getStrValorSqlText()
   {
-    String strValorResultado;
-    try
+    if (Utils.getBooStrVazia(this.getStrValor()))
     {
-      if (Utils.getBooStrVazia(this.getStrValor()))
-      {
-        return "null";
-      }
-      strValorResultado = this.getStrValor();
-      strValorResultado = strValorResultado.replace("'", "''");
-      strValorResultado = strValorResultado.trim();
-      return strValorResultado;
+      return "null";
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
-    return null;
+
+    String strValorResultado = this.getStrValor();
+
+    strValorResultado = strValorResultado.replace("'", "''");
+    strValorResultado = strValorResultado.trim();
+
+    return strValorResultado;
   }
 
-  public Tabela<?> getTbl()
+  public TabelaMain<?> getTbl()
   {
     return _tbl;
   }
 
-  public <T extends Dominio> void lerDominio(T objDominio)
+  public <T extends DominioMain> void lerDominio(T objDominio)
   {
-    try
+    if (objDominio == null)
     {
-      if (objDominio == null)
+      return;
+    }
+
+    this.setBooClnDominioValorCarregado(false);
+
+    this.lerDominio(objDominio, objDominio.getClass());
+  }
+
+  private <T extends DominioMain> void lerDominio(T objDominio, Class<?> cls)
+  {
+    if (cls == null)
+    {
+      return;
+    }
+
+    this.lerDominio(objDominio, cls.getSuperclass());
+
+    if (this.getBooClnDominioValorCarregado())
+    {
+      return;
+    }
+
+    for (Field objField : cls.getDeclaredFields())
+    {
+      if (!this.lerDominio(objDominio, objField))
       {
-        return;
+        continue;
       }
-      this.setBooClnDominioValorCarregado(false);
-      this.lerDominio(objDominio, objDominio.getClass());
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
+
+      this.setBooClnDominioValorCarregado(true);
+      return;
     }
   }
 
-  private <T extends Dominio> void lerDominio(T objDominio, Class<?> cls)
+  private <T extends DominioMain> boolean lerDominio(T objDominio, Field objField)
   {
-    try
+    if (!objField.getName().replace("_", Utils.STR_VAZIA).toLowerCase().equals(this.getStrDominioNome()))
     {
-      if (cls == null)
-      {
-        return;
-      }
-      this.lerDominio(objDominio, cls.getSuperclass());
-      if (this.getBooClnDominioValorCarregado())
-      {
-        return;
-      }
-      for (Field objField : cls.getDeclaredFields())
-      {
-        if (objField == null)
-        {
-          continue;
-        }
-        if (this.lerDominio(objDominio, objField))
-        {
-          this.setBooClnDominioValorCarregado(true);
-          return;
-        }
-      }
+      return false;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
-  }
 
-  private <T extends Dominio> boolean lerDominio(T objDominio, Field objField)
-  {
+    objField.setAccessible(true);
+
     try
     {
-      if (objDominio == null)
-      {
-        return false;
-      }
-      if (objField == null)
-      {
-        return false;
-      }
-      if (!Utils.simplificar(objField.getName().replace("_", Utils.STR_VAZIA)).equals(this.getStrDominioNome()))
-      {
-        return false;
-      }
-      objField.setAccessible(true);
       switch (this.getEnmTipo())
       {
         case BOOLEAN:
           this.setBooValor((boolean) objField.get(objDominio));
           return true;
+
         case DATE:
         case DATE_TIME:
         case INTERVAL:
@@ -874,8 +899,9 @@ public class Coluna extends Objeto
         case TIME_WITHOUT_TIME_ZONE:
         case TIMESTAMP_WITH_TIME_ZONE:
         case TIMESTAMP_WITHOUT_TIME_ZONE:
-          this.setDttValor((GregorianCalendar) objField.get(objDominio));
+          this.setDttValor((Calendar) objField.get(objDominio));
           return true;
+
         case DECIMAL:
         case DOUBLE:
         case FLOAT:
@@ -885,12 +911,14 @@ public class Coluna extends Objeto
         case REAL:
           this.setDblValor((double) objField.get(objDominio));
           return true;
+
         case BIGINT:
         case BIGSERIAL:
         case INTEGER:
         case SMALLINT:
           this.setIntValor((int) objField.get(objDominio));
           return true;
+
         default:
           this.setStrValor((String) objField.get(objDominio));
           return true;
@@ -898,72 +926,34 @@ public class Coluna extends Objeto
     }
     catch (Exception ex)
     {
-      new Erro("Erro inesperado.\n", ex);
+      ex.printStackTrace();
     }
     finally
     {
       objField.setAccessible(false);
     }
+
     return false;
   }
 
   public void limpar()
   {
-    try
-    {
-      this.setStrValor(this.getStrValorDefault());
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    this.setStrValor(this.getStrValorDefault());
+  }
+
+  protected void limparOrdem()
+  {
+    this.setEnmOrdem(Coluna.EnmOrdem.NONE);
   }
 
   public void removerEvtOnValorAlteradoListener(OnValorAlteradoListener evt)
   {
-    try
+    if (evt == null)
     {
-      if (evt == null)
-      {
-        return;
-      }
-      this.getLstEvtOnValorAlteradoListener().remove(evt);
+      return;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
-  }
 
-  public void setBooChavePrimaria(boolean booChavePrimaria)
-  {
-    try
-    {
-      _booChavePrimaria = booChavePrimaria;
-      if (!_booChavePrimaria)
-      {
-        this.getTbl().setClnChavePrimaria(null);
-        return;
-      }
-      if (!this.equals(this.getTbl().getClnChavePrimaria()))
-      {
-        this.getTbl().getClnChavePrimaria()._booChavePrimaria = false;
-      }
-      this.getTbl().setClnChavePrimaria(this);
-    }
-    catch (Exception ex)
-    {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
-    }
+    this.getLstEvtOnValorAlteradoListener().remove(evt);
   }
 
   private void setBooClnDominioValorCarregado(boolean booClnDominioValorCarregado)
@@ -973,27 +963,20 @@ public class Coluna extends Objeto
 
   public void setBooNome(boolean booNome)
   {
-    try
+    _booNome = booNome;
+
+    if (!_booNome)
     {
-      _booNome = booNome;
-      if (!_booNome)
-      {
-        this.getTbl().setClnNome(null);
-        return;
-      }
-      if (!this.equals(this.getTbl().getClnNome()))
-      {
-        this.getTbl().getClnNome()._booNome = false;
-      }
-      this.getTbl().setClnNome(this);
+      this.getTbl().setClnNome(null);
+      return;
     }
-    catch (Exception ex)
+
+    if (!this.equals(this.getTbl().getClnNome()))
     {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
+      this.getTbl().getClnNome()._booNome = false;
     }
-    finally
-    {
-    }
+
+    this.getTbl().setClnNome(this);
   }
 
   public void setBooNotNull(boolean booNotNull)
@@ -1002,12 +985,9 @@ public class Coluna extends Objeto
   }
 
   /**
-   * Indica se o valor desta coluna não pode estar vazio quando for salvar um
-   * registro.
+   * Indica se o valor desta coluna não pode estar vazio quando for salvar um registro.
    *
-   * @param booObrigatorio
-   *          Indica se o valor desta coluna não pode estar vazio quando for
-   *          salvar um registro.
+   * @param booObrigatorio Indica se o valor desta coluna não pode estar vazio quando for salvar um registro.
    */
   public void setBooObrigatorio(boolean booObrigatorio)
   {
@@ -1015,12 +995,9 @@ public class Coluna extends Objeto
   }
 
   /**
-   * Se esta coluna for referência para outra coluna, indica se o registro será
-   * apagado caso o registro pai também o seja.
+   * Se esta coluna for referência para outra coluna, indica se o registro será apagado caso o registro pai também o seja.
    *
-   * @param booOnDeleteCascade
-   *          Indica se o registro será apagado caso o registro pai também o
-   *          seja.
+   * @param booOnDeleteCascade Indica se o registro será apagado caso o registro pai também o seja.
    */
   public void setBooOnDeleteCascade(boolean booOnDeleteCascade)
   {
@@ -1028,46 +1005,13 @@ public class Coluna extends Objeto
   }
 
   /**
-   * Se esta coluna for referência para outra coluna, indica se o valor será
-   * atualizado caso o registro pai também o seja.
+   * Se esta coluna for referência para outra coluna, indica se o valor será atualizado caso o registro pai também o seja.
    *
-   * @param booOnUpdateCascade
-   *          Indica se o valor será atualizado caso o registro pai também o
-   *          seja.
+   * @param booOnUpdateCascade Indica se o valor será atualizado caso o registro pai também o seja.
    */
   public void setBooOnUpdateCascade(boolean booOnUpdateCascade)
   {
     _booOnUpdateCascade = booOnUpdateCascade;
-  }
-
-  public void setBooOrdem(boolean booOrdem)
-  {
-    try
-    {
-      _booOrdem = booOrdem;
-      if (!_booOrdem)
-      {
-        this.getTbl().setClnOrdem(null);
-        return;
-      }
-      if (!this.equals(this.getTbl().getClnOrdem()))
-      {
-        this.getTbl().getClnOrdem()._booOrdem = false;
-      }
-      this.getTbl().setClnOrdem(this);
-    }
-    catch (Exception ex)
-    {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
-    }
-  }
-
-  public void setBooOrdemDecrescente(boolean booOrdemDecrescente)
-  {
-    _booOrdemDecrescente = booOrdemDecrescente;
   }
 
   public void setBooSenha(boolean booSenha)
@@ -1077,64 +1021,27 @@ public class Coluna extends Objeto
 
   public void setBooValor(boolean booValor)
   {
-    try
-    {
-      this.setStrValor(String.valueOf(booValor));
-    }
-    catch (Exception ex)
-    {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
-    }
+    this.setStrValor(String.valueOf(booValor));
   }
 
-  public void setBooVisivelCadastro(boolean booVisivelCadastro)
+  public void setBooValorDefault(boolean booValorDefault)
   {
-    try
-    {
-      _booVisivelCadastro = booVisivelCadastro;
-      if (!_booVisivelCadastro)
-      {
-        return;
-      }
-      this.getTbl().setLstClnCadastro(null);
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _booValorDefault = booValorDefault;
+
+    this.atualizarBooValorDefault(_booValorDefault);
   }
 
   public void setBooVisivelConsulta(boolean booVisivelConsulta)
   {
-    try
-    {
-      _booVisivelConsulta = booVisivelConsulta;
-      if (!_booVisivelConsulta)
-      {
-        return;
-      }
-      this.getTbl().setLstClnConsulta(null);
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _booVisivelConsulta = booVisivelConsulta;
+
+    this.getTbl().setLstClnConsulta(null);
   }
 
   /**
    * Indica se esta coluna será vista nas telas de detalhes.
    *
-   * @param booVisivelDetalhe
-   *          Indica se esta coluna será vista nas telas de detalhes.
+   * @param booVisivelDetalhe Indica se esta coluna será vista nas telas de detalhes.
    */
   public void setBooVisivelDetalhe(boolean booVisivelDetalhe)
   {
@@ -1143,57 +1050,54 @@ public class Coluna extends Objeto
 
   public void setChrValor(char chrValor)
   {
-    try
-    {
-      this.setStrValor(String.valueOf(chrValor));
-    }
-    catch (Exception ex)
-    {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
-    }
+    this.setStrValor(String.valueOf(chrValor));
   }
 
-  public void setClnRef(Coluna clnRef)
+  private void setClnRef(Coluna clnRef)
   {
     _clnRef = clnRef;
   }
 
   public void setDblValor(double dblValor)
   {
-    try
-    {
-      this.setStrValor(String.valueOf(dblValor));
-    }
-    catch (Exception ex)
-    {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
-    }
+    this.setStrValor(String.valueOf(dblValor));
+  }
+
+  public void setDblValorDefault(double dblValorDefault)
+  {
+    _dblValorDefault = dblValorDefault;
+
+    this.setStrValorDefault(String.valueOf(_dblValorDefault));
   }
 
   public void setDttValor(Calendar dttValor)
   {
-    try
+    if (dttValor == null)
     {
-      if (dttValor == null)
-      {
-        this.setStrValor(Utils.STR_VAZIA);
-        return;
-      }
-      this.setStrValor(Utils.getStrDataFormatada(dttValor, Utils.EnmDataFormato.YYYY_MM_DD_HH_MM_SS));
+      this.setStrValor(null);
+      return;
     }
-    catch (Exception ex)
+
+    this.setStrValor(Utils.getStrDataFormatada(dttValor, Utils.EnmDataFormato.YYYY_MM_DD_HH_MM_SS));
+  }
+
+  public void setEnmOrdem(EnmOrdem enmOrdem)
+  {
+    if (_enmOrdem == enmOrdem)
     {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
+      return;
     }
-    finally
+
+    _enmOrdem = enmOrdem;
+
+    this.setSqlOrderBy(null);
+
+    if (this.getTbl() == null)
     {
+      return;
     }
+
+    this.getTbl().addClnOrdem(this);
   }
 
   private void setEnmTipo(EnmTipo enmTipo)
@@ -1211,11 +1115,6 @@ public class Coluna extends Objeto
     _intFrmLinhaPeso = intFrmLinhaPeso;
   }
 
-  public void setIntOrdem(int intOrdem)
-  {
-    _intOrdem = intOrdem;
-  }
-
   public void setIntTamanhoCampo(int intTamanhoCampo)
   {
     _intTamanhoCampo = intTamanhoCampo;
@@ -1223,17 +1122,51 @@ public class Coluna extends Objeto
 
   public void setIntValor(int intValor)
   {
-    try
+    if ((intValor < 1) && (this.getClnRef() != null))
     {
-      this.setStrValor(String.valueOf(intValor));
+      return;
     }
-    catch (Exception ex)
+
+    this.setStrValor(String.valueOf(intValor));
+  }
+
+  public void setIntValorDefault(Integer intValorDefault)
+  {
+    _intValorDefault = intValorDefault;
+
+    this.atualizarIntValorDefault(_intValorDefault);
+  }
+
+  private void setSqlNomeInsert(final String sqlNomeInsert)
+  {
+    _sqlNomeInsert = sqlNomeInsert;
+  }
+
+  private void setSqlOrderBy(final String sqlOrderBy)
+  {
+    _sqlOrderBy = sqlOrderBy;
+  }
+
+  private void setSqlUpdate(final String sqlUpdate)
+  {
+    _sqlUpdate = sqlUpdate;
+  }
+
+  private void setSqlValor(String sqlValor)
+  {
+    if (_sqlValor == sqlValor)
     {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
+      return;
     }
-    finally
-    {
-    }
+
+    _sqlValor = sqlValor;
+
+    this.atualizarSqlValor(sqlValor);
+  }
+
+  private void setSqlValorInsert(String sqlValorInsert)
+  {
+    _sqlValorInsert = sqlValorInsert;
   }
 
   public void setStrDominioNome(String strDominioNome)
@@ -1241,48 +1174,23 @@ public class Coluna extends Objeto
     _strDominioNome = strDominioNome;
   }
 
-  @Override
-  public void setStrNome(String strNome)
+  private void setStrNomeValor(String strNomeValor)
   {
-    super.setStrNome(strNome);
-    try
-    {
-      if (Utils.getBooStrVazia(strNome))
-      {
-        return;
-      }
-      if (strNome.length() < 5)
-      {
-        return;
-      }
-      strNome = strNome.substring(4);
-      strNome = strNome.replace("_id", "");
-      this.setStrNomeExibicao(strNome);
-    }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+    _strNomeValor = strNomeValor;
   }
 
   public void setStrValor(String strValor)
   {
-    try
+    if (_strValor == strValor)
     {
-      this.setStrValorAnterior(_strValor);
-      _strValor = strValor;
-      this.atualizarStrValor();
+      return;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+
+    this.setStrValorAnterior(_strValor);
+
+    _strValor = strValor;
+
+    this.atualizarStrValor(strValor);
   }
 
   private void setStrValorAnterior(String strValorAnterior)
@@ -1300,23 +1208,19 @@ public class Coluna extends Objeto
     _strValorExibicao = strValorExibicao;
   }
 
-  public void setTbl(Tabela<?> tbl)
+  private void setStrValorMonetario(String strValorMonetario)
   {
-    try
-    {
-      _tbl = tbl;
-      if (_tbl == null)
-      {
-        return;
-      }
-      _tbl.addCln(this);
-    }
-    catch (Exception ex)
-    {
-      new Erro(App.getI().getStrTextoPadrao(0), ex);
-    }
-    finally
-    {
-    }
+    _strValorMonetario = strValorMonetario;
+  }
+
+  public void setTbl(TabelaMain<?> tbl)
+  {
+    _tbl = tbl;
+  }
+
+  @Override
+  public String toString()
+  {
+    return String.format("%s: %s", this.getSqlNome(), this.getStrValor());
   }
 }

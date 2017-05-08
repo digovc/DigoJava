@@ -4,7 +4,6 @@ import com.digosofter.digojava.EventArg;
 
 public class OnChangeArg extends EventArg
 {
-
   private int _intRegistroId;
 
   public int getIntRegistroId()

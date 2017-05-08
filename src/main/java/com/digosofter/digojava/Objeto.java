@@ -1,15 +1,45 @@
 package com.digosofter.digojava;
 
-import com.digosofter.digojava.erro.Erro;
-
 public abstract class Objeto
 {
   private static int _intObjetoIdStatic;
+
   private transient int _intObjetoId;
   private transient String _strDescricao;
   private String _strNome;
   private transient String _strNomeExibicao;
   private transient String _strNomeSimplificado;
+  private transient Thread _trdLock;
+
+  protected void bloquearThread()
+  {
+    if (Thread.currentThread().equals(this.getTrdLock()))
+    {
+      return;
+    }
+
+    if (this.getTrdLock() != null)
+    {
+      this.esperarThread();
+    }
+
+    this.setTrdLock(Thread.currentThread());
+  }
+
+  private void esperarThread()
+  {
+    while (this.getTrdLock() != null)
+    {
+      try
+      {
+        Thread.sleep(5);
+      }
+      catch (InterruptedException e)
+      {
+        e.printStackTrace();
+      }
+    }
+  }
 
   /**
    * Retorna um número único para cada uma das intâncias dos objetos que decendem desta classe. O primeiro valor é 1.
@@ -18,22 +48,15 @@ public abstract class Objeto
    */
   public int getIntObjetoId()
   {
-    try
+    if (_intObjetoId > 0)
     {
-      if (_intObjetoId > 0)
-      {
-        return _intObjetoId;
-      }
-      Objeto.setIntObjetoIdStatic(Objeto.getIntObjetoIdStatic() + 1);
-      _intObjetoId = Objeto.getIntObjetoIdStatic();
+      return _intObjetoId;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+
+    Objeto.setIntObjetoIdStatic(Objeto.getIntObjetoIdStatic() + 1);
+
+    _intObjetoId = Objeto.getIntObjetoIdStatic();
+
     return _intObjetoId;
   }
 
@@ -54,42 +77,46 @@ public abstract class Objeto
 
   public String getStrNomeExibicao()
   {
-    try
+    if (_strNomeExibicao != null)
     {
-      if (!Utils.getBooStrVazia(_strNomeExibicao))
-      {
-        return _strNomeExibicao;
-      }
-      _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
+      return _strNomeExibicao;
     }
-    catch (Exception ex)
+
+    if (Utils.getBooStrVazia(this.getStrNome()))
     {
-      new Erro("Erro inesperado.\n", ex);
+      return null;
     }
-    finally
-    {
-    }
+
+    _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(this.getStrNome());
+
     return _strNomeExibicao;
   }
 
   public String getStrNomeSimplificado()
   {
-    try
+    if (_strNomeSimplificado != null)
     {
-      if (!Utils.getBooStrVazia(_strNomeSimplificado))
-      {
-        return _strNomeSimplificado;
-      }
-      _strNomeSimplificado = Utils.simplificar(this.getStrNome());
+      return _strNomeSimplificado;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+
+    _strNomeSimplificado = Utils.simplificar(this.getStrNome());
+
     return _strNomeSimplificado;
+  }
+
+  private Thread getTrdLock()
+  {
+    return _trdLock;
+  }
+
+  public void liberarThread()
+  {
+    if (this.getTrdLock() == null)
+    {
+      return;
+    }
+
+    this.setTrdLock(null);
   }
 
   private static void setIntObjetoIdStatic(int intObjetoIdStatic)
@@ -104,42 +131,36 @@ public abstract class Objeto
 
   public void setStrNome(String strNome)
   {
-    try
+    if (_strNome == strNome)
     {
-      _strNome = strNome;
-      this.setStrNomeSimplificado(null);
+      return;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+
+    _strNome = strNome;
+
+    this.setStrNomeSimplificado(null);
   }
 
   public void setStrNomeExibicao(String strNomeExibicao)
   {
-    try
+    if (_strNomeExibicao == strNomeExibicao)
     {
-      _strNomeExibicao = strNomeExibicao;
-      if (Utils.getBooStrVazia(_strNomeExibicao))
-      {
-        return;
-      }
-      _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNomeExibicao);
+      return;
     }
-    catch (Exception ex)
-    {
-      new Erro("Erro inesperado.\n", ex);
-    }
-    finally
-    {
-    }
+
+    _strNomeExibicao = strNomeExibicao;
+
+    _strNomeExibicao = Utils.getStrPrimeiraMaiuscula(_strNomeExibicao);
   }
 
   private void setStrNomeSimplificado(String strNomeSimplificado)
   {
     _strNomeSimplificado = strNomeSimplificado;
   }
+
+  private void setTrdLock(Thread trdLock)
+  {
+    _trdLock = trdLock;
+  }
+
 }
