@@ -288,7 +288,7 @@ public class Coluna extends Objeto
    */
   public boolean getBooVazia()
   {
-    return Utils.getBooStrVazia(this.getStrValor());
+    return Utils.getBooStrVazia(this.getStrValor()) || STR_VALOR_NULO.equals(this.getStrValor());
   }
 
   public boolean getBooVisivelConsulta()

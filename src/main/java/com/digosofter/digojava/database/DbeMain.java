@@ -32,24 +32,24 @@ public abstract class DbeMain extends Objeto
 
   public abstract void execSql(String sql);
 
-  public boolean execSqlGetBoo(String sql)
+  public boolean execSqlBoo(String sql)
   {
     if (Utils.getBooStrVazia(sql))
     {
       return false;
     }
 
-    return Utils.getBoo(this.execSqlGetStr(sql));
+    return Utils.getBoo(this.execSqlStr(sql));
   }
 
-  public double execSqlGetDbl(String sql)
+  public double execSqlDbl(String sql)
   {
     if (Utils.getBooStrVazia(sql))
     {
       return 0;
     }
 
-    String strResultado = this.execSqlGetStr(sql);
+    String strResultado = this.execSqlStr(sql);
 
     if (Utils.getBooStrVazia(strResultado))
     {
@@ -59,12 +59,12 @@ public abstract class DbeMain extends Objeto
     return Double.valueOf(strResultado);
   }
 
-  public int execSqlGetInt(String sql)
+  public int execSqlInt(String sql)
   {
-    return (int) this.execSqlGetDbl(sql);
+    return (int) this.execSqlDbl(sql);
   }
 
-  public abstract String execSqlGetStr(String sql);
+  public abstract String execSqlStr(String sql);
 
   /**
    * @return Retorna a lista de tabelas deste banco de dados.

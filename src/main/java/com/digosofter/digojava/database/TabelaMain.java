@@ -272,7 +272,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
     sql = sql.replace("_tbl_nome", this.getSqlNome());
 
-    return this.getDbe().execSqlGetInt(sql);
+    return this.getDbe().execSqlInt(sql);
   }
 
   public List<Coluna> getLstCln()
