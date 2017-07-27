@@ -92,16 +92,6 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     this.dispararEvtOnApagarReg(arg);
   }
 
-  private void atualizarDbe(final DbeMain dbe)
-  {
-    if (dbe == null)
-    {
-      return;
-    }
-
-    dbe.addTbl(this);
-  }
-
   // TODO: Criar uma classe que gerencia a criação e atualização das tabelas.
   protected abstract void criar();
 
@@ -606,7 +596,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
     _dbe = dbe;
 
-    this.atualizarDbe(dbe);
+    _dbe.addTbl(this);
   }
 
   protected void setEventos()
