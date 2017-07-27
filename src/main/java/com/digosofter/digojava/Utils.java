@@ -684,7 +684,14 @@ public abstract class Utils
       return 0;
     }
 
-    return Double.valueOf(strTermo.replace(",", "."));
+    strTermo = strTermo.replace(",", ".");
+
+    if (Utils.getBooStrVazia(strTermo))
+    {
+      return 0;
+    }
+
+    return Double.valueOf(strTermo);
   }
 
   public static boolean validarCnpj(String strCnpj)
