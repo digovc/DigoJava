@@ -869,71 +869,71 @@ public abstract class Utils
     strDtt = strDtt.replace("/", "-");
     strDtt = strDtt.replace("t", " ");
 
-    if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d.\\d\\d\\d"))
+    if (strDtt.matches("^\\d{2}-\\d{2}-\\d{4}\\s\\d{2}:\\d{2}:\\d{2}.\\d{3}$"))
     {
       return "dd-MM-yyyy HH:mm:ss.SSS";
     }
 
-    if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d"))
+    if (strDtt.matches("^\\d{2}-\\d{2}-\\d{4}\\s\\d{2}:\\d{2}:\\d{2}$"))
     {
       return "dd-MM-yyyy HH:mm:ss";
     }
 
-    if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d"))
+    if (strDtt.matches("^\\d{2}-\\d{2}-\\d{4}\\s\\d{2}:\\d{2}$"))
     {
       return "dd-MM-yyyy HH:mm";
     }
 
-    if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d"))
+    if (strDtt.matches("^\\d{2}-\\d{2}-\\d{4}$"))
     {
       return "dd-MM-yyyy";
     }
 
-    if (strDtt.matches("\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d"))
+    if (strDtt.matches("^\\d{2}:\\d{2}:\\d{2}.\\d{3}\\s\\d{2}-\\d{2}-\\d{4}$"))
     {
       return "HH:mm:ss.SSS dd-MM-yyyy";
     }
 
-    if (strDtt.matches("\\d\\d:\\d\\d:\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d"))
+    if (strDtt.matches("^\\d{2}:\\d{2}:\\d{2}\\s\\d{2}-\\d{2}-\\d{4}$"))
     {
       return "HH:mm:ss dd-MM-yyyy";
     }
-    if (strDtt.matches("\\d\\d:\\d\\d \\d\\d-\\d\\d-\\d\\d\\d\\d"))
+    if (strDtt.matches("^\\d{2}:\\d{2}\\s\\d{2}-\\d{2}-\\d{4}$"))
     {
       return "HH:mm dd-MM-yyyy";
     }
 
-    if (strDtt.matches("\\d\\d-\\d\\d-\\d\\d\\d\\d"))
+    if (strDtt.matches("^\\d{2}-\\d{2}-\\d{4}$"))
     {
       return "dd-MM-yyyy";
     }
 
-    if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d.\\d\\d\\d"))
+    if (strDtt.matches("^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}.\\d{3}$"))
     {
       return "yyyy-MM-dd HH:mm:ss.SSS";
     }
 
-    if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d\\-\\d\\d:\\d\\d"))
+    if (strDtt.matches("^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}[+-]\\d{2}:\\d{2}$"))
     {
       return "yyyy-MM-dd HH:mm:ssZ";
     }
 
-    if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d.\\d\\d\\d-\\d\\d:\\d\\d"))
+    if (strDtt.matches("^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}.\\d{3}[+-]\\d{2}:\\d{2}$"))
     {
       return "yyyy-MM-dd HH:mm:ss.SSSZ";
     }
 
-    if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d"))
+    if (strDtt.matches("^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}$"))
     {
       return "yyyy-MM-dd HH:mm:ss";
     }
 
-    if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d"))
+    if (strDtt.matches("^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}$"))
     {
       return "yyyy-MM-dd HH:mm";
     }
 
-    if (strDtt.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d"))
+    if (strDtt.matches("^\\d{4}-\\d{2}-\\d{2}$"))
     {
       return "yyyy-MM-dd";
     }
