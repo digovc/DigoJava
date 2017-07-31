@@ -51,6 +51,7 @@ public abstract class Utils
 
   public static final String STR_VAZIA = "";
   private static Locale _objLocaleBrasil;
+  private static String _strDownload;
 
   public static String addMascara(String str, String strMascara)
   {
@@ -205,24 +206,23 @@ public abstract class Utils
       url = ("http://" + url);
     }
 
-    InputStream objInputStream = null;
+    setStrDownload(null);
 
-    try
-    {
-      objInputStream = new URL(url).openStream();
+    downloadStringProcess(url);
 
-      return IOUtils.toString(objInputStream);
-    }
-    catch (Exception e)
+    while (getStrDownload() == null)
     {
-      e.printStackTrace();
-    }
-    finally
-    {
-      IOUtils.closeQuietly(objInputStream);
+      try
+      {
+        Thread.sleep(10);
+      }
+      catch (InterruptedException e)
+      {
+        e.printStackTrace();
+      }
     }
 
-    return null;
+    return getStrDownload();
   }
 
   public static boolean getBoo(final String strValor)
@@ -801,6 +801,34 @@ public abstract class Utils
     return strDigitoVerificador.equals(strDigitoResult);
   }
 
+  private static void downloadStringProcess(final String url)
+  {
+    new Thread()
+    {
+      @Override
+      public void run()
+      {
+        InputStream objInputStream = null;
+
+        try
+        {
+          objInputStream = new URL(url).openStream();
+
+          setStrDownload(IOUtils.toString(objInputStream));
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
+          setStrDownload(STR_VAZIA);
+        }
+        finally
+        {
+          IOUtils.closeQuietly(objInputStream);
+        }
+      }
+    }.start();
+  }
+
   private static String enmDataFormatoToString(EnmDataFormato enmDataFormato)
   {
     switch (enmDataFormato)
@@ -862,6 +890,11 @@ public abstract class Utils
       default:
         return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     }
+  }
+
+  private static String getStrDownload()
+  {
+    return _strDownload;
   }
 
   private static String getStrDttFormato(String strDtt)
@@ -946,5 +979,10 @@ public abstract class Utils
     }
 
     return null;
+  }
+
+  private static void setStrDownload(String strDownload)
+  {
+    _strDownload = strDownload;
   }
 }
