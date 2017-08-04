@@ -1,12 +1,17 @@
 package com.digosofter.digojava;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
@@ -20,6 +25,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public abstract class Utils
 {
@@ -139,6 +146,20 @@ public abstract class Utils
     return Integer.parseInt(Character.toString(c));
   }
 
+  public static String comprimir(String str) throws IOException
+  {
+    byte[] blockcopy = ByteBuffer.allocate(4).order(java.nio.ByteOrder.LITTLE_ENDIAN).putInt(str.length()).array();
+    ByteArrayOutputStream os = new ByteArrayOutputStream(str.length());
+    GZIPOutputStream gos = new GZIPOutputStream(os);
+    gos.write(str.getBytes());
+    gos.close();
+    os.close();
+    byte[] compressed = new byte[4 + os.toByteArray().length];
+    System.arraycopy(blockcopy, 0, compressed, 0, 4);
+    System.arraycopy(os.toByteArray(), 0, compressed, 4, os.toByteArray().length);
+    return new String(Base64.encodeBase64(compressed));
+  }
+
   public static String concatenarArrStr(String[] arrStrTermo, String strDelimitador, boolean booEliminarDuplicado)
   {
     if (arrStrTermo == null)
@@ -192,6 +213,35 @@ public abstract class Utils
     }
 
     return stbResultado.toString();
+  }
+
+  public static String descomprimir(String zipText) throws IOException
+  {
+    byte[] compressed = Base64.decodeBase64(zipText);
+
+    if (compressed.length > 4)
+    {
+      GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(compressed, 4, compressed.length - 4));
+
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+      for (int value = 0; value != -1; )
+      {
+        value = gzipInputStream.read();
+        if (value != -1)
+        {
+          baos.write(value);
+        }
+      }
+
+      gzipInputStream.close();
+      baos.close();
+      String sReturn = new String(baos.toByteArray(), "UTF-8");
+
+      return sReturn;
+    }
+
+    return STR_VAZIA;
   }
 
   public static String downloadString(String url)
