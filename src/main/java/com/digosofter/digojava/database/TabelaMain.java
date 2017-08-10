@@ -258,11 +258,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
    */
   public int getIntRegistroQuantidade()
   {
-    String sql = "select count(1) from _tbl_nome;";
-
-    sql = sql.replace("_tbl_nome", this.getSqlNome());
-
-    return this.getDbe().execSqlInt(sql);
+    return this.getDbe().execSqlInt(String.format("select count(1) from %s;", this.getSqlNome()));
   }
 
   public List<Coluna> getLstCln()
