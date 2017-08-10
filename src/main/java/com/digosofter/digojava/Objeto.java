@@ -1,6 +1,6 @@
 package com.digosofter.digojava;
 
-public abstract class Objeto
+public class Objeto
 {
   private static int _intObjetoIdStatic;
 
