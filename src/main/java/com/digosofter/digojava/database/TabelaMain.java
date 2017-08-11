@@ -117,7 +117,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
         continue;
       }
 
-      evt.onTblAdicionar(arg);
+      evt.onTabelaAdicionar(arg);
     }
   }
 
@@ -130,7 +130,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
         continue;
       }
 
-      evt.onTblApagar(e);
+      evt.onTabelaApagar(e);
     }
   }
 
@@ -143,7 +143,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
         continue;
       }
 
-      evt.onTblAtualizar(e);
+      evt.onTabelaAtualizar(e);
     }
   }
 
