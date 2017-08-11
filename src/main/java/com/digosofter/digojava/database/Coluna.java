@@ -192,10 +192,6 @@ public class Coluna extends Objeto
     this.setStrValor(this.getStrValorDefault());
   }
 
-  public void criar()
-  {
-  }
-
   private void dispararEvtOnValorAlteradoListener()
   {
     if (this.getLstEvtOnValorAlteradoListener().isEmpty())
@@ -835,6 +831,11 @@ public class Coluna extends Objeto
   public TabelaMain<?> getTbl()
   {
     return _tbl;
+  }
+
+  public void iniciar(TabelaMain tbl)
+  {
+    this.setTbl(tbl);
   }
 
   public <T extends DominioMain> void lerDominio(T objDominio)

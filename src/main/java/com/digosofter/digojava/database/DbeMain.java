@@ -12,22 +12,6 @@ public abstract class DbeMain extends Objeto
 
   protected DbeMain()
   {
-    this.iniciar();
-  }
-
-  public void addTbl(TabelaMain<?> tbl)
-  {
-    if (tbl == null)
-    {
-      return;
-    }
-
-    if (this.getLstTbl().contains(tbl))
-    {
-      return;
-    }
-
-    this.getLstTbl().add(tbl);
   }
 
   public abstract void execSql(String sql);
@@ -78,34 +62,31 @@ public abstract class DbeMain extends Objeto
 
     _lstTbl = new ArrayList<>();
 
+    this.inicializarLstTbl(_lstTbl);
+
     return _lstTbl;
   }
 
   /**
-   * Retorna a tabela que tem o id de objeto igual ao parâmetro @param intTblObjetoId.
+   * Retorna a tabela que tem o id de objeto igual ao parâmetro @param intTabelaObjetoId.
    *
-   * @param intTblObjetoId Código do objeto da tabela que se deseja retornar.
+   * @param intTabelaObjetoId Código do objeto da tabela que se deseja retornar.
    */
-  public TabelaMain getTbl(int intTblObjetoId)
+  public TabelaMain getTbl(final int intTabelaObjetoId)
   {
-    if (intTblObjetoId < 0)
+    if (intTabelaObjetoId < 0)
     {
       return null;
     }
 
     for (TabelaMain tbl : this.getLstTbl())
     {
-      if (tbl == null)
-      {
-        continue;
-      }
+      TabelaMain tblResultado = tbl.getTbl(intTabelaObjetoId);
 
-      if (tbl.getIntObjetoId() != intTblObjetoId)
+      if (tblResultado != null)
       {
-        continue;
+        return tblResultado;
       }
-
-      return tbl;
     }
 
     return null;
@@ -113,9 +94,15 @@ public abstract class DbeMain extends Objeto
 
   protected void inicializar()
   {
+    for (TabelaMain tbl : this.getLstTbl())
+    {
+      tbl.iniciar(this);
+    }
   }
 
-  private void iniciar()
+  protected abstract void inicializarLstTbl(final List<TabelaMain> lstTbl);
+
+  public void iniciar()
   {
     this.inicializar();
   }

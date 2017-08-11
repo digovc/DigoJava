@@ -19,6 +19,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
   private boolean _booPermitirAlterar;
   private boolean _booPermitirApagar;
+  private boolean _booRecemCriada;
   private Coluna _clnNome;
   private Class<T> _clsDominio;
   private DbeMain _dbe;
@@ -34,12 +35,9 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   private String _strPesquisa;
   private TabelaMain _tblPrincipal;
 
-  protected TabelaMain(String strNome, DbeMain dbe)
+  protected TabelaMain()
   {
-    this.setDbe(dbe);
-    this.setStrNome(strNome);
-
-    this.iniciar();
+    this.setStrNome(Utils.simplificar(this.getClass().getSimpleName()));
   }
 
   void addClnOrdem(final Coluna cln)
@@ -95,19 +93,6 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   // TODO: Criar uma classe que gerencia a criação e atualização das tabelas.
   protected abstract void criar();
 
-  protected void criarColuna()
-  {
-    for (Coluna cln : this.getLstCln())
-    {
-      if (cln == null)
-      {
-        continue;
-      }
-
-      cln.criar();
-    }
-  }
-
   protected void dispararEvtOnAdicionarReg(OnChangeArg arg)
   {
     for (OnTblChangeListener evt : this.getLstEvtOnChangeListener())
@@ -160,6 +145,11 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   public boolean getBooPermitirApagar()
   {
     return _booPermitirApagar;
+  }
+
+  public boolean getBooRecemCriada()
+  {
+    return _booRecemCriada;
   }
 
   /**
@@ -272,6 +262,8 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
     _lstCln = new ArrayList<>();
 
+    this.inicializarLstCln(_lstCln);
+
     return _lstCln;
   }
 
@@ -373,12 +365,12 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
   public String getSqlNome()
   {
-    if (!Utils.getBooStrVazia(_sqlNome))
+    if (_sqlNome != null)
     {
       return _sqlNome;
     }
 
-    _sqlNome = this.getStrNomeSimplificado();
+    _sqlNome = this.getStrNome();
 
     return _sqlNome;
   }
@@ -448,6 +440,16 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return _strPesquisa;
   }
 
+  public TabelaMain getTbl(final int intTabelaObjetoId)
+  {
+    if (this.getIntObjetoId() == intTabelaObjetoId)
+    {
+      return this;
+    }
+
+    return null;
+  }
+
   public TabelaMain getTblPrincipal()
   {
     if (_tblPrincipal != null)
@@ -462,10 +464,9 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
   protected void inicializar()
   {
-    this.inicializarLstCln(this.getLstCln());
-
     this.criar();
-    this.criarColuna();
+
+    this.inicializarLstCln();
 
     this.inicializarClnDttAlteracao();
     this.inicializarClnIntUsuarioAlteracaoId();
@@ -502,6 +503,14 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     this.getClnIntUsuarioCadastroId().setStrNomeExibicao(STR_CLN_STR_USUARIO_CADASTRO_NOME);
   }
 
+  private void inicializarLstCln()
+  {
+    for (Coluna cln : this.getLstCln())
+    {
+      cln.iniciar(this);
+    }
+  }
+
   protected void inicializarLstCln(List<Coluna> lstCln)
   {
     lstCln.add(this.getClnBooAtivo());
@@ -517,8 +526,10 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   {
   }
 
-  private void iniciar()
+  public void iniciar(DbeMain dbe)
   {
+    this.setDbe(dbe);
+
     this.inicializar();
     this.setEventos();
     this.finalizar();
@@ -578,6 +589,11 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     _booPermitirApagar = booPermitirApagar;
   }
 
+  protected void setBooRecemCriada(boolean booRecemCriada)
+  {
+    _booRecemCriada = booRecemCriada;
+  }
+
   void setClnNome(Coluna clnNome)
   {
     _clnNome = clnNome;
@@ -585,14 +601,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
   private void setDbe(DbeMain dbe)
   {
-    if (_dbe == dbe)
-    {
-      return;
-    }
-
     _dbe = dbe;
-
-    _dbe.addTbl(this);
   }
 
   protected void setEventos()

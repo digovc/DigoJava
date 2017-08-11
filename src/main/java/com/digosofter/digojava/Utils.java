@@ -662,14 +662,31 @@ public abstract class Utils
     return strTermo.substring(0, strTermo.length() - intQuantidade);
   }
 
-  public static String simplificar(String strTermo)
+  public static String simplificar(String str)
   {
-    if (Utils.getBooStrVazia(strTermo))
+    if (Utils.getBooStrVazia(str))
     {
       return null;
     }
 
-    strTermo = strTermo.toLowerCase(Utils.getObjLocaleBrasil());
+    for (int i = 1; i < str.length(); i++)
+    {
+      if (!Character.isUpperCase(str.charAt(i)))
+      {
+        continue;
+      }
+
+      if ((i + 1) >= str.length())
+      {
+        break;
+      }
+
+      str = (str.substring(0, i) + "_" + str.substring(i));
+
+      i++;
+    }
+
+    str = str.toLowerCase(Utils.getObjLocaleBrasil());
 
     char[] arrChrComAcento = new char[]{'ç', 'á', 'é', 'í', 'ó', 'ú', 'ý', 'à', 'è', 'ì', 'ò', 'ù', 'ã', 'õ', 'ñ', 'ä', 'ë', 'ï', 'ö', 'ü', 'ÿ', 'â', 'ê', 'î', 'ô', 'û'};
 
@@ -677,17 +694,17 @@ public abstract class Utils
 
     for (int i = 0; i < arrChrComAcento.length; i++)
     {
-      strTermo = strTermo.replace(arrChrComAcento[i], arrChrSemAcento[i]);
+      str = str.replace(arrChrComAcento[i], arrChrSemAcento[i]);
     }
 
     char[] arrChrCaracterEspecial = new char[]{'/', '.', ',', '-', ':', '(', ')', 'ª', '|', '\\', '°', '+', '$', '-', '.', '{', '}', '[', ']'};
 
     for (char chrCaracterEspecial : arrChrCaracterEspecial)
     {
-      strTermo = strTermo.replace(chrCaracterEspecial, ' ');
+      str = str.replace(chrCaracterEspecial, ' ');
     }
 
-    return strTermo.replace(" ", "_");
+    return str.replace(" ", "_");
   }
 
   public static GregorianCalendar strToDtt(String strData)

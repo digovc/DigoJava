@@ -34,8 +34,6 @@ public abstract class App extends Objeto
   protected App()
   {
     this.setI(this);
-
-    this.iniciar();
   }
 
   /**
