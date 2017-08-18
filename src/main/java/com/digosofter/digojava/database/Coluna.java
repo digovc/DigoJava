@@ -104,17 +104,16 @@ public class Coluna extends Objeto
   private String _strValorMonetario;
   private TabelaMain<?> _tbl;
 
-  public Coluna(String strNome, TabelaMain<?> tbl, EnmTipo enmTipo)
+  public Coluna(String strNome, EnmTipo enmTipo)
   {
-    this(strNome, tbl, enmTipo, null);
+    this(strNome, enmTipo, null);
   }
 
-  public Coluna(String strNome, TabelaMain<?> tbl, EnmTipo enmTipo, Coluna clnRef)
+  public Coluna(String strNome, EnmTipo enmTipo, Coluna clnRef)
   {
     this.setClnRef(clnRef);
     this.setEnmTipo(enmTipo);
     this.setStrNome(strNome);
-    this.setTbl(tbl);
   }
 
   public void addEvtOnValorAlteradoListener(OnValorAlteradoListener evt)
@@ -1214,7 +1213,7 @@ public class Coluna extends Objeto
     _strValorMonetario = strValorMonetario;
   }
 
-  public void setTbl(TabelaMain<?> tbl)
+  private void setTbl(TabelaMain<?> tbl)
   {
     _tbl = tbl;
   }
