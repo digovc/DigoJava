@@ -17,6 +17,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   public static final String STR_CLN_STR_USUARIO_ALTERACAO_NOME = "Usuário (alteração)";
   public static final String STR_CLN_STR_USUARIO_CADASTRO_NOME = "Usuário (cadastro)";
 
+  private boolean _booPermitirAdicionar = true;
   private boolean _booPermitirAlterar;
   private boolean _booPermitirApagar;
   private boolean _booRecemCriada;
@@ -135,6 +136,11 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   protected void finalizar()
   {
 
+  }
+
+  public boolean getBooPermitirAdicionar()
+  {
+    return _booPermitirAdicionar;
   }
 
   public boolean getBooPermitirAlterar()
@@ -583,6 +589,11 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     }
 
     this.getLstEvtOnChangeListener().remove(evtOnTblChangeListener);
+  }
+
+  protected void setBooPermitirAdicionar(boolean booPermitirAdicionar)
+  {
+    _booPermitirAdicionar = booPermitirAdicionar;
   }
 
   protected void setBooPermitirAlterar(boolean booPermitirAlterar)
