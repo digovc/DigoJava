@@ -98,6 +98,11 @@ public abstract class DbeMain extends Objeto
     {
       tbl.iniciar(this);
     }
+
+    for (TabelaMain tbl : this.getLstTbl())
+    {
+      tbl.iniciarCln();
+    }
   }
 
   protected abstract void inicializarLstTbl(final List<TabelaMain> lstTbl);

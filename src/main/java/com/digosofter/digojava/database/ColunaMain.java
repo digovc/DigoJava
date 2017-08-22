@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Coluna extends Objeto
+public abstract class ColunaMain extends Objeto
 {
   public enum EnmOrdem
   {
@@ -64,8 +64,8 @@ public class Coluna extends Objeto
   }
 
   public static final String STR_VALOR_NULO = "<<<<<null>>>>>";
+
   private boolean _booClnDominioValorCarregado;
-  private boolean _booNome;
   private boolean _booNotNull;
   private boolean _booObrigatorio;
   private boolean _booOnDeleteCascade;
@@ -74,7 +74,7 @@ public class Coluna extends Objeto
   private boolean _booValorDefault;
   private boolean _booVisivelConsulta;
   private boolean _booVisivelDetalhe = true;
-  private Coluna _clnRef;
+  private ColunaMain _clnRef;
   private double _dblValorDefault;
   private EnmOrdem _enmOrdem = EnmOrdem.NONE;
   private EnmTipo _enmTipo;
@@ -104,12 +104,12 @@ public class Coluna extends Objeto
   private String _strValorMonetario;
   private TabelaMain<?> _tbl;
 
-  public Coluna(String strNome, EnmTipo enmTipo)
+  public ColunaMain(String strNome, EnmTipo enmTipo)
   {
     this(strNome, enmTipo, null);
   }
 
-  public Coluna(String strNome, EnmTipo enmTipo, Coluna clnRef)
+  public ColunaMain(String strNome, EnmTipo enmTipo, ColunaMain clnRef)
   {
     this.setClnRef(clnRef);
     this.setEnmTipo(enmTipo);
@@ -191,6 +191,8 @@ public class Coluna extends Objeto
     this.setStrValor(this.getStrValorDefault());
   }
 
+  protected abstract void criar();
+
   private void dispararEvtOnValorAlteradoListener()
   {
     if (this.getLstEvtOnValorAlteradoListener().isEmpty())
@@ -232,11 +234,6 @@ public class Coluna extends Objeto
   private boolean getBooClnDominioValorCarregado()
   {
     return _booClnDominioValorCarregado;
-  }
-
-  public boolean getBooNome()
-  {
-    return _booNome;
   }
 
   public boolean getBooNotNull()
@@ -311,7 +308,7 @@ public class Coluna extends Objeto
     return this.getStrValor().charAt(0);
   }
 
-  public Coluna getClnRef()
+  public ColunaMain getClnRef()
   {
     return _clnRef;
   }
@@ -500,7 +497,7 @@ public class Coluna extends Objeto
       return null;
     }
 
-    String strAscDesc = Coluna.EnmOrdem.CRESCENTE.equals(this.getEnmOrdem()) ? "asc" : "desc";
+    String strAscDesc = ColunaMain.EnmOrdem.CRESCENTE.equals(this.getEnmOrdem()) ? "asc" : "desc";
 
     _sqlOrderBy = String.format("%s %s, ", this.getSqlNome(), strAscDesc);
 
@@ -832,9 +829,14 @@ public class Coluna extends Objeto
     return _tbl;
   }
 
-  public void iniciar(TabelaMain tbl)
+  protected void inicializar()
   {
-    this.setTbl(tbl);
+    this.criar();
+  }
+
+  void iniciar()
+  {
+    this.inicializar();
   }
 
   public <T extends DominioMain> void lerDominio(T objDominio)
@@ -943,7 +945,7 @@ public class Coluna extends Objeto
 
   protected void limparOrdem()
   {
-    this.setEnmOrdem(Coluna.EnmOrdem.NONE);
+    this.setEnmOrdem(ColunaMain.EnmOrdem.NONE);
   }
 
   public void removerEvtOnValorAlteradoListener(OnValorAlteradoListener evt)
@@ -959,24 +961,6 @@ public class Coluna extends Objeto
   private void setBooClnDominioValorCarregado(boolean booClnDominioValorCarregado)
   {
     _booClnDominioValorCarregado = booClnDominioValorCarregado;
-  }
-
-  public void setBooNome(boolean booNome)
-  {
-    _booNome = booNome;
-
-    if (!_booNome)
-    {
-      this.getTbl().setClnNome(null);
-      return;
-    }
-
-    if (!this.equals(this.getTbl().getClnNome()))
-    {
-      this.getTbl().getClnNome()._booNome = false;
-    }
-
-    this.getTbl().setClnNome(this);
   }
 
   public void setBooNotNull(boolean booNotNull)
@@ -1035,7 +1019,10 @@ public class Coluna extends Objeto
   {
     _booVisivelConsulta = booVisivelConsulta;
 
-    this.getTbl().setLstClnConsulta(null);
+    if (this.getTbl() != null)
+    {
+      this.getTbl().setLstClnConsulta(null);
+    }
   }
 
   /**
@@ -1053,7 +1040,7 @@ public class Coluna extends Objeto
     this.setStrValor(String.valueOf(chrValor));
   }
 
-  private void setClnRef(Coluna clnRef)
+  private void setClnRef(ColunaMain clnRef)
   {
     _clnRef = clnRef;
   }
@@ -1213,7 +1200,7 @@ public class Coluna extends Objeto
     _strValorMonetario = strValorMonetario;
   }
 
-  private void setTbl(TabelaMain<?> tbl)
+  void setTbl(TabelaMain<?> tbl)
   {
     _tbl = tbl;
   }

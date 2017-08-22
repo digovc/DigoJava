@@ -20,13 +20,13 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   private boolean _booPermitirAlterar;
   private boolean _booPermitirApagar;
   private boolean _booRecemCriada;
-  private Coluna _clnNome;
+  private ColunaMain _clnNome;
   private Class<T> _clsDominio;
   private DbeMain _dbe;
-  private List<Coluna> _lstCln;
-  private List<Coluna> _lstClnConsulta;
-  private List<Coluna> _lstClnOrdem;
-  private List<Coluna> _lstClnOrdenado;
+  private List<ColunaMain> _lstCln;
+  private List<ColunaMain> _lstClnConsulta;
+  private List<ColunaMain> _lstClnOrdem;
+  private List<ColunaMain> _lstClnOrdenado;
   private List<OnTblChangeListener> _lstEvtOnTblChangeListener;
   private List<Filtro> _lstFilConsulta;
   private String _sqlNome;
@@ -40,7 +40,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     this.setStrNome(Utils.simplificar(this.getClass().getSimpleName()));
   }
 
-  void addClnOrdem(final Coluna cln)
+  void addClnOrdem(final ColunaMain cln)
   {
     if (cln == null)
     {
@@ -52,7 +52,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
       return;
     }
 
-    if (!Coluna.EnmOrdem.NONE.equals(cln.getEnmOrdem()))
+    if (!ColunaMain.EnmOrdem.NONE.equals(cln.getEnmOrdem()))
     {
       this.getLstClnOrdem().add(cln);
     }
@@ -158,14 +158,14 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
    * @param strClnNomeSql Nome da coluna que se deseja encontrar.
    * @return Retorna a coluna que possui o mesmo nome que foi passado como parâmetro ou null caso não encontre.
    */
-  public Coluna getCln(final String strClnNomeSql)
+  public ColunaMain getCln(final String strClnNomeSql)
   {
     if (Utils.getBooStrVazia(strClnNomeSql))
     {
       return null;
     }
 
-    for (Coluna cln : this.getLstCln())
+    for (ColunaMain cln : this.getLstCln())
     {
       if (cln == null)
       {
@@ -183,19 +183,19 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return null;
   }
 
-  public abstract Coluna getClnBooAtivo();
+  public abstract ColunaMain getClnBooAtivo();
 
-  public abstract Coluna getClnDttAlteracao();
+  public abstract ColunaMain getClnDttAlteracao();
 
-  public abstract Coluna getClnDttCadastro();
+  public abstract ColunaMain getClnDttCadastro();
 
-  public abstract Coluna getClnIntId();
+  public abstract ColunaMain getClnIntId();
 
-  protected abstract Coluna getClnIntUsuarioAlteracaoId();
+  protected abstract ColunaMain getClnIntUsuarioAlteracaoId();
 
-  protected abstract Coluna getClnIntUsuarioCadastroId();
+  protected abstract ColunaMain getClnIntUsuarioCadastroId();
 
-  public Coluna getClnNome()
+  public ColunaMain getClnNome()
   {
     if (_clnNome != null)
     {
@@ -204,12 +204,10 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
     _clnNome = this.getClnIntId();
 
-    _clnNome.setBooNome(true);
-
     return _clnNome;
   }
 
-  public abstract Coluna getClnStrObservacao();
+  public abstract ColunaMain getClnStrObservacao();
 
   public Class<T> getClsDominio()
   {
@@ -251,7 +249,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return this.getDbe().execSqlInt(String.format("select count(1) from %s;", this.getSqlNome()));
   }
 
-  public List<Coluna> getLstCln()
+  public List<ColunaMain> getLstCln()
   {
     if (_lstCln != null)
     {
@@ -267,19 +265,19 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return _lstCln;
   }
 
-  public List<Coluna> getLstClnConsulta()
+  public List<ColunaMain> getLstClnConsulta()
   {
     if (_lstClnConsulta != null)
     {
       return _lstClnConsulta;
     }
 
-    List<Coluna> lstClnConsultaResultado = new ArrayList<>();
+    List<ColunaMain> lstClnConsultaResultado = new ArrayList<>();
 
     lstClnConsultaResultado.add(this.getClnIntId());
     lstClnConsultaResultado.add(this.getClnNome());
 
-    for (Coluna cln : this.getLstCln())
+    for (ColunaMain cln : this.getLstCln())
     {
       if (cln == null)
       {
@@ -304,7 +302,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return _lstClnConsulta;
   }
 
-  protected List<Coluna> getLstClnOrdem()
+  protected List<ColunaMain> getLstClnOrdem()
   {
     if (_lstClnOrdem != null)
     {
@@ -316,7 +314,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     return _lstClnOrdem;
   }
 
-  public List<Coluna> getLstClnOrdenado()
+  public List<ColunaMain> getLstClnOrdenado()
   {
     if (_lstClnOrdenado != null)
     {
@@ -325,10 +323,10 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
     _lstClnOrdenado = new ArrayList<>(this.getLstCln());
 
-    Collections.sort(_lstClnOrdenado, new Comparator<Coluna>()
+    Collections.sort(_lstClnOrdenado, new Comparator<ColunaMain>()
     {
       @Override
-      public int compare(Coluna cln1, Coluna cln2)
+      public int compare(ColunaMain cln1, ColunaMain cln2)
       {
         return cln1.getStrNomeExibicao().compareTo(cln2.getStrNomeExibicao());
       }
@@ -384,7 +382,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
     _sqlOrderBy = Utils.STR_VAZIA;
 
-    for (Coluna cln : this.getLstClnOrdem())
+    for (ColunaMain cln : this.getLstClnOrdem())
     {
       _sqlOrderBy = _sqlOrderBy.concat(cln.getSqlOrderBy());
     }
@@ -394,7 +392,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
   public String getStrClnNome(String strNomeSql)
   {
-    for (Coluna cln : this.getLstCln())
+    for (ColunaMain cln : this.getLstCln())
     {
       if (!cln.getSqlNome().equals(strNomeSql))
       {
@@ -466,7 +464,10 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   {
     this.criar();
 
-    this.inicializarLstCln();
+    for (ColunaMain cln : this.getLstCln())
+    {
+      cln.setTbl(this);
+    }
 
     this.inicializarClnDttAlteracao();
     this.inicializarClnIntUsuarioAlteracaoId();
@@ -505,13 +506,13 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
   private void inicializarLstCln()
   {
-    for (Coluna cln : this.getLstCln())
+    for (ColunaMain cln : this.getLstCln())
     {
-      cln.iniciar(this);
+      cln.iniciar();
     }
   }
 
-  protected void inicializarLstCln(List<Coluna> lstCln)
+  protected void inicializarLstCln(List<ColunaMain> lstCln)
   {
     lstCln.add(this.getClnBooAtivo());
     lstCln.add(this.getClnDttAlteracao());
@@ -535,6 +536,11 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     this.finalizar();
   }
 
+  void iniciarCln()
+  {
+    this.inicializarLstCln();
+  }
+
   /**
    * Limpa os valores de todas as colunas da tabela.
    */
@@ -542,7 +548,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
   {
     this.bloquearThread();
 
-    for (Coluna cln : this.getLstCln())
+    for (ColunaMain cln : this.getLstCln())
     {
       if (cln == null)
       {
@@ -558,7 +564,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     this.getLstClnOrdem().clear();
     this.setSqlOrderBy(null);
 
-    for (Coluna cln : this.getLstCln())
+    for (ColunaMain cln : this.getLstCln())
     {
       cln.limparOrdem();
     }
@@ -594,7 +600,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
     _booRecemCriada = booRecemCriada;
   }
 
-  void setClnNome(Coluna clnNome)
+  void setClnNome(ColunaMain clnNome)
   {
     _clnNome = clnNome;
   }
@@ -609,7 +615,7 @@ public abstract class TabelaMain<T extends DominioMain> extends Objeto
 
   }
 
-  void setLstClnConsulta(List<Coluna> lstClnConsulta)
+  void setLstClnConsulta(List<ColunaMain> lstClnConsulta)
   {
     _lstClnConsulta = lstClnConsulta;
   }

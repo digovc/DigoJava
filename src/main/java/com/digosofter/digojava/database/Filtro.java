@@ -32,7 +32,7 @@ public class Filtro extends Objeto
   }
 
   private boolean _booSelect;
-  private Coluna _clnFiltro;
+  private ColunaMain _clnFiltro;
   private EnmCondicao _enmCondicao = EnmCondicao.AND;
   private EnmOperador _enmOperador = EnmOperador.IGUAL;
   private String _sqlFiltro;
@@ -40,39 +40,39 @@ public class Filtro extends Objeto
   private String _strFiltroFormatado;
   private String _strOperador;
 
-  public Filtro(Coluna clnFiltro, boolean booFiltro)
+  public Filtro(ColunaMain clnFiltro, boolean booFiltro)
   {
     this(clnFiltro, (booFiltro ? "1" : "0"));
   }
 
-  public Filtro(Coluna clnFiltro, EnmOperador enmOperador)
+  public Filtro(ColunaMain clnFiltro, EnmOperador enmOperador)
   {
     this(clnFiltro, null, enmOperador);
   }
 
-  public Filtro(Coluna clnFiltro, int intFiltro, EnmOperador enmOperador)
+  public Filtro(ColunaMain clnFiltro, int intFiltro, EnmOperador enmOperador)
   {
     this(clnFiltro, String.valueOf(intFiltro), enmOperador);
   }
 
-  public Filtro(Coluna clnFiltro, String strFiltro, EnmOperador enmOperador)
+  public Filtro(ColunaMain clnFiltro, String strFiltro, EnmOperador enmOperador)
   {
     this.setClnFiltro(clnFiltro);
     this.setEnmOperador(enmOperador);
     this.setStrFiltro(strFiltro);
   }
 
-  public Filtro(Coluna clnFiltro, GregorianCalendar dttFiltro)
+  public Filtro(ColunaMain clnFiltro, GregorianCalendar dttFiltro)
   {
     this(clnFiltro, (Utils.getStrDataFormatada(dttFiltro, EnmDataFormato.YYYY_MM_DD_HH_MM_SS)));
   }
 
-  public Filtro(Coluna clnFiltro, int intFiltro)
+  public Filtro(ColunaMain clnFiltro, int intFiltro)
   {
     this(clnFiltro, intFiltro, EnmOperador.IGUAL);
   }
 
-  public Filtro(Coluna clnFiltro, String strFiltro)
+  public Filtro(ColunaMain clnFiltro, String strFiltro)
   {
     this.setClnFiltro(clnFiltro);
     this.setStrFiltro(strFiltro);
@@ -89,7 +89,7 @@ public class Filtro extends Objeto
     return _booSelect;
   }
 
-  private Coluna getClnFiltro()
+  private ColunaMain getClnFiltro()
   {
     return _clnFiltro;
   }
@@ -300,7 +300,7 @@ public class Filtro extends Objeto
     _booSelect = booSelect;
   }
 
-  private void setClnFiltro(Coluna clnFiltro)
+  private void setClnFiltro(ColunaMain clnFiltro)
   {
     _clnFiltro = clnFiltro;
   }
