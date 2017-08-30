@@ -565,6 +565,11 @@ public abstract class Utils
       return "R$ 0,00";
     }
 
+    if (Double.isNaN(dblValor))
+    {
+      return "R$ 0,00";
+    }
+
     NumberFormat objNumberFormat = NumberFormat.getCurrencyInstance(Utils.getObjLocaleBrasil());
 
     String strResultado = objNumberFormat.format(dblValor);
